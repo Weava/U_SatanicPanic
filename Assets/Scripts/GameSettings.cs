@@ -1,4 +1,6 @@
-﻿namespace SP_Meta
+﻿using UnityEngine;
+
+namespace SP_Meta
 {
     public static class GameSettings
     {
