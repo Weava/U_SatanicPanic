@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -75,6 +77,11 @@ namespace Assets.Scripts
                 Direction.South,
                 Direction.East
             };
+        }
+
+        public static Direction RandomDirection(List<Direction> directions)
+        {
+            return directions[Random.Range(0, directions.Count)];
         }
     }
 
