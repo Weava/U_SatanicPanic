@@ -16,7 +16,7 @@ namespace Assets.Scripts.Painter_Generation.Cells
                 Tags.CELL_START,
                 Tags.CELL_SPAWN })
         {
-
+            cellType = CellType.Spawn_Cell;
         }
     }
 }

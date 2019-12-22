@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Misc;
+using Assets.Scripts.Painter_Generation.Cells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +11,32 @@ namespace Assets.Scripts.Painter_Generation
 {
     public abstract class CellRegion : MonoBehaviour
     {
+        public bool infiniteSize;
+
         public int mainPathLength;
 
         //TODO: Region Theme
 
         public CellCollection cells = new CellCollection();
-        public List<Room> requiredRooms = new List<Room>();
 
-        protected Cell lastCellGenerated;
+        public Vector3 regionBounds; //0,0,0 is the -x -z corner of the cell region
+
+        public Cell lastCellGenerated;
+
 
         public CellRegion()
         {
-            if (requiredRooms.Any()) mainPathLength += requiredRooms.Sum(x => x.cellSize);
+            //if (requiredRooms.Any()) mainPathLength += requiredRooms.Sum(x => x.cellSize);
         }
 
-        public bool CellHere(Vector3 location)
+        public bool InBounds(Vector3 position)
+        {
+            if (infiniteSize) return true;
+
+            return true;
+        }
+
+        public bool CellIsHere(Vector3 location)
         {
             return cells.collection.Any(x => x.Key == location);
         }

@@ -19,6 +19,7 @@ namespace Assets.Scripts.Painter_Generation.Cells
                 Tags.CELL_MAINPATH })
         {
             pathSequence = sequence++;
+            cellType = CellType.Main_Path_Cell;
         }
 
         public static void ResetSequence()

@@ -15,7 +15,7 @@ namespace Assets.Scripts.Painter_Generation.Cells
                 Tags.CELL_IMPORTANT, 
                 Tags.CELL_END })
         {
-
+            cellType = CellType.End_Cell;
         }
     }
 }

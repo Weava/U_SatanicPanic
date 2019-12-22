@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Painter_Generation.Cells;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,20 +10,27 @@ namespace Assets.Scripts.Painter_Generation
 {
     public static class Cellf
     {
-        public static Vector3 Step(this Cell cell, Direction direction)
+        private static readonly int CELL_SCALE = 8;
+
+        public static Vector3 Step(Vector3 position, Direction direction)
         {
-            switch(direction)
+            switch (direction)
             {
                 case Direction.East:
-                    return cell.position + new Vector3(1, 0, 0);
+                    return position + new Vector3(CELL_SCALE, 0, 0);
                 case Direction.South:
-                    return cell.position + new Vector3(0, 0, -1);
+                    return position + new Vector3(0, 0, -CELL_SCALE);
                 case Direction.West:
-                    return cell.position + new Vector3(-1, 0, 0);
+                    return position + new Vector3(-CELL_SCALE, 0, 0);
                 case Direction.North:
                 default:
-                    return cell.position + new Vector3(0, 0, 1);
+                    return position + new Vector3(0, 0, CELL_SCALE);
             }
+        }
+
+        public static Vector3 Step(this Cell cell, Direction direction)
+        {
+            return Step(cell.position, direction);
         }
 
         public static List<Direction> AvailableDirections(this Cell cell, CellCollection collection, List<Direction> excludeDirections = null)
