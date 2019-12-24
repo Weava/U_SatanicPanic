@@ -50,11 +50,22 @@ MonoBehaviour:
     type: 3}
   PathMarker: {fileID: 1725502832851340959, guid: 4146bc774942b55449d9495a39fa60d2,
     type: 3}
-  pathPadding: 0
+  Room_1_1_Marker: {fileID: 2816215554011022634, guid: 5e06ea910317e0147b6e246d32acbfce,
+    type: 3}
+  Room_1_2_Marker: {fileID: 1094673564195271517, guid: 8cdcd15a482955c45a1463ca92cb312c,
+    type: 3}
+  Room_2_2_Marker: {fileID: 2206753877420416793, guid: 37e3adefaea248c4d920c8ee01a619cc,
+    type: 3}
+  Room_2_3_Marker: {fileID: 4157351659263620132, guid: cf843c37020bc44429af3982aa616145,
+    type: 3}
+  Room_3_3_Marker: {fileID: 2324297886267502531, guid: 086c3310e1f7e8a4cb1f7bf1c7ab8ff9,
+    type: 3}
   paddingAmount: 5
   cellRegion: {fileID: 4395889320935005579, guid: 7f89d2fd70d03234f952bacb127a88aa,
     type: 3}
   mainPathPainter: {fileID: 8233057276695241626, guid: fcfc9677aac966d48a0f1f3c73d947cd,
     type: 3}
   cellExpandingPainter: {fileID: 9414688779446502, guid: d5d5615859bbb4f4eb78f441c19f6098,
+    type: 3}
+  roomMapper: {fileID: 2865806047938609857, guid: 3ae77ab48149ae94aae00db677c49b80,
     type: 3}

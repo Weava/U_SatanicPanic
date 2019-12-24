@@ -6,7 +6,7 @@ namespace Assets.Scripts
 {
     public static class Directionf
     {
-        public static Direction GetOppositeDirection(Direction direction)
+        public static Direction GetOppositeDirection(this Direction direction)
         {
             switch(direction)
             {
@@ -38,7 +38,7 @@ namespace Assets.Scripts
             }
         }
 
-        public static Direction GetLeftDirection(Direction direction)
+        public static Direction GetLeftDirection(this Direction direction)
         {
             switch(direction)
             {
@@ -53,7 +53,7 @@ namespace Assets.Scripts
             }
         }
 
-        public static Direction GetRightDirection(Direction direction)
+        public static Direction GetRightDirection(this Direction direction)
         {
             switch (direction)
             {
@@ -82,6 +82,22 @@ namespace Assets.Scripts
         public static Direction RandomDirection(List<Direction> directions)
         {
             return directions[Random.Range(0, directions.Count)];
+        }
+
+        public static int RotationAngle(this Direction direction)
+        {
+            switch(direction)
+            {
+                case Direction.East:
+                    return 90;
+                case Direction.South:
+                    return 180;
+                case Direction.West:
+                    return 270;
+                case Direction.North:
+                default:
+                    return 0;
+            }
         }
     }
 

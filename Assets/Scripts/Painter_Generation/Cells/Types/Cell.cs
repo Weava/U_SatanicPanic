@@ -12,6 +12,8 @@ namespace Assets.Scripts.Painter_Generation.Cells
         #region Properties
         public CellType cellType;
 
+        public bool claimed = false;
+
         public Vector3 position = new Vector3();
 
         public List<string> tags = new List<string>();
@@ -36,6 +38,7 @@ namespace Assets.Scripts.Painter_Generation.Cells
         Cell,
         End_Cell,
         Spawn_Cell,
-        Main_Path_Cell
+        Main_Path_Cell,
+        Dead_Cell
     }
 }
