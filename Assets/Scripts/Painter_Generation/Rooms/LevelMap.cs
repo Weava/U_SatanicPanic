@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Generation.Painter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
 
     public class LevelRegion
     {
-        public CellRegion region;
+        public Region region;
         public List<Room> rooms = new List<Room>();
     }
 }

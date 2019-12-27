@@ -9,6 +9,8 @@ namespace Assets.Scripts.Levels.Demo
 {
     public class Demo_Level : Level
     {
-        
+        //4 Regions
+        //1 Boss
+        //3 Keys
     }
 }

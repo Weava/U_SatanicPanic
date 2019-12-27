@@ -1,9 +1,6 @@
-﻿using Assets.Scripts.Painter_Generation.Rooms.Mappers.Base;
-using System;
-using System.Collections.Generic;
+﻿using Assets.Scripts.Generation.Painter.Cells.Base;
+using Assets.Scripts.Painter_Generation.Rooms.Mappers.Base;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts.Painter_Generation.Rooms.Mappers
 {
@@ -17,7 +14,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms.Mappers
             Reset();
             foreach (var region in map.regions.ToList())
             {
-                while(region.region.cells.collection.Any(x => !x.Value.claimed && x.Value.cellType != Cells.CellType.Dead_Cell))
+                while(region.region.cells.collection.Any(x => !x.Value.claimed && x.Value.cellType != CellType.Dead_Cell))
                 {
                     if(!room_3_3_Complete)
                     {

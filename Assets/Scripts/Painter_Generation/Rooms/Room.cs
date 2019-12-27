@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Painter_Generation.Cells;
+﻿using Assets.Scripts.Generation.Painter.Cells.Base;
+using Assets.Scripts.Painter_Generation.Cells;
 using System;
 using System.Collections.Generic;
 using System.Linq;

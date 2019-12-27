@@ -1,5 +1,7 @@
-﻿using Assets.Scripts.Painter_Generation.Cells;
-using Assets.Scripts.Painter_Generation.Cells.Types;
+﻿using Assets.Scripts.Generation.Extensions;
+using Assets.Scripts.Generation.Painter;
+using Assets.Scripts.Generation.Painter.Cells;
+using Assets.Scripts.Generation.Painter.Cells.Base;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,7 +10,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
 {
     public static class Roomf
     {
-        public static RoomClaim FindAvailableCellForRoomDimensions(this CellRegion region, RoomDimensions dimensions)
+        public static RoomClaim FindAvailableCellForRoomDimensions(this Region region, RoomDimensions dimensions)
         {
             switch(dimensions)
             {
@@ -34,7 +36,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
 
         #region Room Projecting
 
-        public static RoomClaim ProjectRoom_1_2(this CellRegion region, Cell rootCell, Direction direction)
+        public static RoomClaim ProjectRoom_1_2(this Region region, Cell rootCell, Direction direction)
         {
             var result = new RoomClaim();
             result.direction = direction;
@@ -51,7 +53,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
             return result;
         }
 
-        public static RoomClaim ProjectRoom_2_2(this CellRegion region, Cell rootCell, Direction direction)
+        public static RoomClaim ProjectRoom_2_2(this Region region, Cell rootCell, Direction direction)
         {
             var result = new RoomClaim();
             result.direction = direction;
@@ -70,7 +72,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
             return result;
         }
 
-        public static RoomClaim ProjectRoom_2_3(this CellRegion region, Cell rootCell, Direction direction)
+        public static RoomClaim ProjectRoom_2_3(this Region region, Cell rootCell, Direction direction)
         {
             var result = new RoomClaim();
             result.direction = direction;
@@ -91,7 +93,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
             return result;
         }
 
-        public static RoomClaim ProjectRoom_3_3(this CellRegion region, Cell rootCell, Direction direction)
+        public static RoomClaim ProjectRoom_3_3(this Region region, Cell rootCell, Direction direction)
         {
             var result = new RoomClaim();
             result.direction = direction;
@@ -115,7 +117,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
             return result;
         }
 
-        private static bool ValidCellPoint(this CellRegion region, Vector3 position, bool required = true)
+        private static bool ValidCellPoint(this Region region, Vector3 position, bool required = true)
         {
             if(required)
             {
@@ -163,7 +165,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
 
         #region Room Scanning
 
-        public static RoomClaim FindCellForRoom_1_1(CellRegion region)
+        public static RoomClaim FindCellForRoom_1_1(Region region)
         {
             var cell = region.cells.collection.Select(s => s.Value).FirstOrDefault(x => !x.claimed && x.cellType != CellType.Dead_Cell);
 
@@ -182,7 +184,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
             return null;
         }
 
-        public static RoomClaim FindCellForRoom_1_2(CellRegion region)
+        public static RoomClaim FindCellForRoom_1_2(Region region)
         {
             foreach(var cell in region.cells.collection.Select(s => s.Value).Where(x => !x.claimed && x.cellType != CellType.Dead_Cell).ToList())
             {
@@ -202,7 +204,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
             return null;
         }
 
-        public static RoomClaim FindCellForRoom_2_2(CellRegion region)
+        public static RoomClaim FindCellForRoom_2_2(Region region)
         {
             foreach (var cell in region.cells.collection.Select(s => s.Value).Where(x => !x.claimed && x.cellType != CellType.Dead_Cell).ToList())
             {
@@ -222,7 +224,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
             return null;
         }
 
-        public static RoomClaim FindCellForRoom_2_3(CellRegion region)
+        public static RoomClaim FindCellForRoom_2_3(Region region)
         {
             foreach (var cell in region.cells.collection.Select(s => s.Value).Where(x => !x.claimed && x.cellType != CellType.Dead_Cell).ToList())
             {
@@ -243,7 +245,7 @@ namespace Assets.Scripts.Painter_Generation.Rooms
             return null;
         }
 
-        public static RoomClaim FindCellForRoom_3_3(CellRegion region)
+        public static RoomClaim FindCellForRoom_3_3(Region region)
         {
             foreach (var cell in region.cells.collection.Select(s => s.Value).Where(x => !x.claimed && x.cellType != CellType.Dead_Cell).ToList())
             {
@@ -266,14 +268,14 @@ namespace Assets.Scripts.Painter_Generation.Rooms
 
         #endregion
 
-        private static void ClaimCell(this CellRegion region, Vector3 position, ref RoomClaim result, bool required = true)
+        private static void ClaimCell(this Region region, Vector3 position, ref RoomClaim result, bool required = true)
         {
             if (!region.ValidCellPoint(position, required)) { result.failed = true; return; }
 
             result.incompassedCells.Add(region.cells.collection[position]);
         }
 
-        private static void ClearDeadCellsByProjection(this CellRegion region, RoomClaim claim)
+        private static void ClearDeadCellsByProjection(this Region region, RoomClaim claim)
         {
             var deadCells = claim.incompassedCells.Where(x => x.cellType == CellType.Dead_Cell);
             foreach(var cell in deadCells)
