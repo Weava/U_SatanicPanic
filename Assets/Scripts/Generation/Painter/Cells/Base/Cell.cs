@@ -15,16 +15,28 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
         public List<string> tags = new List<string>();
         #endregion
 
+        public Cell()
+        {
+        }
+
         public Cell(Vector3 initPosition)
         {
             position = initPosition;
             cellType = CellType.Cell;
         }
 
-        public Cell(Vector3 initPosition, List<string> initTags)
+        public Cell(Vector3 initPosition, List<string> tags)
+        {
+            position = initPosition;
+            tags.AddRange(tags);
+            cellType = CellType.Cell;
+        }
+
+        public Cell(Vector3 initPosition, List<string> initTags, List<string> additionalTags)
         {
             position = initPosition;
             tags.AddRange(initTags);
+            tags.AddRange(additionalTags);
             cellType = CellType.Cell;
         }
     }
@@ -34,7 +46,8 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
         Cell,
         End_Cell,
         Spawn_Cell,
-        Main_Path_Cell,
-        Dead_Cell
+        Path_Cell,
+        Dead_Cell,
+        Elevation_Cell
     }
 }

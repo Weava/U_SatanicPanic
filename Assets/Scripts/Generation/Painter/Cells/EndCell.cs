@@ -14,5 +14,13 @@ namespace Assets.Scripts.Generation.Painter.Cells
         {
             cellType = CellType.End_Cell;
         }
+
+        public EndCell(Vector3 position, List<string> tags)
+            : base(position, new List<string>() {
+                Tags.CELL_IMPORTANT,
+                Tags.CELL_END }, tags)
+        {
+            cellType = CellType.End_Cell;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Assets.Scripts.Generation.Extensions
     {
         private static readonly int CELL_SCALE = 8;
 
-        public static Vector3 Step(Vector3 position, Direction direction, int multiple = 1)
+        public static Vector3 Step(this Vector3 position, Direction direction, int multiple = 1)
         {
             switch (direction)
             {
@@ -29,7 +29,7 @@ namespace Assets.Scripts.Generation.Extensions
             return Step(cell.position, direction, multiple);
         }
 
-        public static Vector3 StepDiagonal(Vector3 position, Direction direction_1, Direction direction_2, int multiple_1 = 1, int multiple_2 = 1)
+        public static Vector3 StepDiagonal(this Vector3 position, Direction direction_1, Direction direction_2, int multiple_1 = 1, int multiple_2 = 1)
         {
             var result = position;
             switch (direction_1)
@@ -68,7 +68,7 @@ namespace Assets.Scripts.Generation.Extensions
             return StepDiagonal(cell.position, direction_1, direction_2, multiple_1, multiple_2);
         }
 
-        public static List<Direction> AvailableDirections(this Cell cell, CellCollection collection, List<Direction> excludeDirections = null)
+        public static List<Direction> AvailableDirections(this Cell cell, List<Direction> excludeDirections = null)
         {
             var directions = Directionf.GetDirectionList();
             if(excludeDirections != null)
@@ -82,7 +82,7 @@ namespace Assets.Scripts.Generation.Extensions
 
             foreach(var direction in directions)
             {
-                if( ! collection.HasCellAt(cell.Step(direction)))
+                if( ! CellCollection.HasCellAt(cell.Step(direction)))
                     result.Add(direction);
             }
 

@@ -5,19 +5,29 @@ using UnityEngine;
 
 namespace Assets.Scripts.Generation.Painter.Cells
 {
-    public class MainPathCell : Cell
+    public class PathCell : Cell
     {
         public int pathSequence;
 
         protected static int sequence = 0;
 
-        public MainPathCell(Vector3 position) 
+        public PathCell(Vector3 position) 
             : base(position, new List<string> {
                 Tags.CELL_IMPORTANT,
-                Tags.CELL_MAINPATH })
+                Tags.CELL_PATH })
         {
             pathSequence = sequence++;
-            cellType = CellType.Main_Path_Cell;
+            cellType = CellType.Path_Cell;
+        }
+
+        public PathCell(Vector3 position, List<string> tags)
+            : base(position, new List<string> {
+                Tags.CELL_IMPORTANT,
+                Tags.CELL_PATH },
+                  tags)
+        {
+            pathSequence = sequence++;
+            cellType = CellType.Path_Cell;
         }
 
         public static void ResetSequence()

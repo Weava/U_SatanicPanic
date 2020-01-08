@@ -18,6 +18,10 @@ namespace Assets.Scripts
                     return Direction.North;
                 case Direction.West:
                     return Direction.East;
+                case Direction.Up:
+                    return Direction.Down;
+                case Direction.Down:
+                    return Direction.Up;
                 default:
                     return direction;
             }
@@ -68,8 +72,21 @@ namespace Assets.Scripts
             }
         }
 
-        public static List<Direction> GetDirectionList()
+        public static List<Direction> GetDirectionList(bool includeUpAndDown = false)
         {
+            if(includeUpAndDown)
+            {
+                return new List<Direction>()
+                {
+                    Direction.North,
+                    Direction.West,
+                    Direction.South,
+                    Direction.East,
+                    Direction.Up,
+                    Direction.Down
+                };
+            }
+
             return new List<Direction>()
             {
                 Direction.North,
@@ -81,7 +98,7 @@ namespace Assets.Scripts
 
         public static Direction RandomDirection(List<Direction> directions)
         {
-            return directions[Random.Range(0, directions.Count)];
+            return directions[Random.Range(0, directions.Count-2 /*Don't include Up and Down*/)];
         }
 
         public static int RotationAngle(this Direction direction)
@@ -99,6 +116,26 @@ namespace Assets.Scripts
                     return 0;
             }
         }
+
+        public static Vector3 DirectionToVector(this Direction direction)
+        {
+            switch(direction)
+            {
+                case Direction.Down:
+                    return new Vector3(0, -1, 0);
+                case Direction.Up:
+                    return new Vector3(0, 1, 0);
+                case Direction.West:
+                    return new Vector3(-1, 0, 0);
+                case Direction.East:
+                    return new Vector3(1, 0, 0);
+                case Direction.South:
+                    return new Vector3(0, 0, -1);
+                case Direction.North:
+                default:
+                    return new Vector3(0, 0, 1);
+            }
+        }
     }
 
     public enum Direction
@@ -106,6 +143,8 @@ namespace Assets.Scripts
         North = 0,
         East = 1,
         South = 2,
-        West = 3
+        West = 3,
+        Up = 4,
+        Down = 5
     }
 }

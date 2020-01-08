@@ -15,5 +15,14 @@ namespace Assets.Scripts.Generation.Painter.Cells
         {
             cellType = CellType.Spawn_Cell;
         }
+
+        public SpawnCell(Vector3 position, List<string> tags)
+            : base(position, new List<string>() {
+                Tags.CELL_IMPORTANT,
+                Tags.CELL_START,
+                Tags.CELL_SPAWN }, tags)
+        {
+            cellType = CellType.Spawn_Cell;
+        }
     }
 }
