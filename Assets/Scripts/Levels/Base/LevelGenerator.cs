@@ -11,6 +11,7 @@ namespace Assets.Scripts.Levels.Base
     {
         public GameObject Marker;
         public GameObject InitMarker;
+        public GameObject ElevationMarker;
 
         public virtual bool BuildLevel()
         {
@@ -32,9 +33,12 @@ namespace Assets.Scripts.Levels.Base
                     name += (cell as PathCell).pathSequence;
                 }
 
-                if(cell.tags.Contains(Tags.INIT_PATH))
+                if (cell.tags.Contains(Tags.INIT_PATH))
                 {
                     var instance = Instantiate(InitMarker, cell.position, new Quaternion());
+                    instance.name = name;
+                } else if (cell.tags.Contains(Tags.CELL_ELEVATION)) {
+                    var instance = Instantiate(ElevationMarker, cell.position, new Quaternion());
                     instance.name = name;
                 } else
                 {

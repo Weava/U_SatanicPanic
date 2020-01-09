@@ -8,7 +8,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
 {
     public static class PathBuilder
     {
-        public static bool BuildPath(Vector3 startPosition, PathType pathType, PathOptions options)
+        public static bool BuildPath(Vector3 startPosition, PathOptions options)
         {
             var currentPosition = startPosition;
             if (CellCollection.HasCellAt(currentPosition))
@@ -17,7 +17,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
             }
 
             var result = true;
-            switch(pathType)
+            switch(options.pathType)
             {
                 case PathType.Straight_Line:
                     result = BuildPath_StraightLine(currentPosition, options);
@@ -35,12 +35,10 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
             return result;
         }
 
-        public static bool BuildPath(Cell startCell, PathType pathType, PathOptions options)
+        public static bool BuildPath(Cell startCell, PathOptions options)
         {
-            return BuildPath(startCell.position, pathType, options);
+            return BuildPath(startCell.position, options);
         }
-
-        //TODO: Detect collissions and reroute pathways as appropriate
 
         #region Builders
 
@@ -60,14 +58,8 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
             {
                 if(CellCollection.HasCellAt(position)) return false;
 
-                if(init)
-                {
-                    init = false;
-                    cellsToAdd.Add(new PathCell(position, BuildInitTags(options.tags)));
-                } else
-                {
-                    cellsToAdd.Add(new PathCell(position, options.tags));
-                }
+                AddCell(ref init, ref cellsToAdd, i, position, options);
+
                 position = position.Step(options.primaryDirection);
             }
 
@@ -94,17 +86,9 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
             {
                 if (CellCollection.HasCellAt(position)) return false;
 
-                if (init)
-                {
-                    init = false;
-                    cellsToAdd.Add(new PathCell(position, BuildInitTags(options.tags)));
-                }
-                else
-                {
-                    cellsToAdd.Add(new PathCell(position, options.tags));
-                }
+                AddCell(ref init, ref cellsToAdd, i, position, options);
 
-                if(primaryLength > 0 && secondaryLength > 0)
+                if (primaryLength > 0 && secondaryLength > 0)
                 {
                     var choice = Random.Range(0, 2);
                     if(choice == 1)
@@ -157,17 +141,9 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
             {
                 if (CellCollection.HasCellAt(position)) return false;
 
-                if (init)
-                {
-                    init = false;
-                    cellsToAdd.Add(new PathCell(position, BuildInitTags(options.tags)));
-                }
-                else
-                {
-                    cellsToAdd.Add(new PathCell(position, options.tags));
-                }
+                AddCell(ref init, ref cellsToAdd, i, position, options);
 
-                if(stage2)
+                if (stage2)
                 {
                     if(primaryLength_Stage2 > 0 && secondaryLength_Stage2 > 0 && ! collisionFlag)
                     {
@@ -238,6 +214,43 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
             result.Add(Tags.INIT_PATH);
             return result;
         }
+
+        private static void AddCell(ref bool init, ref List<Cell> cellsToAdd, int index, Vector3 position, PathOptions options)
+        {
+            if (init)
+            {
+                init = false;
+
+                if(options.startCell != CellType.Path_Cell)
+                {
+                    if(options.startCell == CellType.Elevation_Cell)
+                    {
+                        var list = new List<string>() { Tags.CELL_PATH };
+                        list.AddRange(options.tags);
+                        cellsToAdd.Add(new ElevationCell(position + options.elevationAmount, BuildInitTags(list), options.elevationDirection));
+                    }
+                } else
+                {
+                    cellsToAdd.Add(new PathCell(position, BuildInitTags(options.tags)));
+                }
+            }
+            else
+            {
+                if (index == options.pathLength - 1 && options.capCell != CellType.Path_Cell)
+                {
+                    if (options.capCell == CellType.Elevation_Cell)
+                    {
+                        var list = new List<string>() { Tags.CELL_PATH };
+                        list.AddRange(options.tags);
+                        cellsToAdd.Add(new ElevationCell(position, list, options.elevationDirection));
+                    }
+                }
+                else
+                {
+                    cellsToAdd.Add(new PathCell(position, options.tags));
+                }
+            }
+        }
     }
 
     public class PathOptions
@@ -248,13 +261,28 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
 
         public int secondaryPathLength = 0;
 
-        public List<string> tags  = new List<string>();
+        public List<string> tags = new List<string>();
+
+        public Vector3 elevationAmount = new Vector3();
+
+        #region Enums
+
+        //Cell that caps the end of the generated path
+        public CellType capCell = CellType.Path_Cell;
+
+        public CellType startCell = CellType.Path_Cell;
+
+        public PathType pathType;
 
         public Direction primaryDirection;
 
         public Direction secondaryDirection;
+
+        public Direction elevationDirection;
+
+        #endregion
     }
-     
+
     public enum PathType
     {
         Straight_Line,

@@ -340,5 +340,11 @@ PrefabInstance:
       propertyPath: basementLength
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: ElevationMarker
+      value: 
+      objectReference: {fileID: 3508908904638965829, guid: 5e47df02520213247bd714dff645271a,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8084e66e56459d409b6279e07992a7e, type: 3}

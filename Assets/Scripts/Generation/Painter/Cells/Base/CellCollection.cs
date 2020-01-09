@@ -48,9 +48,6 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
         {
             var list = new List<string>() { Tags.CELL_PATH, identifierTag };
 
-            var test = collection.Where(x => list.All(y => x.Value.tags.Contains(y))).Select(s => s.Value)
-                        .OrderBy(o => (o as PathCell).pathSequence).ToList().Last();
-
             switch (sequence)
             {
                 case PathSequence.First:

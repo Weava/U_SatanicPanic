@@ -54,8 +54,9 @@ namespace Assets.Scripts.Levels.Demo_0
 
         private bool BuildBasement()
         {
-            var result = PathBuilder.BuildPath(new Vector3(0, 0, 0), PathType.Straight_Line, new PathOptions()
+             var result = PathBuilder.BuildPath(new Vector3(0, 0, 0), new PathOptions()
             {
+                pathType = PathType.Straight_Line,
                 primaryPathLength = basementLength,
                 primaryDirection = Direction.North,
                 tags = new List<string>() { basementTag, "Region_Basement_1" }
@@ -65,8 +66,9 @@ namespace Assets.Scripts.Levels.Demo_0
 
             var direction = Random.Range(0, 2) == 1 ? Direction.West : Direction.East;
 
-            PathBuilder.BuildPath(nextRootCell, PathType.Arched_Line, new PathOptions()
+            PathBuilder.BuildPath(nextRootCell, new PathOptions()
             {
+                pathType = PathType.Arched_Line,
                 primaryPathLength = basementLength,
                 secondaryPathLength = basementLength,
                 primaryDirection = Direction.North,
@@ -76,16 +78,31 @@ namespace Assets.Scripts.Levels.Demo_0
             if (!result) return false;
             nextRootCell = CellCollection.GetPathCellInSequence("Region_Basement_2", PathSequence.Last);
 
-            PathBuilder.BuildPath(nextRootCell, PathType.Curved_Line, new PathOptions()
+            PathBuilder.BuildPath(nextRootCell, new PathOptions()
             {
+                pathType = PathType.Curved_Line,
                 primaryPathLength = basementLength,
                 secondaryPathLength = basementLength,
                 primaryDirection = Direction.South,
                 secondaryDirection = direction,
+                capCell = CellType.Elevation_Cell,
+                elevationDirection = Direction.Up,
                 tags = new List<string> { basementTag, "Region_Basement_3" }
             });
             if (!result) return false;
-            //nextRootCell = CellCollection.GetPathCellInSequence("Region_Basement_3", PathSequence.Last);
+            //Elevation cell at this point
+            nextRootCell = CellCollection.GetPathCellInSequence("Region_Basement_3", PathSequence.Last);
+
+            result = PathBuilder.BuildPath(nextRootCell, new PathOptions()
+            {
+                pathType = PathType.Straight_Line,
+                primaryPathLength = basementLength,
+                primaryDirection = Direction.North,
+                elevationAmount = (nextRootCell as ElevationCell).elevationDirection.DirectionToVector(),
+                tags = new List<string>() { basementTag, "Region_Upstairs_1" }
+            });
+            if (!result) return false;
+            nextRootCell = CellCollection.GetPathCellInSequence("Region_Upstairs_1", PathSequence.Last);
 
             return true;
         }
