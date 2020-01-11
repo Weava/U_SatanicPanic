@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Generation.Extensions;
+using Assets.Scripts.Misc;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.Generation.Painter.Cells.Base
@@ -6,39 +8,58 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
     public class Cell
     {
         #region Properties
+
         public CellType cellType;
+
+        public int pathSequence;
 
         public bool claimed = false;
 
         public Vector3 position = new Vector3();
 
-        public List<string> tags = new List<string>();
+        public TagCollection tags;
+
         #endregion
 
-        public Cell()
+        #region CTOR
+
+        public Cell(CellType type = CellType.Cell)
         {
+            tags = new TagCollection();
+            cellType = type;
+            UpdatePathCell();
         }
 
-        public Cell(Vector3 initPosition)
+        public Cell(Vector3 initPosition, CellType type = CellType.Cell)
         {
+            tags = new TagCollection();
             position = initPosition;
-            cellType = CellType.Cell;
+            cellType = type;
+            UpdatePathCell();
         }
 
-        public Cell(Vector3 initPosition, List<string> tags)
+        public Cell(Vector3 initPosition, List<string> initTags, CellType type = CellType.Cell)
         {
+            tags = new TagCollection();
             position = initPosition;
-            tags.AddRange(tags);
-            cellType = CellType.Cell;
+            tags.Add(initTags.ToArray());
+            cellType = type;
+            UpdatePathCell();
         }
 
-        public Cell(Vector3 initPosition, List<string> initTags, List<string> additionalTags)
+        #endregion
+
+        #region Meta
+
+        private void UpdatePathCell()
         {
-            position = initPosition;
-            tags.AddRange(initTags);
-            tags.AddRange(additionalTags);
-            cellType = CellType.Cell;
+            if (cellType == CellType.Path_Cell)
+            {
+                this.AddToPathSequence();
+            }
         }
+
+        #endregion
     }
 
     public enum CellType
@@ -48,6 +69,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
         Spawn_Cell,
         Path_Cell,
         Dead_Cell,
-        Elevation_Cell
+        Elevation_Cell,
+        Teleport_Cell
     }
 }

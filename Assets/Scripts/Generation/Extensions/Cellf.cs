@@ -6,6 +6,8 @@ namespace Assets.Scripts.Generation.Extensions
 {
     public static class Cellf
     {
+        private static int sequence = 0;
+
         private static readonly int CELL_SCALE = 8;
 
         public static Vector3 Step(this Vector3 position, Direction direction, int multiple = 1)
@@ -87,6 +89,16 @@ namespace Assets.Scripts.Generation.Extensions
             }
 
             return result;
+        }
+
+        public static void AddToPathSequence(this Cell cell)
+        {
+            cell.pathSequence = sequence++;
+        }
+
+        public static void ResetSequence()
+        {
+            sequence = 0;
         }
     }
 }

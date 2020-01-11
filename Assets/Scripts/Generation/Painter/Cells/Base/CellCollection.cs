@@ -44,40 +44,40 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
             collection = new Dictionary<Vector3, Cell>();
         }
 
-        public static Cell GetPathCellInSequence(string identifierTag, PathSequence sequence)
-        {
-            var list = new List<string>() { Tags.CELL_PATH, identifierTag };
+        //public static Cell GetPathCellInSequence(string identifierTag, PathSequence sequence)
+        //{
+        //    var list = new List<string>() { Tags.CELL_PATH, identifierTag };
 
-            switch (sequence)
-            {
-                case PathSequence.First:
-                    return collection.Where(x => list.All(y => x.Value.tags.Contains(y))).Select(s => s.Value)
-                        .OrderBy(o => (o as PathCell).pathSequence).ToList()
-                        .First();
-                case PathSequence.Last:
-                    return collection.Where(x => list.All(y => x.Value.tags.Contains(y))).Select(s => s.Value)
-                        .OrderBy(o => (o as PathCell).pathSequence).ToList()
-                        .Last();
-                default:
-                    return null;
-            }
-        }
+        //    switch (sequence)
+        //    {
+        //        case PathSequence.First:
+        //            return collection.Where(x => list.All(y => x.Value.tags.Contains(y))).Select(s => s.Value)
+        //                .OrderBy(o => (o as PathCell).pathSequence).ToList()
+        //                .First();
+        //        case PathSequence.Last:
+        //            return collection.Where(x => list.All(y => x.Value.tags.Contains(y))).Select(s => s.Value)
+        //                .OrderBy(o => (o as PathCell).pathSequence).ToList()
+        //                .Last();
+        //        default:
+        //            return null;
+        //    }
+        //}
 
-        public static List<Cell> GetPathCellsByTag(string identifierTag)
-        {
-            var list = new List<string>() { Tags.CELL_PATH, identifierTag };
-            return collection.Where(x => list.All(y => x.Value.tags.Contains(y))).Select(s => s.Value).ToList();
-        }
+        //public static List<Cell> GetPathCellsByTag(string identifierTag)
+        //{
+        //    var list = new List<string>()     { Tags.CELL_PATH, identifierTag };
+        //    return collection.Where(x => list.All(y => x.Value.tags.Contains(y))).Select(s => s.Value).ToList();
+        //}
 
-        public static List<Cell> GetCellsByTag(string tag)
-        {
-            return collection.Where(x => x.Value.tags.Contains(tag)).Select(s => s.Value).ToList();
-        }
+        //public static List<Cell> GetCellsByTag(string tag)
+        //{
+        //    return collection.Where(x => x.Value.tags.Contains(tag)).Select(s => s.Value).ToList();
+        //}
 
-        public static List<Cell> GetCellsByTag(List<string> tags)
-        {
-            return collection.Where(x => tags.All(y => x.Value.tags.Contains(y))).Select(s => s.Value).ToList();
-        }
+        //public static List<Cell> GetCellsByTag(List<string> tags)
+        //{
+        //    return collection.Where(x => tags.All(y => x.Value.tags.Contains(y))).Select(s => s.Value).ToList();
+        //}
     }
 
     public enum PathSequence

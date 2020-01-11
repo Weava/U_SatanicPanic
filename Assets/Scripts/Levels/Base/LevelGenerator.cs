@@ -23,14 +23,14 @@ namespace Assets.Scripts.Levels.Base
             foreach(var cell in CellCollection.collection.Select(s => s.Value))
             {
                 var name = "";
-                foreach(var tag in cell.tags)
+                foreach(var tag in cell.tags.ToList())
                 {
                     name += tag + " ";
                 }
 
                 if(cell.tags.Contains(Tags.CELL_PATH))
                 {
-                    name += (cell as PathCell).pathSequence;
+                    name += cell.pathSequence;
                 }
 
                 if (cell.tags.Contains(Tags.INIT_PATH))

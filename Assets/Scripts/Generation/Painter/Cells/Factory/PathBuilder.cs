@@ -2,13 +2,14 @@
 using Assets.Scripts.Generation.Painter.Cells.Base;
 using Assets.Scripts.Misc;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Generation.Painter.Cells.Factory
 {
     public static class PathBuilder
     {
-        public static bool BuildPath(Vector3 startPosition, PathOptions options)
+        public static List<Cell> BuildPath(Vector3 startPosition, PathOptions options)
         {
             var currentPosition = startPosition;
             if (CellCollection.HasCellAt(currentPosition))
@@ -16,7 +17,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
                 currentPosition = Cellf.Step(currentPosition, options.primaryDirection);
             }
 
-            var result = true;
+            var result = new List<Cell>();
             switch(options.pathType)
             {
                 case PathType.Straight_Line:
@@ -28,14 +29,17 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
                 case PathType.Arched_Line:
                     result = BuildPath_ArchedLine(currentPosition, options);
                     break;
+                case PathType.Elevation:
+                    result = BuildPath_Elevation(currentPosition, options);
+                    break;
                 default:
-                    return false; //This shouldn't be called for any reason
+                    return result; //This shouldn't be called for any reason
             }
-            PathCell.ResetSequence();
+            Cellf.ResetSequence();
             return result;
         }
 
-        public static bool BuildPath(Cell startCell, PathOptions options)
+        public static List<Cell> BuildPath(Cell startCell, PathOptions options)
         {
             return BuildPath(startCell.position, options);
         }
@@ -48,7 +52,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
         /// <param name="position"></param>
         /// <param name="options">Used: [Path Length] [Primary Direction] [(?)Tags]</param>
         /// <returns></returns>
-        private static bool BuildPath_StraightLine(Vector3 position, PathOptions options)
+        private static List<Cell> BuildPath_StraightLine(Vector3 position, PathOptions options)
         {
             var cellsToAdd = new List<Cell>();
 
@@ -56,7 +60,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
 
             for(int i = 0; i < options.pathLength; i++)
             {
-                if(CellCollection.HasCellAt(position)) return false;
+                if(CellCollection.HasCellAt(position)) return new List<Cell>();
 
                 AddCell(ref init, ref cellsToAdd, i, position, options);
 
@@ -65,7 +69,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
 
             CellCollection.AddRange(cellsToAdd);
 
-            return true;
+            return cellsToAdd;
         }
 
         /// <summary>
@@ -74,7 +78,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
         /// <param name="position"></param>
         /// <param name="options">Used: [Path Length] [Primary Direction] [Secondary Direction] [(?)Tags]</param>
         /// <returns></returns>
-        private static bool BuildPath_CurvedLine(Vector3 position, PathOptions options)
+        private static List<Cell> BuildPath_CurvedLine(Vector3 position, PathOptions options)
         {
             var primaryLength = options.primaryPathLength;
             var secondaryLength = options.secondaryPathLength;
@@ -84,7 +88,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
 
             for(int i = 0; i < options.pathLength; i++)
             {
-                if (CellCollection.HasCellAt(position)) return false;
+                if (CellCollection.HasCellAt(position)) return new List<Cell>();
 
                 AddCell(ref init, ref cellsToAdd, i, position, options);
 
@@ -113,7 +117,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
 
             CellCollection.AddRange(cellsToAdd);
 
-            return true;
+            return cellsToAdd;
         }
 
         /// <summary>
@@ -122,7 +126,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
         /// <param name="position"></param>
         /// <param name="options">Used: [Path Length] [Primary Direction] [Secondary Direction] [(?)Tags]</param>
         /// <returns></returns>
-        private static bool BuildPath_ArchedLine(Vector3 position, PathOptions options)
+        private static List<Cell> BuildPath_ArchedLine(Vector3 position, PathOptions options)
         {
             var primaryLength_Stage1 = Mathf.CeilToInt(options.primaryPathLength / 2.0f);
             var primaryLength_Stage2 = options.primaryPathLength - primaryLength_Stage1;
@@ -139,7 +143,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
 
             for (int i = 0; i < options.pathLength; i++)
             {
-                if (CellCollection.HasCellAt(position)) return false;
+                if (CellCollection.HasCellAt(position)) return new List<Cell>();
 
                 AddCell(ref init, ref cellsToAdd, i, position, options);
 
@@ -202,18 +206,27 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
 
             CellCollection.AddRange(cellsToAdd);
 
-            return true;
+            return cellsToAdd;
+        }
+
+        private static List<Cell> BuildPath_Elevation(Vector3 position, PathOptions options)
+        {
+            var cellsToAdd = new List<Cell>();
+
+            var init = true;
+
+            if (CellCollection.HasCellAt(position)) return new List<Cell>();
+
+            AddCell(ref init, ref cellsToAdd, 0, position, options);
+
+            AddCell(ref init, ref cellsToAdd, 1, position + (Directionf.DirectionToVector(options.elevationDirection) * 8), options);
+
+            CellCollection.AddRange(cellsToAdd);
+
+            return cellsToAdd;
         }
 
         #endregion
-
-        private static List<string> BuildInitTags(List<string> tags)
-        {
-            var result = new List<string>();
-            result.AddRange(tags);
-            result.Add(Tags.INIT_PATH);
-            return result;
-        }
 
         private static void AddCell(ref bool init, ref List<Cell> cellsToAdd, int index, Vector3 position, PathOptions options)
         {
@@ -221,34 +234,16 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
             {
                 init = false;
 
-                if(options.startCell != CellType.Path_Cell)
-                {
-                    if(options.startCell == CellType.Elevation_Cell)
-                    {
-                        var list = new List<string>() { Tags.CELL_PATH };
-                        list.AddRange(options.tags);
-                        cellsToAdd.Add(new ElevationCell(position + options.elevationAmount, BuildInitTags(list), options.elevationDirection));
-                    }
-                } else
-                {
-                    cellsToAdd.Add(new PathCell(position, BuildInitTags(options.tags)));
-                }
+                var cell = new Cell(position, CellType.Path_Cell);
+                cell.tags.Add(options.tags);
+                cell.tags.Add(Tags.INIT_PATH);
+                cellsToAdd.Add(cell);
             }
             else
             {
-                if (index == options.pathLength - 1 && options.capCell != CellType.Path_Cell)
-                {
-                    if (options.capCell == CellType.Elevation_Cell)
-                    {
-                        var list = new List<string>() { Tags.CELL_PATH };
-                        list.AddRange(options.tags);
-                        cellsToAdd.Add(new ElevationCell(position, list, options.elevationDirection));
-                    }
-                }
-                else
-                {
-                    cellsToAdd.Add(new PathCell(position, options.tags));
-                }
+                var cell = new Cell(position, CellType.Path_Cell);
+                cell.tags.Add(options.tags);
+                cellsToAdd.Add(cell);
             }
         }
     }
@@ -261,7 +256,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
 
         public int secondaryPathLength = 0;
 
-        public List<string> tags = new List<string>();
+        public Dictionary<string, string> tags = new Dictionary<string, string>();
 
         public Vector3 elevationAmount = new Vector3();
 
@@ -287,6 +282,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
     {
         Straight_Line,
         Curved_Line,
-        Arched_Line
+        Arched_Line,
+        Elevation
     }
 }

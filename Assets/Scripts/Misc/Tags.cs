@@ -8,6 +8,13 @@ namespace Assets.Scripts.Misc
 {
     public static class Tags
     {
+        #region Lookup Tags
+
+        public const string REGION = "Region";
+        public const string SUBREGION = "Subregion";
+
+        #endregion
+
         #region Cell Tags
         public const string INIT_PATH = "Init_Path";
         public const string CELL_SPAWN = "Cell_Spawn";
