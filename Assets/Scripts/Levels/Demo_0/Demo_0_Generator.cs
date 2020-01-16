@@ -10,6 +10,7 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Assets.Scripts.Generation.Extensions;
+using Assets.Scripts.Generation.Painter.Rooms.Base;
 
 namespace Assets.Scripts.Levels.Demo_0
 {
@@ -142,7 +143,7 @@ namespace Assets.Scripts.Levels.Demo_0
             var cells = CellCollection.collection.Where(x => x.Value.tags.Contains(Tags.REGION, basementTag)).Select(s => s.Value).ToList();
 
             cells.ClaimRooms(ClaimType.Greedy, new RoomOptions() {
-                    Region = basementTag,
+                    Region = basementTag
             });
 
             return true;

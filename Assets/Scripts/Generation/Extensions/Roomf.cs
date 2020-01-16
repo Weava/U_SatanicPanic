@@ -300,6 +300,8 @@ namespace Assets.Scripts.Generation.Extensions
 
         public string Region;
         public string Subregion;
+
+        public List<RoomSize> excludeRoomSize = new List<RoomSize>();
     }
 
     public class RoomProjection

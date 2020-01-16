@@ -29,34 +29,39 @@ namespace Assets.Scripts.Generation.Painter.Rooms
                 //TODO 5x5 (Outdoors) sweep
             }
 
+            if(!options.excludeRoomSize.Contains(RoomSize.Room_4_4))
             foreach (var cell in targetCells.Where(x => !x.claimed))
             {
                 var room = TryClaimRoom(cell, RoomSize.Room_4_4, options);
                 if (room != null) { result.Add(room); }
             }
 
-            foreach (var cell in targetCells.Where(x => !x.claimed))
+            if (!options.excludeRoomSize.Contains(RoomSize.Room_3_3))
+                foreach (var cell in targetCells.Where(x => !x.claimed))
             {
                 if (cell.claimed) continue;
                 var room = TryClaimRoom(cell, RoomSize.Room_3_3, options);
                 if (room != null) { result.Add(room); }
             }
 
-            foreach (var cell in targetCells.Where(x => !x.claimed))
+            if (!options.excludeRoomSize.Contains(RoomSize.Room_2_3))
+                foreach (var cell in targetCells.Where(x => !x.claimed))
             {
                 if (cell.claimed) continue;
                 var room = TryClaimRoom(cell, RoomSize.Room_2_3, options);
                 if (room != null) { result.Add(room); }
             }
 
-            foreach (var cell in targetCells.Where(x => !x.claimed))
+            if (!options.excludeRoomSize.Contains(RoomSize.Room_2_2))
+                foreach (var cell in targetCells.Where(x => !x.claimed))
             {
                 if (cell.claimed) continue;
                 var room = TryClaimRoom(cell, RoomSize.Room_2_2, options);
                 if (room != null) { result.Add(room); }
             }
 
-            foreach (var cell in targetCells.Where(x => !x.claimed))
+            if (!options.excludeRoomSize.Contains(RoomSize.Room_1_2))
+                foreach (var cell in targetCells.Where(x => !x.claimed))
             {
                 if (cell.claimed) continue;
                 var room = TryClaimRoom(cell, RoomSize.Room_1_2, options);
