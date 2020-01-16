@@ -54,6 +54,8 @@ namespace Assets.Scripts.Levels.Demo_0
 
                 //Arena
 
+                var test = RoomCollection.collection;
+
                 CleanUnclaimedCells();
                 RenderMarkers();
                 RenderRooms();
@@ -142,7 +144,7 @@ namespace Assets.Scripts.Levels.Demo_0
         {
             var cells = CellCollection.collection.Where(x => x.Value.tags.Contains(Tags.REGION, basementTag)).Select(s => s.Value).ToList();
 
-            cells.ClaimRooms(ClaimType.Greedy, new RoomOptions() {
+            cells.ClaimRooms(ClaimType.SequencedGreedy, new RoomOptions() {
                     Region = basementTag
             });
 

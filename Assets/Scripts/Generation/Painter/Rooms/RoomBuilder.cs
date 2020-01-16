@@ -14,6 +14,8 @@ namespace Assets.Scripts.Generation.Painter.Rooms
             {
                 case ClaimType.Greedy:
                     return ClaimRooms_Greedy(targetCells, options);
+                case ClaimType.SequencedGreedy:
+                    return ClaimRooms_SequencedGreedy(targetCells, options);
                 default:
                     return new List<Room>();
             }
@@ -80,6 +82,23 @@ namespace Assets.Scripts.Generation.Painter.Rooms
             return result;
         }
 
+        public static List<Room> ClaimRooms_SequencedGreedy(this List<Cell> targetCells, RoomOptions options)
+        {
+            var result = new List<Room>();
+
+            var pathCells = targetCells.Where(x => x.cellType == CellType.Path_Cell).OrderBy(o => o.pathSequence).ToList();
+            foreach(var pathCell  in pathCells)
+            {
+                if (!pathCell.claimed)
+                    result.AddRange(ClaimRooms_Greedy(new List<Cell>() { pathCell }, options));
+            }
+
+            var remainingCells = targetCells.Where(x => !x.claimed).ToList();
+            result.AddRange(ClaimRooms_Greedy(remainingCells, options));
+
+            return result;
+        }
+
         private static Room TryClaimRoom(Cell cell, RoomSize roomSize, RoomOptions options)
         {
             foreach (var direction in Directionf.GetDirectionList())
@@ -96,5 +115,6 @@ namespace Assets.Scripts.Generation.Painter.Rooms
     public enum ClaimType
     {
         Greedy,
+        SequencedGreedy
     }
 }

@@ -47,6 +47,8 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
             return cellsToAdd;
         }
 
+        //TODO: Decay Methods
+
         private static void AddCell(Vector3 position, Cell rootCell, ref List<Cell> cellsToAdd)
         {
             var cell = new Cell(position, CellType.Cell);
