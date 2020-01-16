@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Generation.Painter.Cells.Base;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Generation.Extensions
@@ -9,6 +10,8 @@ namespace Assets.Scripts.Generation.Extensions
         private static int sequence = 0;
 
         private static readonly int CELL_SCALE = 8;
+
+        #region Cell Generation
 
         public static Vector3 Step(this Vector3 position, Direction direction, int multiple = 1)
         {
@@ -100,5 +103,49 @@ namespace Assets.Scripts.Generation.Extensions
         {
             sequence = 0;
         }
+
+        #endregion
+
+        #region Cell Context
+
+        public static bool PathCellsAreInSequence(this List<Cell> cells)
+        {
+            var pathCells = cells.Where(x => x.cellType == CellType.Path_Cell).OrderBy(o => o.pathSequence);
+            if (!pathCells.Any()) return true;
+            var previousCell = pathCells.First();
+            foreach(var cell in pathCells)
+            {
+                if(cell != previousCell)
+                {
+                    if (cell.pathSequence != previousCell.pathSequence + 1)
+                        return false;
+                    else
+                        previousCell = cell;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return true;
+        }
+
+        public static List<Cell> NeighborCells(this Cell cell)
+        {
+            var result = new List<Cell>();
+
+            foreach(var direction in Directionf.GetDirectionList(true))
+            {
+                if(CellCollection.HasCellAt(cell.Step(direction)))
+                {
+                    result.Add(CellCollection.collection[cell.Step(direction)]);
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 }

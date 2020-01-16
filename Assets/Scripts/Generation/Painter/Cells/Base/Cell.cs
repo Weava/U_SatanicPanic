@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Generation.Extensions;
+using Assets.Scripts.Generation.Painter.Rooms.Base;
 using Assets.Scripts.Misc;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,10 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
 
         public bool claimed = false;
 
+        public Room room;
+
+        public List<CellConnection> connections;
+
         public Vector3 position = new Vector3();
 
         public TagCollection tags;
@@ -26,6 +31,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
         public Cell(CellType type = CellType.Cell)
         {
             tags = new TagCollection();
+            connections = new List<CellConnection>();
             cellType = type;
             UpdatePathCell();
         }
@@ -33,6 +39,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
         public Cell(Vector3 initPosition, CellType type = CellType.Cell)
         {
             tags = new TagCollection();
+            connections = new List<CellConnection>();
             position = initPosition;
             cellType = type;
             UpdatePathCell();
@@ -41,6 +48,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
         public Cell(Vector3 initPosition, List<string> initTags, CellType type = CellType.Cell)
         {
             tags = new TagCollection();
+            connections = new List<CellConnection>();
             position = initPosition;
             tags.Add(initTags.ToArray());
             cellType = type;
@@ -62,14 +70,26 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
         #endregion
     }
 
+    public class CellConnection
+    {
+        public Cell connectedCell;
+        public DoorType doorType;
+    }
+
     public enum CellType
     {
         Cell,
         End_Cell,
         Spawn_Cell,
         Path_Cell,
-        Dead_Cell,
+        Proxy_Cell,
         Elevation_Cell,
         Teleport_Cell
+    }
+
+    public enum DoorType
+    {
+        Doorway,
+        Open
     }
 }

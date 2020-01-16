@@ -38,6 +38,11 @@ namespace Assets.Scripts.Misc
             return Lookup.ContainsKey(key);
         }
 
+        public bool Contains(string key, string value)
+        {
+            return Lookup.ContainsKey(key) && Lookup[key] == value;
+        }
+
         public List<string> ToList()
         {
             return Lookup.Select(s => s.Value).ToList();

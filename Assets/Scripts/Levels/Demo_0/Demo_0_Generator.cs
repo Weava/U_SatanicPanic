@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Generation.Painter.Cells;
+using Assets.Scripts.Generation.Painter.Rooms;
 using Assets.Scripts.Generation.Painter.Cells.Base;
 using Assets.Scripts.Generation.Painter.Cells.Factory;
 using Assets.Scripts.Levels.Base;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Assets.Scripts.Generation.Extensions;
 
 namespace Assets.Scripts.Levels.Demo_0
 {
@@ -39,7 +41,9 @@ namespace Assets.Scripts.Levels.Demo_0
         {
             try
             {
-                BuildBasement();
+                BuildBasementPath();
+                BuildBasementCells();
+                BuildBasementRooms();
 
                 //Floor 1
 
@@ -49,15 +53,17 @@ namespace Assets.Scripts.Levels.Demo_0
 
                 //Arena
 
+                CleanUnclaimedCells();
                 RenderMarkers();
-            } catch (Exception)
+                RenderRooms();
+            } catch (Exception e)
             {
-                throw new System.Exception("Level could not be generated.");
+                throw new System.Exception("Level could not be generated.", e);
             }
             return true;
         }
 
-        private bool BuildBasement()
+        private bool BuildBasementPath()
         {
              var result = PathBuilder.BuildPath(new Vector3(0, 0, 0), new PathOptions()
             {
@@ -114,6 +120,30 @@ namespace Assets.Scripts.Levels.Demo_0
             //});
 
             //nextRootCell = result.Last();
+
+            return true;
+        }
+
+        private bool BuildBasementCells()
+        {
+            var cells = CellCollection.collection.Where(x => x.Value.tags.Contains(Tags.REGION, basementTag)).Select(s => s.Value).ToList();
+            cells.Remove(CellCollection.collection
+                .First(x => x.Value.tags.Contains(Tags.INIT_PATH) 
+                && x.Value.tags.Contains(Tags.SUBREGION, "Basement_1")).Value);
+            CellBuilder.Expand(cells, new CellOptions()
+            {
+                expansionAmount = 3
+            });
+            return true;
+        }
+
+        private bool BuildBasementRooms()
+        {
+            var cells = CellCollection.collection.Where(x => x.Value.tags.Contains(Tags.REGION, basementTag)).Select(s => s.Value).ToList();
+
+            cells.ClaimRooms(ClaimType.Greedy, new RoomOptions() {
+                    Region = basementTag,
+            });
 
             return true;
         }

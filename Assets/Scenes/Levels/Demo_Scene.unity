@@ -346,5 +346,41 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3508908904638965829, guid: 5e47df02520213247bd714dff645271a,
         type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_1_1
+      value: 
+      objectReference: {fileID: -2692782973623081491, guid: 5e06ea910317e0147b6e246d32acbfce,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_1_2
+      value: 
+      objectReference: {fileID: -808313603647644612, guid: 8cdcd15a482955c45a1463ca92cb312c,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_2_2
+      value: 
+      objectReference: {fileID: -4770917698816595325, guid: 37e3adefaea248c4d920c8ee01a619cc,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_2_3
+      value: 
+      objectReference: {fileID: 1946331244646522781, guid: cf843c37020bc44429af3982aa616145,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_3_3
+      value: 
+      objectReference: {fileID: -8536730309490409535, guid: 086c3310e1f7e8a4cb1f7bf1c7ab8ff9,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_4_4
+      value: 
+      objectReference: {fileID: -877984088744257584, guid: 996b8d7d07154b742a064f54905557d9,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8084e66e56459d409b6279e07992a7e, type: 3}
