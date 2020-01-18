@@ -237,12 +237,18 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
                 var cell = new Cell(position, CellType.Path_Cell);
                 cell.tags.Add(options.tags);
                 cell.tags.Add(Tags.INIT_PATH);
+                cell.Region = options.Region;
+                cell.Subregion = options.Subregion;
+                cell.important = true;
                 cellsToAdd.Add(cell);
             }
             else
             {
                 var cell = new Cell(position, CellType.Path_Cell);
                 cell.tags.Add(options.tags);
+                cell.Region = options.Region;
+                cell.Subregion = options.Subregion;
+                cell.important = true;
                 cellsToAdd.Add(cell);
             }
         }
@@ -255,6 +261,10 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
         public int primaryPathLength = 0;
 
         public int secondaryPathLength = 0;
+
+        public string Region;
+
+        public string Subregion;
 
         public Dictionary<string, string> tags = new Dictionary<string, string>();
 

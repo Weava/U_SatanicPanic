@@ -44,6 +44,8 @@ namespace Assets.Scripts.Levels.Demo_0
             {
                 BuildBasementPath();
                 BuildBasementCells();
+                DecayBasementCells();
+                CellBuilder.CleanUpIsolatedCells();
                 BuildBasementRooms();
 
                 //Floor 1
@@ -74,8 +76,9 @@ namespace Assets.Scripts.Levels.Demo_0
 
                 primaryPathLength = basementLength,
                 primaryDirection = Direction.North,
-
-                tags = new Dictionary<string, string>() { [Tags.REGION] = basementTag, [Tags.SUBREGION] = "Basement_1" }
+                
+                Region = basementTag,
+                Subregion = "Basement_1"
             });
 
             nextRootCell = result.Last();
@@ -92,7 +95,8 @@ namespace Assets.Scripts.Levels.Demo_0
                 primaryDirection = Direction.North,
                 secondaryDirection = direction,
 
-                tags = new Dictionary<string, string>() { [Tags.REGION] = basementTag, [Tags.SUBREGION] = "Basement_2" }
+                Region = basementTag,
+                Subregion = "Basement_2"
             });
 
             nextRootCell = result.Last();
@@ -106,7 +110,8 @@ namespace Assets.Scripts.Levels.Demo_0
                 primaryDirection = Direction.South,
                 secondaryDirection = direction,
 
-                tags = new Dictionary<string, string>() { [Tags.REGION] = basementTag, [Tags.SUBREGION] = "Basement_3" }
+                Region = basementTag,
+                Subregion = "Basement_3"
             });
 
             //Elevation cell at this point
@@ -127,28 +132,30 @@ namespace Assets.Scripts.Levels.Demo_0
             return true;
         }
 
-        private bool BuildBasementCells()
+        private void BuildBasementCells()
         {
-            var cells = CellCollection.collection.Where(x => x.Value.tags.Contains(Tags.REGION, basementTag)).Select(s => s.Value).ToList();
+            var cells = CellCollection.collection.Where(x => x.Value.Region == basementTag).Select(s => s.Value).ToList();
             cells.Remove(CellCollection.collection
                 .First(x => x.Value.tags.Contains(Tags.INIT_PATH) 
-                && x.Value.tags.Contains(Tags.SUBREGION, "Basement_1")).Value);
+                && x.Value.Subregion == "Basement_1").Value);
             CellBuilder.Expand(cells, new CellOptions()
             {
                 expansionAmount = 3
             });
-            return true;
         }
 
-        private bool BuildBasementRooms()
+        private void DecayBasementCells()
         {
-            var cells = CellCollection.collection.Where(x => x.Value.tags.Contains(Tags.REGION, basementTag)).Select(s => s.Value).ToList();
+            CellBuilder.Decay(CellCollection.collection.Select(s => s.Value).ToList(), new CellOptions() { decayRate = 0.5f });
+        }
+
+        private void BuildBasementRooms()
+        {
+            var cells = CellCollection.collection.Where(x => x.Value.Region == basementTag).Select(s => s.Value).ToList();
 
             cells.ClaimRooms(ClaimType.SequencedGreedy, new RoomOptions() {
                     Region = basementTag
             });
-
-            return true;
         }
     }
 }

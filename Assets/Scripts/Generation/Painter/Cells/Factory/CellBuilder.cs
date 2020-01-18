@@ -47,12 +47,36 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
             return cellsToAdd;
         }
 
-        //TODO: Decay Methods
+        public static void Decay(List<Cell> cells, CellOptions options)
+        {
+            foreach(var cell in cells.Where(x => !x.important).ToList())
+            {
+                var chance = Random.Range(0.0f, 1.0f);
+                if(chance <= options.decayRate)
+                {
+                    CellCollection.Remove(cell);
+                }
+            }
+        }
+
+        public static void CleanUpIsolatedCells()
+        {
+            var cells = CellCollection.collection.Where(x => !x.Value.important).Select(s => s.Value).ToList();
+            foreach(var cell in cells.ToList())
+            {
+                if(!cell.CellConnections(true).Any(x => x.important))
+                {
+                    CellCollection.Remove(cell);
+                }
+            }
+        }
 
         private static void AddCell(Vector3 position, Cell rootCell, ref List<Cell> cellsToAdd)
         {
             var cell = new Cell(position, CellType.Cell);
             cell.tags = rootCell.tags;
+            cell.Region = rootCell.Region;
+            cell.Subregion = rootCell.Subregion;
             cellsToAdd.Add(cell);
         }
     }
@@ -60,5 +84,6 @@ namespace Assets.Scripts.Generation.Painter.Cells.Factory
     public class CellOptions
     {
         public int expansionAmount;
+        public float decayRate;
     }
 }

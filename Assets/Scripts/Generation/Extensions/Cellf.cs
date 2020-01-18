@@ -131,6 +131,35 @@ namespace Assets.Scripts.Generation.Extensions
             return true;
         }
 
+        public static List<Cell> CellConnections(this Cell cell, bool stopAtImportantCell)
+        {
+            var knownConnections = cell.NeighborCells();
+
+            foreach(var neighborCell in knownConnections.ToList())
+            {
+                neighborCell.CellConnections(ref knownConnections, stopAtImportantCell);
+            }
+
+            return knownConnections;
+        }
+
+        private static void CellConnections(this Cell cell, ref List<Cell> knownConnections, bool stopAtImportantCell)
+        {
+            var neighborCells = cell.NeighborCells();
+            var known = knownConnections.Where(x => neighborCells.Contains(x)).ToList();
+            foreach(var knownCell in known)
+            {
+                neighborCells.Remove(knownCell);
+            }
+
+            foreach(var unknownCell in neighborCells)
+            {
+                knownConnections.Add(unknownCell);
+                if (stopAtImportantCell && unknownCell.important) return;
+                unknownCell.CellConnections(ref knownConnections, stopAtImportantCell);
+            }
+        }
+
         public static List<Cell> NeighborCells(this Cell cell)
         {
             var result = new List<Cell>();

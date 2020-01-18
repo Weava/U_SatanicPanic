@@ -34,6 +34,15 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
             }
         }
 
+        public static void Remove(Cell cell)
+        {
+            if(collection.Any(x => x.Value == cell))
+            {
+                collection[cell.position] = null;
+                collection.Remove(cell.position);
+            }
+        }
+
         public static bool HasCellAt(Vector3 location)
         {
             return collection.Any(x => x.Key == location);

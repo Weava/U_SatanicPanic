@@ -12,15 +12,23 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
 
         public CellType cellType;
 
-        public int pathSequence;
+        public bool proxyTemp = false;
 
         public bool claimed = false;
+
+        public bool important = false;
+
+        public int pathSequence;
+
+        public string Region;
+
+        public string Subregion;
+
+        public Vector3 position = new Vector3();
 
         public Room room;
 
         public List<CellConnection> connections;
-
-        public Vector3 position = new Vector3();
 
         public TagCollection tags;
 
@@ -33,6 +41,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
             tags = new TagCollection();
             connections = new List<CellConnection>();
             cellType = type;
+            if (type == CellType.Proxy_Cell) proxyTemp = true;
             UpdatePathCell();
         }
 
@@ -42,6 +51,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
             connections = new List<CellConnection>();
             position = initPosition;
             cellType = type;
+            if (type == CellType.Proxy_Cell) proxyTemp = true;
             UpdatePathCell();
         }
 
@@ -52,6 +62,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
             position = initPosition;
             tags.Add(initTags.ToArray());
             cellType = type;
+            if (type == CellType.Proxy_Cell) proxyTemp = true;
             UpdatePathCell();
         }
 

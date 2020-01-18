@@ -76,7 +76,16 @@ namespace Assets.Scripts.Generation.Extensions
 
             result.rootCell = CellCollection.collection[rootPosition];
 
-            if (VerifyCell(rootPosition, options, true)) result.cells.Add(CellCollection.collection[rootPosition]); else return null;
+            var proxy = new Cell();
+            if (VerifyCell(rootPosition, options, ref proxy, true))
+            {
+                result.cells.Add(CellCollection.collection[rootPosition]);
+            }
+            else
+            {
+                CellCollection.Remove(proxy);
+                return null;
+            }
 
             return result;
         }
@@ -93,9 +102,24 @@ namespace Assets.Scripts.Generation.Extensions
                 new RoomNode(rootPosition.Step(direction), true)
             };
 
+            var proxyCellTemps = new List<Cell>();
+
             foreach (var point in pointsToTry)
             {
-                if (VerifyCell(point.position, options, point.required)) result.cells.Add(CellCollection.collection[point.position]); else return null;
+                var proxy = new Cell();
+                if (VerifyCell(point.position, options, ref proxy, point.required))
+                {
+                    proxyCellTemps.Add(proxy);
+                    result.cells.Add(CellCollection.collection[point.position]);
+                }
+                else
+                {
+                    foreach (var cell in proxyCellTemps)
+                    {
+                        CellCollection.Remove(cell);
+                    }
+                    return null;
+                }
             }
 
             return result;
@@ -116,9 +140,24 @@ namespace Assets.Scripts.Generation.Extensions
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection()))
             };
 
+            var proxyCellTemps = new List<Cell>();
+
             foreach (var point in pointsToTry)
             {
-                if (VerifyCell(point.position, options, point.required)) result.cells.Add(CellCollection.collection[point.position]); else return null;
+                var proxy = new Cell();
+                if (VerifyCell(point.position, options, ref proxy, point.required))
+                {
+                    proxyCellTemps.Add(proxy);
+                    result.cells.Add(CellCollection.collection[point.position]);
+                }
+                else
+                {
+                    foreach (var cell in proxyCellTemps)
+                    {
+                        CellCollection.Remove(cell);
+                    }
+                    return null;
+                }
             }
 
             return result;
@@ -142,9 +181,21 @@ namespace Assets.Scripts.Generation.Extensions
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection()))
             };
 
+            var proxyCellTemps = new List<Cell>();
+
             foreach (var point in pointsToTry)
             {
-                if (VerifyCell(point.position, options, point.required)) result.cells.Add(CellCollection.collection[point.position]); else return null;
+                var proxy = new Cell();
+                if (VerifyCell(point.position, options, ref proxy, point.required)) {
+                    proxyCellTemps.Add(proxy);
+                    result.cells.Add(CellCollection.collection[point.position]);
+                } else {
+                    foreach(var cell in proxyCellTemps)
+                    {
+                        CellCollection.Remove(cell);
+                    }
+                    return null;
+                }
             }
 
             return result;
@@ -171,9 +222,24 @@ namespace Assets.Scripts.Generation.Extensions
                 new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetLeftDirection()))
             };
 
+            var proxyCellTemps = new List<Cell>();
+
             foreach (var point in pointsToTry)
             {
-                if (VerifyCell(point.position, options, point.required)) result.cells.Add(CellCollection.collection[point.position]); else return null;
+                var proxy = new Cell();
+                if (VerifyCell(point.position, options, ref proxy, point.required))
+                {
+                    proxyCellTemps.Add(proxy);
+                    result.cells.Add(CellCollection.collection[point.position]);
+                }
+                else
+                {
+                    foreach (var cell in proxyCellTemps)
+                    {
+                        CellCollection.Remove(cell);
+                    }
+                    return null;
+                }
             }
 
             return result;
@@ -211,9 +277,24 @@ namespace Assets.Scripts.Generation.Extensions
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection(), 2, 2)),
             };
 
+            var proxyCellTemps = new List<Cell>();
+
             foreach (var point in pointsToTry)
             {
-                if (VerifyCell(point.position, options, point.required)) result.cells.Add(CellCollection.collection[point.position]); else return null;
+                var proxy = new Cell();
+                if (VerifyCell(point.position, options, ref proxy, point.required))
+                {
+                    proxyCellTemps.Add(proxy);
+                    result.cells.Add(CellCollection.collection[point.position]);
+                }
+                else
+                {
+                    foreach (var cell in proxyCellTemps)
+                    {
+                        CellCollection.Remove(cell);
+                    }
+                    return null;
+                }
             }
 
             return result;
@@ -262,20 +343,35 @@ namespace Assets.Scripts.Generation.Extensions
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection(), 2,2)),
             };
 
+            var proxyCellTemps = new List<Cell>();
+
             foreach (var point in pointsToTry)
             {
-                if (VerifyCell(point.position, options, point.required)) result.cells.Add(CellCollection.collection[point.position]); else return null;
+                var proxy = new Cell();
+                if (VerifyCell(point.position, options, ref proxy, point.required))
+                {
+                    proxyCellTemps.Add(proxy);
+                    result.cells.Add(CellCollection.collection[point.position]);
+                }
+                else
+                {
+                    foreach (var cell in proxyCellTemps)
+                    {
+                        CellCollection.Remove(cell);
+                    }
+                    return null;
+                }
             }
 
             return result;
         }
 
-        private static bool VerifyCell(this Vector3 position, RoomOptions options, bool required = true)
+        private static bool VerifyCell(this Vector3 position, RoomOptions options, ref Cell proxyCell, bool required = false)
         {
             if(CellCollection.collection.Keys.Contains(position))
             {
                 var cell = CellCollection.collection[position];
-                if (cell.tags.Contains(Tags.REGION, options.Region)
+                if (cell.Region == options.Region
                     || cell.cellType == CellType.Proxy_Cell)
                     return !CellCollection.collection[position].claimed;
                 else
@@ -285,7 +381,8 @@ namespace Assets.Scripts.Generation.Extensions
                 return false;
             }
 
-            var proxyCell = new Cell(position, CellType.Proxy_Cell);
+            proxyCell = new Cell(position, CellType.Proxy_Cell);
+            proxyCell.Region = Tags.CELL_UNCLAIMED;
             CellCollection.collection[position] = proxyCell;
 
             return true;

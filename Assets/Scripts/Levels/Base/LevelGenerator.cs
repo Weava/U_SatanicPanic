@@ -39,13 +39,13 @@ namespace Assets.Scripts.Levels.Base
         {
             foreach(var cell in CellCollection.collection.Select(s => s.Value))
             {
-                var name = "";
+                var name = cell.Region + " " + cell.Subregion + " ";
                 foreach(var tag in cell.tags.ToList())
                 {
                     name += tag + " ";
                 }
 
-                if(cell.tags.Contains(Tags.CELL_PATH))
+                if(cell.cellType == CellType.Path_Cell)
                 {
                     name += cell.pathSequence;
                 }
