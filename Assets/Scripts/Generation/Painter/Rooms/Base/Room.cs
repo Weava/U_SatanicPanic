@@ -7,6 +7,7 @@ namespace Assets.Scripts.Generation.Painter.Rooms.Base
 {
     public class Room
     {
+        #region Properties
         public string region = "";
         public string subregion = "";
 
@@ -19,6 +20,17 @@ namespace Assets.Scripts.Generation.Painter.Rooms.Base
         public Vector3 rootPosition;
 
         public TagCollection tags;
+
+        #region Context
+
+        public bool pathRoom = false;
+
+        public List<Cell> DoorCells = new List<Cell>();
+        public List<Cell> DeadCells = new List<Cell>();
+
+        #endregion
+
+        #endregion
     }
 
     public enum RoomSize

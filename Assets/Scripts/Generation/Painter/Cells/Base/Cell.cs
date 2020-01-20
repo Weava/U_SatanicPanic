@@ -20,17 +20,31 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
 
         public int pathSequence;
 
+        public int globalSequence;
+
+        public static int globalSequenceCounter = 0;
+
         public string Region;
 
         public string Subregion;
 
         public Vector3 position = new Vector3();
 
-        public Room room;
-
         public List<CellConnection> connections;
 
         public TagCollection tags;
+
+        #region Context
+
+        public Direction orientation;
+
+        public bool isCornerCell;
+
+        public Room room;
+
+        public List<Cell> knownConnections = new List<Cell>();
+
+        #endregion
 
         #endregion
 
@@ -42,6 +56,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
             connections = new List<CellConnection>();
             cellType = type;
             if (type == CellType.Proxy_Cell) proxyTemp = true;
+            if (type == CellType.Path_Cell) globalSequence = globalSequenceCounter++;
             UpdatePathCell();
         }
 
@@ -52,6 +67,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
             position = initPosition;
             cellType = type;
             if (type == CellType.Proxy_Cell) proxyTemp = true;
+            if (type == CellType.Path_Cell) globalSequence = globalSequenceCounter++;
             UpdatePathCell();
         }
 
@@ -63,6 +79,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
             tags.Add(initTags.ToArray());
             cellType = type;
             if (type == CellType.Proxy_Cell) proxyTemp = true;
+            if (type == CellType.Path_Cell) globalSequence = globalSequenceCounter++;
             UpdatePathCell();
         }
 
@@ -100,7 +117,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
 
     public enum DoorType
     {
-        Doorway,
-        Open
+        Doorway = 0,
+        Open = 1
     }
 }

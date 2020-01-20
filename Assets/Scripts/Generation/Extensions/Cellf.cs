@@ -135,10 +135,12 @@ namespace Assets.Scripts.Generation.Extensions
         {
             var knownConnections = cell.NeighborCells();
 
-            foreach(var neighborCell in knownConnections.ToList())
+            foreach (var neighborCell in knownConnections.ToList())
             {
                 neighborCell.CellConnections(ref knownConnections, stopAtImportantCell);
             }
+ 
+            cell.knownConnections = knownConnections;
 
             return knownConnections;
         }
@@ -175,6 +177,36 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
+        public static void EstablishConnection(Cell cell_1, Cell cell_2, CellConnectionOptions options)
+        {
+            if(!cell_1.connections.Any(x => x.connectedCell == cell_2))
+            {
+                var connection = new CellConnection();
+                connection.doorType = options.doorType;
+                connection.connectedCell = cell_2;
+                cell_1.connections.Add(connection);
+                cell_1.room.DoorCells.Add(cell_1);
+            }
+            if (!cell_2.connections.Any(x => x.connectedCell == cell_1))
+            {
+                var connection = new CellConnection();
+                connection.doorType = options.doorType;
+                connection.connectedCell = cell_1;
+                cell_2.connections.Add(connection);
+                cell_2.room.DoorCells.Add(cell_2);
+            }
+        }
+
+        public static DoorType GetRandomDoorType()
+        {
+            return (DoorType)Random.Range(0, 2);
+        }
+
         #endregion
+    }
+
+    public class CellConnectionOptions
+    {
+        public DoorType doorType;
     }
 }

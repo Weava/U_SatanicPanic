@@ -12,6 +12,7 @@ namespace Assets.Scripts.Levels.Base
         public GameObject Marker;
         public GameObject InitMarker;
         public GameObject ElevationMarker;
+        public GameObject DoorMarker;
 
         public RoomInstance Room_1_1;
         public RoomInstance Room_1_2;
@@ -104,6 +105,18 @@ namespace Assets.Scripts.Levels.Base
                         break;
                     default:
                         break;
+                }
+            }
+        }
+
+        public void RenderDoors()
+        {
+            var doors = RoomCollection.collection.SelectMany(s => s.DoorCells).ToList();
+            foreach(var door in doors)
+            {
+                foreach(var connection in door.connections)
+                {
+                    Instantiate(DoorMarker, ((door.position + connection.connectedCell.position) * 0.5f), new Quaternion());
                 }
             }
         }

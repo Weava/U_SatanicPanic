@@ -13,7 +13,7 @@ namespace Assets.Scripts.Generation.Extensions
         {
             var result = new RoomProjection();
 
-            switch(roomSize)
+            switch (roomSize)
             {
                 case RoomSize.Room_1_1:
                     result = ProjectRoom_1_1(rootPosition, options);
@@ -54,7 +54,7 @@ namespace Assets.Scripts.Generation.Extensions
             room.roomSize = roomSize;
             room.orientation = direction;
 
-            foreach(var cell in projection.cells.ToList())
+            foreach (var cell in projection.cells.ToList())
             {
                 if (cell.claimed) return null;
                 cell.claimed = true;
@@ -69,7 +69,7 @@ namespace Assets.Scripts.Generation.Extensions
         }
 
         #region Projections
-        // R ->
+        // R -> 01 ->
         public static RoomProjection ProjectRoom_1_1(this Vector3 rootPosition, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -90,7 +90,7 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // RX ->
+        // RX -> [01]02 ->
         public static RoomProjection ProjectRoom_1_2(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -125,8 +125,8 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // RX ->
-        // X-
+        // RX -> [01]02
+        // X-     03 04 ->
         public static RoomProjection ProjectRoom_2_2(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -163,9 +163,9 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // X-
-        // RX ->
-        // X-
+        // X-     01 02
+        // RX -> [03]04 ->
+        // X-     05 06
         public static RoomProjection ProjectRoom_2_3(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -173,12 +173,12 @@ namespace Assets.Scripts.Generation.Extensions
             result.rootCell = CellCollection.collection[rootPosition];
 
             var pointsToTry = new RoomNode[] {
+                new RoomNode(rootPosition.Step(direction.GetLeftDirection()), true),
+                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection())),
                 new RoomNode(rootPosition, true),
                 new RoomNode(rootPosition.Step(direction), true),
                 new RoomNode(rootPosition.Step(direction.GetRightDirection()), true),
-                new RoomNode(rootPosition.Step(direction.GetLeftDirection()), true),
-                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection())),
-                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection()))
+                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection()))
             };
 
             var proxyCellTemps = new List<Cell>();
@@ -190,7 +190,7 @@ namespace Assets.Scripts.Generation.Extensions
                     proxyCellTemps.Add(proxy);
                     result.cells.Add(CellCollection.collection[point.position]);
                 } else {
-                    foreach(var cell in proxyCellTemps)
+                    foreach (var cell in proxyCellTemps)
                     {
                         CellCollection.Remove(cell);
                     }
@@ -201,9 +201,9 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // -X-
-        // XRX ->
-        // -X-
+        // -X-     01 02 03
+        // XRX ->  04[05]06 ->
+        // -X-     07 08 09
         public static RoomProjection ProjectRoom_3_3(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -211,15 +211,17 @@ namespace Assets.Scripts.Generation.Extensions
             result.rootCell = CellCollection.collection[rootPosition];
 
             var pointsToTry = new RoomNode[] {
+                new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetLeftDirection())),
+                new RoomNode(rootPosition.Step(direction.GetLeftDirection()), true),
+                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection())),
+
+                new RoomNode(rootPosition.Step(direction.GetOppositeDirection()), true),
                 new RoomNode(rootPosition, true),
                 new RoomNode(rootPosition.Step(direction), true),
-                new RoomNode(rootPosition.Step(direction.GetRightDirection()), true),
-                new RoomNode(rootPosition.Step(direction.GetLeftDirection()), true),
-                new RoomNode(rootPosition.Step(direction.GetOppositeDirection()), true),
+
+                new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetRightDirection())),   
+                new RoomNode(rootPosition.Step(direction.GetRightDirection()), true), 
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection())),
-                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection())),
-                new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetRightDirection())),
-                new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetLeftDirection()))
             };
 
             var proxyCellTemps = new List<Cell>();
@@ -245,10 +247,10 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // -XX-
-        // XRXX ->
-        // XXXX
-        // -XX-
+        // -XX-    01 02 03 04
+        // XRXX -> 05[06]07 08 ->
+        // XXXX    09 10 11 12
+        // -XX-    13 14 15 16
         public static RoomProjection ProjectRoom_4_4(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -300,11 +302,11 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // --X--
-        // -XXX-
-        // XXRXX ->
-        // -XXX-
-        // --X--
+        // --X--    01 02 03 04 05
+        // -XXX-    06 07 08 09 10
+        // XXRXX -> 11 12[13]14 15 ->
+        // -XXX-    16 17 18 19 20 
+        // --X--    21 22 23 24 25
         public static RoomProjection ProjectRoom_5_5(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -368,7 +370,7 @@ namespace Assets.Scripts.Generation.Extensions
 
         private static bool VerifyCell(this Vector3 position, RoomOptions options, ref Cell proxyCell, bool required = false)
         {
-            if(CellCollection.collection.Keys.Contains(position))
+            if (CellCollection.collection.Keys.Contains(position))
             {
                 var cell = CellCollection.collection[position];
                 if (cell.Region == options.Region
@@ -376,7 +378,7 @@ namespace Assets.Scripts.Generation.Extensions
                     return !CellCollection.collection[position].claimed;
                 else
                     return false;
-            } else if(required)
+            } else if (required)
             {
                 return false;
             }
@@ -386,6 +388,32 @@ namespace Assets.Scripts.Generation.Extensions
             CellCollection.collection[position] = proxyCell;
 
             return true;
+        }
+
+        #endregion
+
+        #region
+
+        public static List<Room> NeighborRooms(this Room room)
+        {
+            var result = new List<Room>();
+
+            foreach(var cell in room.cells.Select(s => s.Value))
+            {
+                var neighborCells = cell.NeighborCells().Where(x => x.room != room);
+                if(neighborCells.Any())
+                {
+                    foreach(var neighbor in neighborCells)
+                    {
+                        if(!result.Any(x => x == neighbor.room))
+                        {
+                            result.Add(neighbor.room);
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         #endregion

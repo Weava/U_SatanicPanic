@@ -61,6 +61,7 @@ namespace Assets.Scripts.Levels.Demo_0
                 CleanUnclaimedCells();
                 RenderMarkers();
                 RenderRooms();
+                RenderDoors();
             } catch (Exception e)
             {
                 throw new System.Exception("Level could not be generated.", e);
@@ -155,6 +156,12 @@ namespace Assets.Scripts.Levels.Demo_0
 
             cells.ClaimRooms(ClaimType.SequencedGreedy, new RoomOptions() {
                     Region = basementTag
+            });
+
+            RoomBuilder.BuildPathContext(basementTag);
+            RoomBuilder.BuildNonPathContext(basementTag, new RoomContextOptions() {
+                generateAdditionalDoors = true,
+                doorChance = 0.15f
             });
         }
     }
