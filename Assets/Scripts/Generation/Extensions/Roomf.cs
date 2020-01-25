@@ -69,7 +69,7 @@ namespace Assets.Scripts.Generation.Extensions
         }
 
         #region Projections
-        // R -> 01 ->
+        // R -> 00 ->
         public static RoomProjection ProjectRoom_1_1(this Vector3 rootPosition, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -90,7 +90,7 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // RX -> [01]02 ->
+        // RX -> [00]01 ->
         public static RoomProjection ProjectRoom_1_2(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -125,8 +125,8 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // RX -> [01]02
-        // X-     03 04 ->
+        // RX -> [00]02
+        // X-     01 03 ->
         public static RoomProjection ProjectRoom_2_2(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -135,8 +135,8 @@ namespace Assets.Scripts.Generation.Extensions
 
             var pointsToTry = new RoomNode[] {
                 new RoomNode(rootPosition, true),
-                new RoomNode(rootPosition.Step(direction), true),
                 new RoomNode(rootPosition.Step(direction.GetRightDirection()), true),
+                new RoomNode(rootPosition.Step(direction), true),
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection()))
             };
 
@@ -163,9 +163,9 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // X-     01 02
-        // RX -> [03]04 ->
-        // X-     05 06
+        // X-     00 03
+        // RX -> [01]04 ->
+        // X-     02 05
         public static RoomProjection ProjectRoom_2_3(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -174,10 +174,10 @@ namespace Assets.Scripts.Generation.Extensions
 
             var pointsToTry = new RoomNode[] {
                 new RoomNode(rootPosition.Step(direction.GetLeftDirection()), true),
-                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection())),
                 new RoomNode(rootPosition, true),
-                new RoomNode(rootPosition.Step(direction), true),
                 new RoomNode(rootPosition.Step(direction.GetRightDirection()), true),
+                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection())),
+                new RoomNode(rootPosition.Step(direction), true),
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection()))
             };
 
@@ -201,9 +201,9 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // -X-     01 02 03
-        // XRX ->  04[05]06 ->
-        // -X-     07 08 09
+        // -X-     00 03 06
+        // XRX ->  01[04]07 ->
+        // -X-     02 05 08
         public static RoomProjection ProjectRoom_3_3(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -212,15 +212,15 @@ namespace Assets.Scripts.Generation.Extensions
 
             var pointsToTry = new RoomNode[] {
                 new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetLeftDirection())),
-                new RoomNode(rootPosition.Step(direction.GetLeftDirection()), true),
-                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection())),
-
                 new RoomNode(rootPosition.Step(direction.GetOppositeDirection()), true),
-                new RoomNode(rootPosition, true),
-                new RoomNode(rootPosition.Step(direction), true),
-
                 new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetRightDirection())),   
+
+                new RoomNode(rootPosition.Step(direction.GetLeftDirection()), true),
+                new RoomNode(rootPosition, true),
                 new RoomNode(rootPosition.Step(direction.GetRightDirection()), true), 
+
+                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection())),
+                new RoomNode(rootPosition.Step(direction), true),
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection())),
             };
 
@@ -247,10 +247,10 @@ namespace Assets.Scripts.Generation.Extensions
             return result;
         }
 
-        // -XX-    01 02 03 04
-        // XRXX -> 05[06]07 08 ->
-        // XXXX    09 10 11 12
-        // -XX-    13 14 15 16
+        // -XX-    00 04 08 12
+        // XRXX -> 01[05]09 13 ->
+        // XXXX    02 06 10 14
+        // -XX-    03 07 11 15
         public static RoomProjection ProjectRoom_4_4(this Vector3 rootPosition, Direction direction, RoomOptions options)
         {
             var result = new RoomProjection();
@@ -259,23 +259,23 @@ namespace Assets.Scripts.Generation.Extensions
 
             var pointsToTry = new RoomNode[] {
                 new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetLeftDirection())),
-                new RoomNode(rootPosition.Step(direction.GetLeftDirection()), true),
-                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection()), true),
-                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection(), 2, 1)),
-
                 new RoomNode(rootPosition.Step(direction.GetOppositeDirection()), true),
-                new RoomNode(rootPosition, true),
-                new RoomNode(rootPosition.Step(direction), true),
-                new RoomNode(rootPosition.Step(direction, 2), true),
-
                 new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetRightDirection()), true),
-                new RoomNode(rootPosition.Step(direction.GetRightDirection()), true),
-                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection()), true),
-                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection(), 2, 1), true),
-
                 new RoomNode(rootPosition.StepDiagonal(direction.GetOppositeDirection(), direction.GetRightDirection(), 1, 2)),
+
+                new RoomNode(rootPosition.Step(direction.GetLeftDirection()), true),
+                new RoomNode(rootPosition, true),
+                new RoomNode(rootPosition.Step(direction.GetRightDirection()), true),
                 new RoomNode(rootPosition.Step(direction.GetRightDirection(), 2), true),
+
+                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection()), true),
+                new RoomNode(rootPosition.Step(direction), true),
+                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection()), true),
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection(), 1, 2), true),
+
+                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetLeftDirection(), 2, 1)),
+                new RoomNode(rootPosition.Step(direction, 2), true),
+                new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection(), 2, 1), true),
                 new RoomNode(rootPosition.StepDiagonal(direction, direction.GetRightDirection(), 2, 2)),
             };
 
@@ -392,7 +392,7 @@ namespace Assets.Scripts.Generation.Extensions
 
         #endregion
 
-        #region
+        #region Meta
 
         public static List<Room> NeighborRooms(this Room room)
         {

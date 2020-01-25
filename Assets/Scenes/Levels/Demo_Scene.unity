@@ -330,5 +330,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -877984088744257584, guid: 996b8d7d07154b742a064f54905557d9,
         type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: DoorMarker
+      value: 
+      objectReference: {fileID: 2528763971598704165, guid: 1735696b3df8c824e971a33667bd8e6e,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8084e66e56459d409b6279e07992a7e, type: 3}

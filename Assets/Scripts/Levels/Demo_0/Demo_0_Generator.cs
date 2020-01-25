@@ -56,10 +56,9 @@ namespace Assets.Scripts.Levels.Demo_0
 
                 //Arena
 
-                var test = RoomCollection.collection;
-
                 CleanUnclaimedCells();
-                RenderMarkers();
+                RoomBuilder.BuildBlueprints();
+                //RenderMarkers();
                 RenderRooms();
                 RenderDoors();
             } catch (Exception e)

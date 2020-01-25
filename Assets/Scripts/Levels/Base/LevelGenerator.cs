@@ -20,7 +20,6 @@ namespace Assets.Scripts.Levels.Base
         public RoomInstance Room_2_3;
         public RoomInstance Room_3_3;
         public RoomInstance Room_4_4;
-        //public GameObject Room_5_5;
 
         public virtual bool BuildLevel()
         {
@@ -77,31 +76,37 @@ namespace Assets.Scripts.Levels.Base
                         roomInstance = Instantiate(Room_1_1, room.rootPosition, Quaternion.Euler(new Vector3(0, Directionf.RotationAngle(room.orientation), 0)));
                         roomInstance.orientation = room.orientation;
                         roomInstance.root = room.rootPosition;
+                        roomInstance.name = room.blueprint == null ? "Room" : room.blueprint.roomConfig.ToString();
                         break;
                     case RoomSize.Room_1_2:
                         roomInstance = Instantiate(Room_1_2, room.rootPosition, Quaternion.Euler(new Vector3(0, Directionf.RotationAngle(room.orientation), 0)));
                         roomInstance.orientation = room.orientation;
                         roomInstance.root = room.rootPosition;
+                        roomInstance.name = room.blueprint == null ? "Room" : room.blueprint.roomConfig.ToString();
                         break;
                     case RoomSize.Room_2_2:
                         roomInstance = Instantiate(Room_2_2, room.rootPosition, Quaternion.Euler(new Vector3(0, Directionf.RotationAngle(room.orientation), 0)));
                         roomInstance.orientation = room.orientation;
                         roomInstance.root = room.rootPosition;
+                        roomInstance.name = room.blueprint == null ? "Room" : room.blueprint.roomConfig.ToString();
                         break;
                     case RoomSize.Room_2_3:
                         roomInstance = Instantiate(Room_2_3, room.rootPosition, Quaternion.Euler(new Vector3(0, Directionf.RotationAngle(room.orientation), 0)));
                         roomInstance.orientation = room.orientation;
                         roomInstance.root = room.rootPosition;
+                        roomInstance.name = room.blueprint == null ? "Room" : room.blueprint.roomConfig.ToString();
                         break;
                     case RoomSize.Room_3_3:
                         roomInstance = Instantiate(Room_3_3, room.rootPosition, Quaternion.Euler(new Vector3(0, Directionf.RotationAngle(room.orientation), 0)));
                         roomInstance.orientation = room.orientation;
                         roomInstance.root = room.rootPosition;
+                        roomInstance.name = room.blueprint == null ? "Room" : room.blueprint.roomConfig.ToString();
                         break;
                     case RoomSize.Room_4_4:
                         roomInstance = Instantiate(Room_4_4, room.rootPosition, Quaternion.Euler(new Vector3(0, Directionf.RotationAngle(room.orientation), 0)));
                         roomInstance.orientation = room.orientation;
                         roomInstance.root = room.rootPosition;
+                        roomInstance.name = room.blueprint == null ? "Room" : room.blueprint.roomConfig.ToString();
                         break;
                     default:
                         break;

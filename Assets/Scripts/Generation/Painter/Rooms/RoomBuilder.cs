@@ -1,4 +1,6 @@
-﻿using Assets.Scripts.Generation.Extensions;
+﻿using Assets.Scripts.Generation.Blueprinting.BlueprintFactories;
+using Assets.Scripts.Generation.Blueprinting.Blueprints;
+using Assets.Scripts.Generation.Extensions;
 using Assets.Scripts.Generation.Painter.Cells.Base;
 using Assets.Scripts.Generation.Painter.Rooms.Base;
 using System.Collections.Generic;
@@ -27,12 +29,6 @@ namespace Assets.Scripts.Generation.Painter.Rooms
         public static List<Room> ClaimRooms_Greedy(this List<Cell> targetCells, RoomOptions options)
         {
             var result = new List<Room>();
-
-           
-            if(options.outside)
-            {
-                //TODO 5x5 (Outdoors) sweep
-            }
 
             if(!options.excludeRoomSize.Contains(RoomSize.Room_4_4))
             foreach (var cell in targetCells.Where(x => !x.claimed))
@@ -196,6 +192,21 @@ namespace Assets.Scripts.Generation.Painter.Rooms
                             Cellf.EstablishConnection(cell, neighbor, new CellConnectionOptions() { doorType = Cellf.GetRandomDoorType() });
                         }
                     }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Blueprinting
+
+        public static void BuildBlueprints()
+        {
+            foreach(var room in RoomCollection.collection)
+            {
+                if(room.roomSize == RoomSize.Room_1_1)
+                {
+                    room.blueprint = new Blueprint_Room_1_1(room);
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Generation.Painter.Cells.Base;
+﻿using Assets.Scripts.Generation.Blueprinting;
+using Assets.Scripts.Generation.Painter.Cells.Base;
 using Assets.Scripts.Misc;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,8 @@ namespace Assets.Scripts.Generation.Painter.Rooms.Base
         public Vector3 rootPosition;
 
         public TagCollection tags;
+
+        public Blueprint blueprint;
 
         #region Context
 
