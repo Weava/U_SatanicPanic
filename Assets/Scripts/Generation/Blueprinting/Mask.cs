@@ -126,12 +126,15 @@ namespace Assets.Scripts.Generation.Blueprinting
             if(direction == orientation.GetRightDirection())
             {
                 mask.mask = mask.mask | (value << 4);
+                return;
             } else if(direction == orientation.GetOppositeDirection())
             {
                 mask.mask = mask.mask | (value << 8);
+                return;
             } else if(direction == orientation.GetLeftDirection())
             {
                 mask.mask = mask.mask | (value << 12);
+                return;
             }
             //Direction == orientation
             mask.mask = mask.mask | value;

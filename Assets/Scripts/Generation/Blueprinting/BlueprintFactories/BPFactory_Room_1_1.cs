@@ -17,16 +17,16 @@ namespace Assets.Scripts.Generation.Blueprinting.BlueprintFactories
             var direction = room.orientation;
 
             if (root.connections.Any(x => x.connectedCell.position == root.Step(direction)))
-            { result.Add(direction, direction, 0001); }
+            { result.Add(direction, direction, 0b_0001); }
 
             if (root.connections.Any(x => x.connectedCell.position == root.Step(direction.GetRightDirection())))
-            { result.Add(direction, direction.GetRightDirection(), 0001); }
+            { result.Add(direction, direction.GetRightDirection(), 0b_0001); }
 
             if (root.connections.Any(x => x.connectedCell.position == root.Step(direction.GetOppositeDirection())))
-            { result.Add(direction, direction.GetOppositeDirection(), 0001); }
+            { result.Add(direction, direction.GetOppositeDirection(), 0b_0001); }
 
             if (root.connections.Any(x => x.connectedCell.position == root.Step(direction.GetLeftDirection())))
-            { result.Add(direction, direction.GetLeftDirection(), 0001); }
+            { result.Add(direction, direction.GetLeftDirection(), 0b_0001); }
 
             return result;
         }
