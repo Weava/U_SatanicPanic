@@ -212,6 +212,18 @@ namespace Assets.Scripts.Generation.Painter.Rooms
                     case RoomSize.Room_1_2:
                         room.blueprint = new Blueprint_Room_1_2(room);
                         break;
+                    case RoomSize.Room_2_2:
+                        room.blueprint = new Blueprint_Room_2_2(room);
+                        break;
+                    case RoomSize.Room_2_3:
+                        room.blueprint = new Blueprint_Room_2_3(room);
+                        break;
+                    case RoomSize.Room_3_3:
+                        room.blueprint = new Blueprint_Room_3_3(room);
+                        break;
+                    case RoomSize.Room_4_4:
+                        room.blueprint = new Blueprint_4_4(room);
+                        break;
                     default:
                         break;
                 }
