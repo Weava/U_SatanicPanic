@@ -179,11 +179,13 @@ namespace Assets.Scripts.Generation.Extensions
 
         public static void EstablishConnection(Cell cell_1, Cell cell_2, CellConnectionOptions options)
         {
-            if(!cell_1.connections.Any(x => x.connectedCell == cell_2))
+            var normal = cell_1.GetCellNormal(cell_2);
+            if (!cell_1.connections.Any(x => x.connectedCell == cell_2))
             {
                 var connection = new CellConnection();
                 connection.doorType = options.doorType;
                 connection.connectedCell = cell_2;
+                connection.normal = normal;
                 cell_1.connections.Add(connection);
                 cell_1.room.DoorCells.Add(cell_1);
             }
@@ -192,6 +194,7 @@ namespace Assets.Scripts.Generation.Extensions
                 var connection = new CellConnection();
                 connection.doorType = options.doorType;
                 connection.connectedCell = cell_1;
+                connection.normal = normal.GetOppositeDirection();
                 cell_2.connections.Add(connection);
                 cell_2.room.DoorCells.Add(cell_2);
             }
@@ -200,6 +203,18 @@ namespace Assets.Scripts.Generation.Extensions
         public static DoorType GetRandomDoorType()
         {
             return (DoorType)Random.Range(0, 2);
+        }
+
+        private static Direction GetCellNormal(this Cell cell, Cell target)
+        {
+            foreach(var direction in Directionf.GetDirectionList())
+            {
+                if(CellCollection.HasCellAt(cell.Step(direction)) && CellCollection.collection[cell.Step(direction)] == target)
+                {
+                    return direction;
+                }
+            }
+            return Direction.Up;
         }
 
         #endregion

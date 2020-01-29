@@ -20,8 +20,21 @@ namespace Assets.Scripts.Generation.Blueprinting.Patterns
             new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0001_0000_0000_0000, 3, MatchCriteria.Exact),
             new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0010_0000_0000_0000, 3, MatchCriteria.Exact),
 
+            //Connector with a sideroom
+            new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0000_0000_0001_0001, 0, MatchCriteria.Exact),
+            new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0010_0000_0000_0001, 0, MatchCriteria.Exact),
+            new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0010_0000_0001_0001, 0, MatchCriteria.Exact),
+            new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0000_0000_0001_0000, 1, MatchCriteria.Exact),
+            new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0010_0000_0000_0000, 1, MatchCriteria.Exact),
+            new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0001_0001_0000_0000, 2, MatchCriteria.Exact),
+            new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0000_0001_0000_0010, 2, MatchCriteria.Exact),
+            new Mask((int)RoomConfiguration.SideRoom, 0b_0000_0000_0001_0000_0010_0000, 3, MatchCriteria.Exact),
+
             //Straight across
-            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0000_0001_0000_0001, 0),
+            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0000_0001_0000_0001, 0, MatchCriteria.Exact),
+            //Z Connector
+            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0001_0000_0001_0000, 1, MatchCriteria.Exact),
+            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0001_0000_0001_0000, 3, MatchCriteria.Exact),
         };
     }
 }

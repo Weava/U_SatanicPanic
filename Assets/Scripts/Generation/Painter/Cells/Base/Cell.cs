@@ -101,6 +101,7 @@ namespace Assets.Scripts.Generation.Painter.Cells.Base
     public class CellConnection
     {
         public Cell connectedCell;
+        public Direction normal; //Points towards the connection
         public DoorType doorType;
     }
 

@@ -204,9 +204,16 @@ namespace Assets.Scripts.Generation.Painter.Rooms
         {
             foreach(var room in RoomCollection.collection)
             {
-                if(room.roomSize == RoomSize.Room_1_1)
+                switch(room.roomSize)
                 {
-                    room.blueprint = new Blueprint_Room_1_1(room);
+                    case RoomSize.Room_1_1:
+                        room.blueprint = new Blueprint_Room_1_1(room);
+                        break;
+                    case RoomSize.Room_1_2:
+                        room.blueprint = new Blueprint_Room_1_2(room);
+                        break;
+                    default:
+                        break;
                 }
             }
         }

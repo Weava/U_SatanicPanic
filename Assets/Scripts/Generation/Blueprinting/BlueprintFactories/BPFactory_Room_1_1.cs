@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Generation.Blueprinting.Blueprints;
-using Assets.Scripts.Generation.Blueprinting.Patterns;
+﻿using Assets.Scripts.Generation.Blueprinting.Patterns;
 using Assets.Scripts.Generation.Extensions;
 using Assets.Scripts.Generation.Painter.Rooms.Base;
 using System.Linq;
@@ -38,12 +37,7 @@ namespace Assets.Scripts.Generation.Blueprinting.BlueprintFactories
 
         public static RoomConfiguration GetRoomConfiguration(Mask doorMask)
         {
-            var match = doorMask.FindMatchs(Patterns_Room_1_1.patterns_Doors).OrderByDescending(o => o.precidence).FirstOrDefault();
-
-            if(match != null)
-            { return (RoomConfiguration)match.configuration; }
-
-            return RoomConfiguration.Room;
+            return BPFactory_Rooms.GetRoomConfiguration(doorMask, Patterns_Room_1_1.patterns_Doors);
         }
     }
 }
