@@ -222,7 +222,7 @@ namespace Assets.Scripts.Generation.Painter.Rooms
                         room.blueprint = new Blueprint_Room_3_3(room);
                         break;
                     case RoomSize.Room_4_4:
-                        room.blueprint = new Blueprint_4_4(room);
+                        room.blueprint = new Blueprint_Room_4_4(room);
                         break;
                     default:
                         break;

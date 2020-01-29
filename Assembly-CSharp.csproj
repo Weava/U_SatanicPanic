@@ -10,8 +10,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{AE76D5CC-ACA4-1C66-8A66-AFC018651D97}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -72,10 +71,10 @@
     <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_1_1.cs" />
     <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_1_2.cs" />
     <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_2_2.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Rooms.cs" />
     <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_2_3.cs" />
     <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_3_3.cs" />
     <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_4_4.cs" />
+    <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Rooms.cs" />
     <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprints\Blueprint_Room_1_1.cs" />
     <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprints\Blueprint_Room_1_2.cs" />
     <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprints\Blueprint_Room_2_2.cs" />
