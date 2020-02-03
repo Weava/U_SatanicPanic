@@ -12,13 +12,7 @@ namespace Assets.Scripts.Generation.Blueprinting.Patterns
             new Mask((int)RoomConfiguration.EndRoom, 0b_0000_0000_0001_0000_0000_0000, 3, MatchCriteria.Exact),
 
             //Straight across
-            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0001_0000_0001_0000, 0, MatchCriteria.Exact),
-            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0000_0001_0000_0001, 1, MatchCriteria.Exact),
-
-            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0000_0000_0001_0001, 0, MatchCriteria.Exact),
-            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0000_0001_0001_0000, 1, MatchCriteria.Exact),
-            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0001_0001_0000_0000, 2, MatchCriteria.Exact),
-            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0001_0000_0000_0001, 3, MatchCriteria.Exact),
+            new Mask((int)RoomConfiguration.Connector, 0b_0000_0000_0001_0001_0001_0001, 0, MatchCriteria.Fit),
         };  
     }
 }

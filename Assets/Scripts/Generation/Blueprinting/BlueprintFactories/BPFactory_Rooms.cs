@@ -10,7 +10,7 @@ namespace Assets.Scripts.Generation.Blueprinting.BlueprintFactories
     {
         public static RoomConfiguration GetRoomConfiguration(Mask doorMask, List<Mask> doorPatterns)
         {
-            var match = doorMask.FindMatchs(doorPatterns).OrderByDescending(o => o.precidence).FirstOrDefault();
+            var match = doorMask.FindMatchs(doorPatterns).OrderBy(o => o.precidence).FirstOrDefault();
 
             if (match != null)
             { return (RoomConfiguration)match.configuration; }

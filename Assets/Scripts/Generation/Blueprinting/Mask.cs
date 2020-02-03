@@ -62,7 +62,8 @@ namespace Assets.Scripts.Generation.Blueprinting
     {
         public static bool Fit(this Mask mask, Mask pattern)
         {
-            return (mask.mask & pattern.mask) == pattern.mask;
+            return ((mask.mask & pattern.mask) > 0
+                && (mask.mask & (~pattern.mask)) == 0);
         }
 
         public static bool Excludes(this Mask mask, Mask pattern)
@@ -145,7 +146,7 @@ namespace Assets.Scripts.Generation.Blueprinting
     {
         Fit,
         Exact,
-        Exclusive
+        Exclusive,
     }
 
     public enum OffsetBias
