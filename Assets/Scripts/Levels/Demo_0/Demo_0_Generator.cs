@@ -38,7 +38,7 @@ namespace Assets.Scripts.Levels.Demo_0
 
         #endregion
 
-        public override bool BuildLevel()
+        public override void BuildLevel()
         {
             try
             {
@@ -58,14 +58,12 @@ namespace Assets.Scripts.Levels.Demo_0
 
                 CleanUnclaimedCells();
                 RoomBuilder.BuildBlueprints();
-                //RenderMarkers();
-                RenderRooms();
-                RenderDoors();
+
+                base.BuildLevel();
             } catch (Exception e)
             {
-                throw new System.Exception("Level could not be generated.", e);
+                throw new Exception("Level could not be generated.", e);
             }
-            return true;
         }
 
         private bool BuildBasementPath()

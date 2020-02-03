@@ -102,6 +102,7 @@
     <Compile Include="Assets\Scripts\Levels\Base\LevelGenerator.cs" />
     <Compile Include="Assets\Scripts\Levels\Base\RoomInstance.cs" />
     <Compile Include="Assets\Scripts\Levels\Demo_0\Demo_0_Generator.cs" />
+    <Compile Include="Assets\Scripts\Levels\RoomDebugPackage.cs" />
     <Compile Include="Assets\Scripts\Misc\Billboard_Sprite.cs" />
     <Compile Include="Assets\Scripts\Misc\Direction.cs" />
     <Compile Include="Assets\Scripts\Misc\Gib.cs" />
