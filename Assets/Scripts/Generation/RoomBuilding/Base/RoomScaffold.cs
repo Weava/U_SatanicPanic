@@ -27,7 +27,7 @@ namespace Assets.Scripts.Generation.RoomBuilding.Base
         {
             foreach (var doorNode in Nodes.Where(x => x.type == NodeType.Door).ToArray())
             {
-                if (room.blueprint.doors.Hits(MaskF.MaskValue(doorNode.index, doorNode.offset + 1)))
+                if (room.blueprint.doors.Hits(MaskF.MaskValue(doorNode.index, doorNode.offset)))
                 { doorNode.options.isDoor = true; }
             }
         }

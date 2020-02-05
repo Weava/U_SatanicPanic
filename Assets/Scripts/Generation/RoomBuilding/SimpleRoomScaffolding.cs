@@ -16,6 +16,7 @@ namespace Assets.Scripts.Generation.RoomBuilding
             var door = roomSuite.doors[Random.Range(0, roomSuite.doors.Count)];
             var connector = roomSuite.connectors[Random.Range(0, roomSuite.connectors.Count)];
             var spacer = roomSuite.spacers[Random.Range(0, roomSuite.spacers.Count)];
+            var column = roomSuite.columns[Random.Range(0, roomSuite.columns.Count)];
 
             foreach (var floorNode in scaffold.Nodes.Where(x => x.type == NodeType.Root).ToArray())
             {
@@ -42,6 +43,11 @@ namespace Assets.Scripts.Generation.RoomBuilding
             foreach (var spacerNode in scaffold.Nodes.Where(x => x.type == NodeType.Spacer).ToArray())
             {
                 var spacerInstance = scaffold.InstantiateNodeObject(spacerNode, spacer);
+            }
+
+            foreach(var columnNode in scaffold.Nodes.Where(x => x.type == NodeType.Column).ToArray())
+            {
+                var columnInstance = scaffold.InstantiateNodeObject(columnNode, column);
             }
         }
     }

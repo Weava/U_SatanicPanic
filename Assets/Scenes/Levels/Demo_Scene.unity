@@ -294,7 +294,7 @@ PrefabInstance:
     - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
         type: 3}
       propertyPath: Debug_ShowDoors
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
         type: 3}
@@ -322,7 +322,7 @@ PrefabInstance:
     - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
         type: 3}
       propertyPath: allow_Room_2_2
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
         type: 3}

@@ -64,7 +64,7 @@ namespace Assets.Scripts.Levels.Demo_0
                 CleanUnclaimedCells();
                 RoomBuilder.BuildBlueprints();
 
-                //TODO: Testing for 1_1 for now, delete/refactor this later
+                //TODO: delete/refactor this later
                 SimpleRoomScaffolding.roomSuite = basementRoomSuite;           
                 foreach (var room in RoomCollection.collection)
                 {

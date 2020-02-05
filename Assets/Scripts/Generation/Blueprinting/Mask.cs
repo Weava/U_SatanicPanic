@@ -168,7 +168,7 @@ namespace Assets.Scripts.Generation.Blueprinting
 
         public static uint MaskValue(int index, int offset)
         {
-            return (uint)((0b_0000_0000_0000_0000_0000_0000 + offset) << (index * 4));
+            return (uint)((0b_0000_0000_0000_0000_0000_0000 + (1 << offset)) << (index * 4));
         }
     }
 

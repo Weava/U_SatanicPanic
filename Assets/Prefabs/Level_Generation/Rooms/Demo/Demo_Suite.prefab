@@ -53,4 +53,5 @@ MonoBehaviour:
   - {fileID: 4844092902965799538, guid: 1c3c895c8c32fe149859fbce82721122, type: 3}
   spacers:
   - {fileID: 1960062081182350994, guid: 21c5d75f101e98c46b4b9f4773b8a479, type: 3}
-  columns: []
+  columns:
+  - {fileID: 5225793035272008978, guid: bcbb508398f49634e8dc2fbcfd6fa771, type: 3}
