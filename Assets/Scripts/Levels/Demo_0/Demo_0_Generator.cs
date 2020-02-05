@@ -11,11 +11,16 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Assets.Scripts.Generation.Extensions;
 using Assets.Scripts.Generation.Painter.Rooms.Base;
+using Assets.Scripts.Generation.RoomBuilding.Suite.Base;
+using Assets.Scripts.Generation.RoomBuilding;
+using Assets.Scripts.Generation.RoomBuilding.Base;
 
 namespace Assets.Scripts.Levels.Demo_0
 {
     public class Demo_0_Generator : LevelGenerator
     {
+        public RoomSuite basementRoomSuite;
+
         public int basementLength;
         private string basementTag = "Region_Basement";
 
@@ -58,6 +63,40 @@ namespace Assets.Scripts.Levels.Demo_0
 
                 CleanUnclaimedCells();
                 RoomBuilder.BuildBlueprints();
+
+                //TODO: Testing for 1_1 for now, delete/refactor this later
+                SimpleRoomScaffolding.roomSuite = basementRoomSuite;           
+                foreach (var room in RoomCollection.collection)
+                {
+                    RoomScaffold scaffold;
+                    switch(room.roomSize)
+                    {
+                        case RoomSize.Room_1_1:
+                            scaffold = Instantiate(Room_1_1_Scaffold, room.rootPosition + Room_1_1_Scaffold.rootNode.transform.position, Quaternion.Euler(new Vector3(0, room.orientation.RotationAngle(), 0)));
+                            break;
+                        case RoomSize.Room_1_2:
+                            scaffold = Instantiate(Room_1_2_Scaffold, room.rootPosition + Room_1_2_Scaffold.rootNode.transform.position, Quaternion.Euler(new Vector3(0, room.orientation.RotationAngle(), 0)));
+                            break;
+                        case RoomSize.Room_2_2:
+                            scaffold = Instantiate(Room_2_2_Scaffold, room.rootPosition + Room_2_2_Scaffold.rootNode.transform.position, Quaternion.Euler(new Vector3(0, room.orientation.RotationAngle(), 0)));
+                            break;
+                        case RoomSize.Room_2_3:
+                            scaffold = Instantiate(Room_2_3_Scaffold, room.rootPosition + Room_2_3_Scaffold.rootNode.transform.position, Quaternion.Euler(new Vector3(0, room.orientation.RotationAngle(), 0)));
+                            break;
+                        case RoomSize.Room_3_3:
+                            scaffold = Instantiate(Room_3_3_Scaffold, room.rootPosition + Room_3_3_Scaffold.rootNode.transform.position, Quaternion.Euler(new Vector3(0, room.orientation.RotationAngle(), 0)));
+                            break;
+                        case RoomSize.Room_4_4:
+                            scaffold = Instantiate(Room_4_4_Scaffold, room.rootPosition + Room_4_4_Scaffold.rootNode.transform.position, Quaternion.Euler(new Vector3(0, room.orientation.RotationAngle(), 0)));
+                            break;
+                        default:
+                            scaffold = null;
+                            break;
+                    }
+                    scaffold.room = room;
+                    scaffold.SetRoom();
+                    SimpleRoomScaffolding.Scaffold(scaffold);
+                }
 
                 base.BuildLevel();
             } catch (Exception e)
@@ -152,7 +191,8 @@ namespace Assets.Scripts.Levels.Demo_0
             var cells = CellCollection.collection.Where(x => x.Value.Region == basementTag).Select(s => s.Value).ToList();
 
             cells.ClaimRooms(ClaimType.SequencedGreedy, new RoomOptions() {
-                    Region = basementTag
+                Region = basementTag,
+                excludeRoomSize = excludedRoomSizes
             });
 
             RoomBuilder.BuildPathContext(basementTag);

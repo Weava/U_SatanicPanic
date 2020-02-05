@@ -62,18 +62,43 @@ namespace Assets.Scripts.Generation.Blueprinting
     {
         public static bool Fit(this Mask mask, Mask pattern)
         {
-            return ((mask.mask & pattern.mask) > 0
-                && (mask.mask & (~pattern.mask)) == 0);
+            return Fit(mask, pattern.mask);
+        }
+
+        public static bool Fit(this Mask mask, uint pattern)
+        {
+            return ((mask.mask & pattern) > 0
+                && (mask.mask & (~pattern)) == 0);
         }
 
         public static bool Excludes(this Mask mask, Mask pattern)
         {
-            return (mask.mask & pattern.mask) == 0;
+            return Excludes(mask, pattern.mask);
+        }
+
+        public static bool Excludes(this Mask mask, uint pattern)
+        {
+            return (mask.mask & pattern) == 0;
         }
 
         public static bool Exact(this Mask mask, Mask pattern)
         {
-            return mask.mask == pattern.mask;
+            return Exact(mask, pattern.mask);
+        }
+
+        public static bool Exact(this Mask mask, uint pattern)
+        {
+            return mask.mask == pattern;
+        }
+
+        public static bool Hits(this Mask mask, Mask pattern)
+        {
+            return Hits(mask, pattern.mask);
+        }
+
+        public static bool Hits(this Mask mask, uint pattern)
+        {
+            return (mask.mask & pattern) > 0;
         }
 
         public static List<Mask> Fits(this Mask mask, List<Mask> patterns)
@@ -139,6 +164,11 @@ namespace Assets.Scripts.Generation.Blueprinting
             }
             //Direction == orientation
             mask.mask = mask.mask | value;
+        }
+
+        public static uint MaskValue(int index, int offset)
+        {
+            return (uint)((0b_0000_0000_0000_0000_0000_0000 + offset) << (index * 4));
         }
     }
 

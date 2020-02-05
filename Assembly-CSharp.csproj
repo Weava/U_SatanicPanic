@@ -99,6 +99,17 @@
     <Compile Include="Assets\Scripts\Generation\Painter\Rooms\Base\Room.cs" />
     <Compile Include="Assets\Scripts\Generation\Painter\Rooms\Base\RoomCollection.cs" />
     <Compile Include="Assets\Scripts\Generation\Painter\Rooms\RoomBuilder.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Base\RoomNode.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Base\RoomNodeObject.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Base\RoomScaffold.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_1_1_Scaffold.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_1_2_Scaffold.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_2_2_Scaffold.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_2_3_Scaffold.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_3_3_Scaffold.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_4_4_Scaffold.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\SimpleRoomScaffolding.cs" />
+    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Suite\Base\RoomSuite.cs" />
     <Compile Include="Assets\Scripts\Levels\Base\LevelGenerator.cs" />
     <Compile Include="Assets\Scripts\Levels\Base\RoomInstance.cs" />
     <Compile Include="Assets\Scripts\Levels\Demo_0\Demo_0_Generator.cs" />

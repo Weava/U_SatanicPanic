@@ -147,7 +147,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 9
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 0.9198113, g: 1, b: 0.9915687, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -157,7 +157,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.281
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -228,6 +228,147 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: basementLength
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: ElevationMarker
+      value: 
+      objectReference: {fileID: 3508908904638965829, guid: 5e47df02520213247bd714dff645271a,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_1_1
+      value: 
+      objectReference: {fileID: -2692782973623081491, guid: 5e06ea910317e0147b6e246d32acbfce,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_1_2
+      value: 
+      objectReference: {fileID: -808313603647644612, guid: 8cdcd15a482955c45a1463ca92cb312c,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_2_2
+      value: 
+      objectReference: {fileID: -4770917698816595325, guid: 37e3adefaea248c4d920c8ee01a619cc,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_2_3
+      value: 
+      objectReference: {fileID: 1946331244646522781, guid: cf843c37020bc44429af3982aa616145,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_3_3
+      value: 
+      objectReference: {fileID: -8536730309490409535, guid: 086c3310e1f7e8a4cb1f7bf1c7ab8ff9,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_4_4
+      value: 
+      objectReference: {fileID: -877984088744257584, guid: 996b8d7d07154b742a064f54905557d9,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: DoorMarker
+      value: 
+      objectReference: {fileID: 2528763971598704165, guid: 1735696b3df8c824e971a33667bd8e6e,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Debug_ShowRoomTemplates
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Debug_ShowCells
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Debug_ShowDoors
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: debugPackage
+      value: 
+      objectReference: {fileID: 1063513241014284734, guid: b4d6f7af46485cd408ed7c8ad8cd9568,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: basementRoomSuite
+      value: 
+      objectReference: {fileID: -2960143079160985465, guid: 325252bc0dfe6e741842ddabe5ae916d,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_1_1_Scaffold
+      value: 
+      objectReference: {fileID: 42191771106079476, guid: 63d00c5307dce524a8fa8b85f915a0eb,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: allow_Room_1_2
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: allow_Room_2_2
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: allow_Room_2_3
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: allow_Room_3_3
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: allow_Room_4_4
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_1_2_Scaffold
+      value: 
+      objectReference: {fileID: 436966387455002532, guid: 960ac09586095134aa5f8696bbf63131,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_2_2_Scaffold
+      value: 
+      objectReference: {fileID: 5464601559923945003, guid: ef9f5c7d7bae6db4292d79cf3596643c,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_2_3_Scaffold
+      value: 
+      objectReference: {fileID: 4356600391630213790, guid: 0e7de5ffde4df8c4fb258b398facdeb6,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_3_3_Scaffold
+      value: 
+      objectReference: {fileID: 196418027920130430, guid: abdb7b8c1eedd1044b07bb7981237464,
+        type: 3}
+    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
+        type: 3}
+      propertyPath: Room_4_4_Scaffold
+      value: 
+      objectReference: {fileID: 5263471234387969736, guid: 8c4c1c0f58e3ce5469e09f398b4aa579,
+        type: 3}
     - target: {fileID: 4123455468406837718, guid: e8084e66e56459d409b6279e07992a7e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -283,58 +424,5 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
-        type: 3}
-      propertyPath: basementLength
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
-        type: 3}
-      propertyPath: ElevationMarker
-      value: 
-      objectReference: {fileID: 3508908904638965829, guid: 5e47df02520213247bd714dff645271a,
-        type: 3}
-    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
-        type: 3}
-      propertyPath: Room_1_1
-      value: 
-      objectReference: {fileID: -2692782973623081491, guid: 5e06ea910317e0147b6e246d32acbfce,
-        type: 3}
-    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
-        type: 3}
-      propertyPath: Room_1_2
-      value: 
-      objectReference: {fileID: -808313603647644612, guid: 8cdcd15a482955c45a1463ca92cb312c,
-        type: 3}
-    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
-        type: 3}
-      propertyPath: Room_2_2
-      value: 
-      objectReference: {fileID: -4770917698816595325, guid: 37e3adefaea248c4d920c8ee01a619cc,
-        type: 3}
-    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
-        type: 3}
-      propertyPath: Room_2_3
-      value: 
-      objectReference: {fileID: 1946331244646522781, guid: cf843c37020bc44429af3982aa616145,
-        type: 3}
-    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
-        type: 3}
-      propertyPath: Room_3_3
-      value: 
-      objectReference: {fileID: -8536730309490409535, guid: 086c3310e1f7e8a4cb1f7bf1c7ab8ff9,
-        type: 3}
-    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
-        type: 3}
-      propertyPath: Room_4_4
-      value: 
-      objectReference: {fileID: -877984088744257584, guid: 996b8d7d07154b742a064f54905557d9,
-        type: 3}
-    - target: {fileID: 2661261024408941008, guid: e8084e66e56459d409b6279e07992a7e,
-        type: 3}
-      propertyPath: DoorMarker
-      value: 
-      objectReference: {fileID: 2528763971598704165, guid: 1735696b3df8c824e971a33667bd8e6e,
-        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8084e66e56459d409b6279e07992a7e, type: 3}
