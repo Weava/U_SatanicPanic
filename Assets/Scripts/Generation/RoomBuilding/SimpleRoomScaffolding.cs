@@ -49,6 +49,8 @@ namespace Assets.Scripts.Generation.RoomBuilding
             {
                 var columnInstance = scaffold.InstantiateNodeObject(columnNode, column);
             }
+
+            scaffold.RemoveScaffolding();
         }
     }
 }

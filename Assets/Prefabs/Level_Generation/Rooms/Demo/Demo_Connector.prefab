@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &2849276528312230131
 Transform:
@@ -72,9 +72,9 @@ GameObject:
   m_Layer: 0
   m_Name: Node
   m_TagString: Untagged
-  m_Icon: {fileID: 7422848464349959988, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &8419191911635330521
 Transform:
@@ -101,6 +101,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Room_Connector
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: e293fdaa78292a74c9a5de9ae3e30dfa,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2534866581884222612, guid: e293fdaa78292a74c9a5de9ae3e30dfa,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: e293fdaa78292a74c9a5de9ae3e30dfa,
         type: 3}

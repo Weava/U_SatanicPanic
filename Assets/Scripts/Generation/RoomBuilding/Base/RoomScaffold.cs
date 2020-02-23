@@ -18,7 +18,8 @@ namespace Assets.Scripts.Generation.RoomBuilding.Base
 
         public RoomNodeObject InstantiateNodeObject(RoomNode node, RoomNodeObject nodeObject)
         {
-            var instance = Instantiate(nodeObject, node.transform);
+            var instance = Instantiate(nodeObject, node.transform.position, node.transform.rotation);
+            instance.transform.parent = transform;
             nodeObjects.Add(instance);
             return instance;
         }
@@ -29,6 +30,15 @@ namespace Assets.Scripts.Generation.RoomBuilding.Base
             {
                 if (room.blueprint.doors.Hits(MaskF.MaskValue(doorNode.index, doorNode.offset)))
                 { doorNode.options.isDoor = true; }
+            }
+        }
+
+        public void RemoveScaffolding()
+        {
+            foreach(var node in Nodes.ToArray())
+            {
+                Nodes.Remove(node);
+                Destroy(node.transform.gameObject);
             }
         }
     }

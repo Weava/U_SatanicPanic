@@ -1,19 +1,17 @@
-﻿using Assets.Scripts.Generation.Painter.Cells;
-using Assets.Scripts.Generation.Painter.Rooms;
+﻿using Assets.Scripts.Generation.Extensions;
 using Assets.Scripts.Generation.Painter.Cells.Base;
 using Assets.Scripts.Generation.Painter.Cells.Factory;
+using Assets.Scripts.Generation.Painter.Rooms;
+using Assets.Scripts.Generation.Painter.Rooms.Base;
+using Assets.Scripts.Generation.RoomBuilding;
+using Assets.Scripts.Generation.RoomBuilding.Base;
+using Assets.Scripts.Generation.RoomBuilding.Suite.Base;
 using Assets.Scripts.Levels.Base;
 using Assets.Scripts.Misc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using Assets.Scripts.Generation.Extensions;
-using Assets.Scripts.Generation.Painter.Rooms.Base;
-using Assets.Scripts.Generation.RoomBuilding.Suite.Base;
-using Assets.Scripts.Generation.RoomBuilding;
-using Assets.Scripts.Generation.RoomBuilding.Base;
 
 namespace Assets.Scripts.Levels.Demo_0
 {
