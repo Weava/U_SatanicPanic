@@ -99,7 +99,7 @@ namespace Assets.Scripts.Levels
             roomInstance.root = room.rootPosition;
             roomInstance.name = room.blueprint == null ? "Room" : room.blueprint.roomConfig.ToString() + "-" + room.blueprint.doors.mask.ToString();
             if (room.blueprint != null)
-                roomInstance.name += room.blueprint.doors.bias == Generation.Blueprinting.OffsetBias.None ? "" : room.blueprint.doors.bias.ToString();
+                roomInstance.name += room.blueprint.doors.bias == Scripts.Generation.Blueprinting.OffsetBias.None ? "" : room.blueprint.doors.bias.ToString();
             roomInstance.transform.SetParent(container.transform);
         }
 
