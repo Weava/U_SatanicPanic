@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1259336410179313264}
+  - component: {fileID: -4770917698816595325}
   m_Layer: 0
   m_Name: Room_2_2_Marker
   m_TagString: Untagged
@@ -31,6 +32,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-4770917698816595325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2206753877420416793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e1cd8d4a0c40fe439cf8ef25a7c6efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  root: {x: 0, y: 0, z: 0}
+  orientation: 0
 --- !u!1 &2912417216812644555
 GameObject:
   m_ObjectHideFlags: 0
