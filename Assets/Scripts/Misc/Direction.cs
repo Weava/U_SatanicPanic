@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -6,6 +7,44 @@ namespace Assets.Scripts
 {
     public static class Directionf
     {
+        #region Shorthand
+        public static Direction Opposite(this Direction direction)
+        {
+            return GetOppositeDirection(direction);
+        }
+
+        public static List<Direction> Neighbors(this Direction direction)
+        {
+            return GetNeighborDirections(direction);
+        }
+
+        public static Direction Left(this Direction direction)
+        {
+            return GetLeftDirection(direction);
+        }
+
+        public static Direction Right(this Direction direction)
+        {
+            return GetRightDirection(direction);
+        }
+
+        public static List<Direction> Directions(bool includeUpAndDown = false)
+        {
+            return GetDirectionList(includeUpAndDown);
+        }
+
+        public static Direction Random(List<Direction> directionPool)
+        {
+            return RandomDirection(directionPool);
+        }
+
+        public static Vector3 ToVector(this Direction direction)
+        {
+            return DirectionToVector(direction);
+        }
+        #endregion
+
+        [Obsolete]
         public static Direction GetOppositeDirection(this Direction direction)
         {
             switch(direction)
@@ -26,7 +65,7 @@ namespace Assets.Scripts
                     return direction;
             }
         }
-
+        [Obsolete]
         public static List<Direction> GetNeighborDirections(Direction direction)
         {
             switch(direction)
@@ -41,7 +80,7 @@ namespace Assets.Scripts
                     return new List<Direction>();
             }
         }
-
+        [Obsolete]
         public static Direction GetLeftDirection(this Direction direction)
         {
             switch(direction)
@@ -56,7 +95,7 @@ namespace Assets.Scripts
                     return Direction.South;
             }
         }
-
+        [Obsolete]
         public static Direction GetRightDirection(this Direction direction)
         {
             switch (direction)
@@ -71,7 +110,7 @@ namespace Assets.Scripts
                     return Direction.North;
             }
         }
-
+        [Obsolete]
         public static List<Direction> GetDirectionList(bool includeUpAndDown = false)
         {
             if(includeUpAndDown)
@@ -95,12 +134,12 @@ namespace Assets.Scripts
                 Direction.East
             };
         }
-
+        [Obsolete]
         public static Direction RandomDirection(List<Direction> directions)
         {
-            return directions[Random.Range(0, directions.Count-2 /*Don't include Up and Down*/)];
+            return directions[UnityEngine.Random.Range(0, directions.Count-2 /*Don't include Up and Down*/)];
         }
-
+        [Obsolete]
         public static int RotationAngle(this Direction direction)
         {
             switch(direction)
@@ -116,7 +155,7 @@ namespace Assets.Scripts
                     return 0;
             }
         }
-
+        [Obsolete]
         public static Vector3 DirectionToVector(this Direction direction)
         {
             switch(direction)
