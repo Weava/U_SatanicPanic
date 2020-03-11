@@ -69,6 +69,22 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             return result;
         }
 
+        public static List<Cell> NeighborCellsOutOfRoom(this Cell cell)
+        {
+            var result = new List<Cell>();
+
+            foreach (var direction in Directionf.Directions())
+            {
+                if (CellCollection.HasCellAt(cell.Step(direction))
+                    && CellCollection.cells[cell.Step(direction)].room != cell.room)
+                {
+                    result.Add(CellCollection.cells[cell.Step(direction)]);
+                }
+            }
+
+            return result;
+        }
+
         #endregion
     }
 }

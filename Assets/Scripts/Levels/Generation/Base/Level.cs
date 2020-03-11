@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Levels.Generation.Base
 {
-    /// <summary>
-    /// A collection of regions
-    /// </summary>
-    public class Level
+    public static class Level
     {
-        public List<Region> regions = new List<Region>();
+        public static List<DoorNode> doors = new List<DoorNode>();
+    }
+
+    public class DoorNode
+    {
+        public Cell cell_1;
+        public Cell cell_2;
     }
 }

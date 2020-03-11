@@ -10,7 +10,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{AE76D5CC-ACA4-1C66-8A66-AFC018651D97}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -123,8 +124,10 @@
     <Compile Include="Assets\Scripts\Levels\Generation\CellBuilder\PathBuilder.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\CellBuilder\PathExpander.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Extensions\Cellf.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Extensions\Roomf.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\LevelGeneratorBase.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\RoomClaimer.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\RoomParser.cs" />
     <Compile Include="Assets\Scripts\Levels\RoomDebugPackage.cs" />
     <Compile Include="Assets\Scripts\Misc\Billboard_Sprite.cs" />
     <Compile Include="Assets\Scripts\Misc\Direction.cs" />

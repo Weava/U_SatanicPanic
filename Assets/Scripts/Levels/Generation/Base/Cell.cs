@@ -8,6 +8,8 @@ namespace Assets.Scripts.Levels.Generation.Base
     {
         public CellType type = CellType.Cell;
 
+        public bool important { get { return (type == CellType.Pathway || type == CellType.Elevation || type == CellType.Spawn); } } 
+
         public int sequence = 0;
 
         public string region = "";
