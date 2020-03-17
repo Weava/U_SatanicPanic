@@ -10,8 +10,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{AE76D5CC-ACA4-1C66-8A66-AFC018651D97}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -117,6 +116,7 @@
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Cell.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Level.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Mono\Debug\CellDebug.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Base\Mono\Debug\NodeDebug.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Mono\Debug\RoomDebug.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Mono\PathMarker.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Region.cs" />

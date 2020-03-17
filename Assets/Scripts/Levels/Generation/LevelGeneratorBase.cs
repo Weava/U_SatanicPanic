@@ -21,8 +21,11 @@ namespace Assets.Scripts.Levels.Generation
 
         public RoomDebug roomDebug;
 
+        public NodeDebug nodeDebug;
+
         public bool debugShowCells = false;
         public bool debugShowRoomScaffolds = false;
+        public bool debugShowDoors = false;
 
         protected virtual void Start()
         {
@@ -61,10 +64,11 @@ namespace Assets.Scripts.Levels.Generation
                 RoomClaimer.ClaimRooms(region.name, RoomClaimer.RoomClaimStrategy.Random, RoomClaimer.MAXIMUM_CLAIM_AMOUNT);
             }
 
-            var test = RoomCollection.rooms;
+            RoomParser.ParseDoors();
 
             if(debugShowCells) RenderCells();
             if (debugShowRoomScaffolds) RenderRoomScaffolds();
+            if (debugShowDoors) nodeDebug.RenderDoorNodes();
         }
 
         public void RenderCells()

@@ -871,5 +871,8 @@ MonoBehaviour:
     type: 3}
   roomDebug: {fileID: 3717548046446686917, guid: dc18439aef9285341864f26ba4ef8ff0,
     type: 3}
+  nodeDebug: {fileID: 3744597118506592626, guid: df95f4af487bd684097c7129c5fb58c6,
+    type: 3}
   debugShowCells: 0
   debugShowRoomScaffolds: 1
+  debugShowDoors: 1

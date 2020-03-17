@@ -14,6 +14,8 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public bool containsPath { get { return cells.Any(x => x.important); } }
 
+        public bool pathConfirmedOverride = false;
+
         #region Parsing Properties
 
         public List<Cell> potentialDoors = new List<Cell>();

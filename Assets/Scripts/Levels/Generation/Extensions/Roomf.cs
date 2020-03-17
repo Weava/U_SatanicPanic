@@ -50,46 +50,36 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             return result;
         }
 
-        public static List<Room> SearchForPathRoom(this Room room)
+        public static List<Room> SearchForPathRoom(this Room room, bool containInRegion)
         {
             var searchedRooms = new List<Room>();
 
-            return SearchForPathRoom_R(room, searchedRooms);
+            return SearchForPathRoom_R(room, searchedRooms, containInRegion);
         }
 
-        public static bool RoomHasConnectionToPath(this Room room)
+        private static List<Room> SearchForPathRoom_R(Room room, List<Room> discoveredRooms, bool containInRegion)
         {
-            var path = room.SearchForPathRoom();
+            //Found a path
+            if(room.containsPath)
+            { return new List<Room>() { room }; }
 
-            if (!path.Any()) return false;
+            //Already saw this room, abort
+            if(discoveredRooms.Contains(room))
+            {  return new List<Room>(); }
 
-            return false; //TODO: Make this work
-        }
-
-        private static List<Room> SearchForPathRoom_R(Room room, List<Room> searchedRooms)
-        {
-            if (room.containsPath) { searchedRooms.Add(room); return searchedRooms; }
-            if (searchedRooms.Contains(room)) { return new List<Room>(); }
-
-            searchedRooms.Add(room);
+            discoveredRooms.Add(room);
 
             var result = new List<Room>();
 
-            foreach(var neighbor in room.neighborRooms)
+            foreach(var potentialRoom in room.potentialDoors.Select(s => s.room))
             {
-                result = SearchForPathRoom_R(neighbor, searchedRooms);
-                if(result.Any())
-                {
-                    return result;
-                }
+                if (containInRegion && potentialRoom.cells.First().region != room.cells.First().region)
+                { continue; }
+                result.AddRange(SearchForPathRoom_R(potentialRoom, discoveredRooms, containInRegion));
+                if(result.Count > 0) { break; }
             }
 
-            return new List<Room>();
-        }
-
-        private static bool RoomHasConnectionToPath_R(Room room, List<Room> searchedRooms)
-        {
-            return false;
+            return result;
         }
     }
 }
