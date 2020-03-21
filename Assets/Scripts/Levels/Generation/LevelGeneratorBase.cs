@@ -24,6 +24,7 @@ namespace Assets.Scripts.Levels.Generation
         public NodeDebug nodeDebug;
 
         public bool debugShowCells = false;
+        public bool debugShowRoomBase = false;
         public bool debugShowRoomScaffolds = false;
         public bool debugShowDoors = false;
 
@@ -65,10 +66,12 @@ namespace Assets.Scripts.Levels.Generation
             }
 
             RoomParser.ParseDoors();
+            RoomParser.ParseRoomNodes();
 
             if(debugShowCells) RenderCells();
-            if (debugShowRoomScaffolds) RenderRoomScaffolds();
+            if (debugShowRoomBase) RenderRoomScaffolds();
             if (debugShowDoors) nodeDebug.RenderDoorNodes();
+            if (debugShowRoomScaffolds) RoomCollection.rooms.ForEach(x => roomDebug.RenderRoomScaffoldingDebug(x));
         }
 
         public void RenderCells()

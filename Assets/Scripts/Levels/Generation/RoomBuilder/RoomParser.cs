@@ -3,12 +3,17 @@ using Assets.Scripts.Levels.Generation.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Levels.Generation.RoomBuilder
 {
     public static class RoomParser
     {
+        public const int CELL_PARTIAL_OFFSET = 3;
+
+        #region Door Parsing
+
         public static bool AllowCrossRegionConnections = false;
 
         [Obsolete]
@@ -38,7 +43,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
                         if(!room.connectedRooms.Any(x => x.cells.Contains(targetCell)))
                         {
-                            Level.doors.Add(new DoorNode() {
+                            Level.doors.Add(new Node_Door() {
                                 cell_1 = targetCell,
                                 cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
                             });
@@ -61,7 +66,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
                     var targetCell = cells[Random.Range(0, cells.Count())];
 
-                    Level.doors.Add(new DoorNode()
+                    Level.doors.Add(new Node_Door()
                     {
                         cell_1 = targetCell,
                         cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
@@ -79,7 +84,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
                     var targetCell = cells[Random.Range(0, cells.Count())];
 
-                    Level.doors.Add(new DoorNode()
+                    Level.doors.Add(new Node_Door()
                     {
                         cell_1 = targetCell,
                         cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
@@ -108,7 +113,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
                         var targetCell = cells[Random.Range(0, cells.Count())];
 
-                        Level.doors.Add(new DoorNode()
+                        Level.doors.Add(new Node_Door()
                         {
                             cell_1 = targetCell,
                             cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
@@ -128,7 +133,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
                             var targetCell = cells[Random.Range(0, cells.Count())];
 
-                            Level.doors.Add(new DoorNode()
+                            Level.doors.Add(new Node_Door()
                             {
                                 cell_1 = targetCell,
                                 cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
@@ -157,7 +162,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
                         var targetCell = cells[Random.Range(0, cells.Count())];
 
-                        Level.doors.Add(new DoorNode()
+                        Level.doors.Add(new Node_Door()
                         {
                             cell_1 = targetCell,
                             cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
@@ -216,11 +221,166 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         private static void CreateDoor(Cell cell_1, Cell cell_2)
         {
-            Level.doors.Add(new DoorNode()
+            Level.doors.Add(new Node_Door()
             {
                 cell_1 = cell_1,
                 cell_2 = cell_2
             });
         }
+
+        #endregion
+
+        #region
+        public static void ParseRoomNodes()
+        {
+            foreach(var room in RoomCollection.rooms)
+            {
+                var scaffold = new Scaffold();
+                Floor_ParseMain(room, ref scaffold);
+                Floor_ParseConnectors(room, ref scaffold);
+                Floor_ParseColumns(room, ref scaffold);
+
+                Wall_ParseMain(room, ref scaffold);
+
+                Level.roomScaffolds.Add(room, scaffold);
+            }
+        }
+
+        #region Floor
+
+        //Floor Parse
+        private static void Floor_ParseMain(Room room, ref Scaffold scaffold)
+        {
+            foreach(var cell in room.cells)
+            {
+                var node = new Node_FloorMain();
+                node.position = cell.position;
+                scaffold.floor.main.Add(node);
+            }
+        }
+
+        //Connector Parse
+        private static void Floor_ParseConnectors(Room room, ref Scaffold scaffold)
+        {
+            foreach(var cell in room.cells)
+            {
+                var neighborsInRoom = cell.NeighborCellsInRoom();
+                foreach(var neighbor in neighborsInRoom)
+                {
+                    if( ! scaffold.floor.connectors.Any(x => x.position == cell.PositionBetween(neighbor)))
+                    {
+                        var node = new Node_FloorConnector();
+                        node.position = cell.PositionBetween(neighbor);
+                        node.rootCell = cell;
+                        scaffold.floor.connectors.Add(node);
+                    }
+                }
+            }
+        }
+
+        //Column Parse
+        private static void Floor_ParseColumns(Room room, ref Scaffold scaffold)
+        {
+            if (room.cells.Count < 4) return; //Columns cannot show up in rooms with less than 4 cells
+
+            foreach(var cell in room.cells)
+            {
+                foreach(var direction in Directionf.Directions())
+                {
+                    var cellGrouping = new List<Cell>();
+
+                    if(columnScan(cell, ref cellGrouping, direction))
+                    {
+                        var node = new Node_FloorColumn();
+                        node.position = Cellf.PositionBetween(cellGrouping);
+                        scaffold.floor.columns.Add(node);
+                    }
+                }
+            }
+        }
+
+        private static bool columnScan(Cell root, ref List<Cell> cellGrouping, Direction startingDirection)
+        {
+            var currentDirection = startingDirection;
+            var currentCell = root;
+            var result = new List<Cell>();
+
+            //A circle has 4 steps of scanning
+            for(int i = 0; i < 4; i++)
+            {
+                if(CellCollection.HasCellAt(currentCell.Step(currentDirection)))
+                {
+                    var nextCell = CellCollection.cells[currentCell.Step(currentDirection)];
+                    if (!nextCell.HasSameRoom(root)) break;
+                    currentDirection = currentDirection.Right();
+                    result.Add(currentCell);
+                    currentCell = nextCell;
+                } else
+                { break; }
+            }
+
+            if (result.Count == 4) {
+                cellGrouping = result;
+                return true;
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Wall
+
+        //Wall Parse
+        private static void Wall_ParseMain(Room room, ref Scaffold scaffold)
+        {
+            foreach(var cell in room.cells)
+            {
+                foreach(var direction in Directionf.Directions())
+                {
+                    if(CellCollection.HasCellAt(cell.Step(direction)))
+                    {
+                        var neighbor = CellCollection.cells[cell.Step(direction)];
+                        if(neighbor.room != cell.room)
+                        {
+                            RenderWallNode(cell, direction, ref scaffold);
+                        }
+                    } else
+                    {
+                        RenderWallNode(cell, direction, ref scaffold);
+                    }
+                }
+            }
+        }
+
+        //TODO: Bug where sometimes a doorway has a oneway wall
+        private static void RenderWallNode(Cell cell, Direction direction, ref Scaffold scaffold)
+        {
+            if (Level.doors.Any(x => x.cell_1 == cell || x.cell_2 == cell))
+            {
+                var door = Level.doors.First(x => x.cell_1 == cell || x.cell_2 == cell);
+                var otherCell = door.cell_1 == cell ? door.cell_2 : door.cell_1;
+                if (cell.Step(direction) == otherCell.position) return;
+            }
+
+            var node = new Node_WallMain();
+            node.position = cell.position + (direction.ToVector() * CELL_PARTIAL_OFFSET);
+            node.root = cell;
+            scaffold.wall.main.Add(node);
+        }
+
+        //Spacer Parse
+
+        //Corner Parse
+
+        #endregion
+
+        #region Ceiling
+
+        //Ceiling Parse
+
+        #endregion
+
+        #endregion
     }
 }

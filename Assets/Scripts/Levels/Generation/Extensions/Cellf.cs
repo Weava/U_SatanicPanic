@@ -39,6 +39,35 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             }
         }
 
+        public static Vector3 PositionBetween(this Cell cell, Cell otherCell)
+        {
+            return PositionBetween(cell.position, otherCell.position);
+        }
+
+        public static Vector3 PositionBetween(this Vector3 position, Vector3 otherPosition)
+        {
+            return new Vector3(
+                (position.x + otherPosition.x) / 2,
+                (position.y + otherPosition.y) / 2,
+                (position.z + otherPosition.z) / 2);
+        }
+
+        public static Vector3 PositionBetween(List<Cell> cells)
+        {
+            var result = new Vector3();
+
+            result.x = cells.Sum(s => s.position.x) / cells.Count();
+            result.y = cells.Sum(s => s.position.y) / cells.Count();
+            result.z = cells.Sum(s => s.position.z) / cells.Count();
+
+            return result;
+        }
+
+        public static bool HasSameRoom(this Cell cell, Cell target)
+        {
+            return cell.room == target.room;
+        }
+
         #endregion
 
         #region Searching
@@ -77,6 +106,22 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             {
                 if (CellCollection.HasCellAt(cell.Step(direction))
                     && CellCollection.cells[cell.Step(direction)].room != cell.room)
+                {
+                    result.Add(CellCollection.cells[cell.Step(direction)]);
+                }
+            }
+
+            return result;
+        }
+
+        public static List<Cell> NeighborCellsInRoom(this Cell cell)
+        {
+            var result = new List<Cell>();
+
+            foreach (var direction in Directionf.Directions())
+            {
+                if (CellCollection.HasCellAt(cell.Step(direction))
+                    && CellCollection.cells[cell.Step(direction)].room == cell.room)
                 {
                     result.Add(CellCollection.cells[cell.Step(direction)]);
                 }
