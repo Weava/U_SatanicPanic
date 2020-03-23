@@ -22,6 +22,9 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public bool claimedByRoom { get { return room != null; } }
 
+        public bool elevationOverride_Upper = false;
+        public bool elevationOverride_Lower = false;
+
         public Room room;
 
         public Cell() { }

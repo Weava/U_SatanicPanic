@@ -36,7 +36,7 @@ namespace Assets.Scripts.Levels.Generation
             foreach(var regionAnchor in pathMarkers)
             {
                 if(regionAnchor.startPosition.x % Cellf.CELL_STEP_OFFSET != 0
-                    || regionAnchor.startPosition.y % Cellf.CELL_STEP_OFFSET != 0
+                    || regionAnchor.startPosition.y % (Cellf.CELL_STEP_OFFSET/2.0f) != 0
                     || regionAnchor.startPosition.z % Cellf.CELL_STEP_OFFSET != 0)
                 {
                     throw new System.Exception("Region markers are not divisible by the cell step offset.");
@@ -71,7 +71,10 @@ namespace Assets.Scripts.Levels.Generation
             if(debugShowCells) RenderCells();
             if (debugShowRoomBase) RenderRoomScaffolds();
             if (debugShowDoors) nodeDebug.RenderDoorNodes();
-            if (debugShowRoomScaffolds) RoomCollection.rooms.ForEach(x => roomDebug.RenderRoomScaffoldingDebug(x));
+            if (debugShowRoomScaffolds) {
+                RoomCollection.rooms.ForEach(x => roomDebug.RenderRoomScaffoldingDebug(x));
+                roomDebug.RenderRoomScaffoldingDoorDebug();
+            }
         }
 
         public void RenderCells()

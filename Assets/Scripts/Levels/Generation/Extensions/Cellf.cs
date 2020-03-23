@@ -30,9 +30,9 @@ namespace Assets.Scripts.Levels.Generation.Extensions
                 case Direction.West:
                     return position + new Vector3(-CELL_STEP_OFFSET * offset, 0, 0);
                 case Direction.Up:
-                    return position + new Vector3(0, CELL_STEP_OFFSET * offset, 0);
+                    return position + new Vector3(0, (CELL_STEP_OFFSET / 2.0f) * offset, 0);
                 case Direction.Down:
-                    return position + new Vector3(0, -CELL_STEP_OFFSET * offset, 0);
+                    return position + new Vector3(0, -(CELL_STEP_OFFSET / 2.0f) * offset, 0);
                 case Direction.North:
                 default:
                     return position + new Vector3(0, 0, CELL_STEP_OFFSET * offset);
@@ -61,6 +61,19 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             result.z = cells.Sum(s => s.position.z) / cells.Count();
 
             return result;
+        }
+
+        public static Direction DirectionToNeighbor(this Cell cell, Cell targetCell)
+        {
+            foreach (var direction in Directionf.Directions())
+            {
+                if (CellCollection.HasCellAt(cell.Step(direction)) && CellCollection.cells[cell.Step(direction)] == targetCell)
+                {
+                    return direction;
+                }
+            }
+
+            return Direction.Up;
         }
 
         public static bool HasSameRoom(this Cell cell, Cell target)

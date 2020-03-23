@@ -54,3 +54,14 @@ MonoBehaviour:
     type: 3}
   wall_main: {fileID: 6611514464540065313, guid: ad73fcbdc7437f4449432cfdec93676a,
     type: 3}
+  wall_connector: {fileID: 6605725374407289360, guid: d25ec8a79e16788488306f3ff46389b8,
+    type: 3}
+  ceiling_main: {fileID: 1085806324743981564, guid: 0db44cdd4926cea4192e83369a7e711f,
+    type: 3}
+  ceiling_connector: {fileID: 7032882305561912765, guid: c68b956fcc20e124aa860f0db19ae9b7,
+    type: 3}
+  ceiling_column: {fileID: 2671096510887311392, guid: b83a35f29cb51344aa68c88d68be25d1,
+    type: 3}
+  door: {fileID: 3208361416980704179, guid: fb554d2faa62c0d4a81863a569d0f8e7, type: 3}
+  stairwell: {fileID: 9191725845538462712, guid: 5d1894b9bef444b48870ed3732c7ca57,
+    type: 3}

@@ -11,6 +11,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
     public static class RoomParser
     {
         public const int CELL_PARTIAL_OFFSET = 3;
+        public const int CEILING_OFFSET = 4;
 
         #region Door Parsing
 
@@ -230,19 +231,65 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         #endregion
 
-        #region
+        #region Room Parsing
         public static void ParseRoomNodes()
         {
             foreach(var room in RoomCollection.rooms)
             {
                 var scaffold = new Scaffold();
+
+                //TODO: Bug where elevations that are lowers does not render correctly
+                Elevation_Parse(room, ref scaffold);
+
                 Floor_ParseMain(room, ref scaffold);
                 Floor_ParseConnectors(room, ref scaffold);
                 Floor_ParseColumns(room, ref scaffold);
 
                 Wall_ParseMain(room, ref scaffold);
+                Wall_ParseConnector(room, ref scaffold);
+
+                Ceiling_Parse(room, ref scaffold);
 
                 Level.roomScaffolds.Add(room, scaffold);
+            }
+            CleanScaffolding();
+        }
+
+        private static void Elevation_Parse(Room room, ref Scaffold scaffold)
+        {
+            foreach (var cell in room.cells.Where(x => x.type == CellType.Elevation))
+            {
+                //Upper Scan
+                if (CellCollection.HasCellAt(cell.Step(Direction.Up)))
+                {
+                    var upper = CellCollection.cells[cell.Step(Direction.Up)];
+                    if (!scaffold.elevation.Any(x => x.lower == cell))
+                    {
+                        var node = new Node_Elevation();
+                        node.lower = cell;
+                        node.upper = upper;
+                        node.position = upper.position;
+                        cell.elevationOverride_Lower = true;
+                        upper.elevationOverride_Upper = true;
+                        scaffold.elevation.Add(node);
+                    }
+                }
+
+                //Lower Scan
+                if (CellCollection.HasCellAt(cell.Step(Direction.Down)))
+                {
+                    var lower = CellCollection.cells[cell.Step(Direction.Down)];
+                    if (!scaffold.elevation.Any(x => x.upper == cell))
+                    {
+                        var node = new Node_Elevation();
+                        node.upper = cell;
+                        node.lower = lower;
+                        node.position = cell.position;
+                        lower.elevationOverride_Lower = true;
+                        cell.elevationOverride_Upper = true;
+                        scaffold.elevation.Add(node);
+                    }
+                }
             }
         }
 
@@ -255,6 +302,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             {
                 var node = new Node_FloorMain();
                 node.position = cell.position;
+                node.root = cell;
                 scaffold.floor.main.Add(node);
             }
         }
@@ -271,7 +319,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                     {
                         var node = new Node_FloorConnector();
                         node.position = cell.PositionBetween(neighbor);
-                        node.rootCell = cell;
+                        node.rootCells = new List<Cell>() { cell, neighbor };
                         scaffold.floor.connectors.Add(node);
                     }
                 }
@@ -289,17 +337,18 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 {
                     var cellGrouping = new List<Cell>();
 
-                    if(columnScan(cell, ref cellGrouping, direction))
+                    if(ColumnScan(cell, ref cellGrouping, direction))
                     {
                         var node = new Node_FloorColumn();
                         node.position = Cellf.PositionBetween(cellGrouping);
+                        node.roots = cellGrouping;
                         scaffold.floor.columns.Add(node);
                     }
                 }
             }
         }
 
-        private static bool columnScan(Cell root, ref List<Cell> cellGrouping, Direction startingDirection)
+        private static bool ColumnScan(Cell root, ref List<Cell> cellGrouping, Direction startingDirection)
         {
             var currentDirection = startingDirection;
             var currentCell = root;
@@ -331,7 +380,6 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         #region Wall
 
-        //Wall Parse
         private static void Wall_ParseMain(Room room, ref Scaffold scaffold)
         {
             foreach(var cell in room.cells)
@@ -352,34 +400,97 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 }
             }
         }
-
-        //TODO: Bug where sometimes a doorway has a oneway wall
+  
         private static void RenderWallNode(Cell cell, Direction direction, ref Scaffold scaffold)
         {
             if (Level.doors.Any(x => x.cell_1 == cell || x.cell_2 == cell))
             {
-                var door = Level.doors.First(x => x.cell_1 == cell || x.cell_2 == cell);
-                var otherCell = door.cell_1 == cell ? door.cell_2 : door.cell_1;
-                if (cell.Step(direction) == otherCell.position) return;
+                var door = Level.doors.FirstOrDefault(x => (x.cell_1 == cell || x.cell_2 == cell) && x.ProjectDirection(cell) == direction);
+                if (door != null)
+                {
+                    var otherCell = door.cell_1 == cell ? door.cell_2 : door.cell_1;
+                    if (cell.Step(direction) == otherCell.position) return;
+                }
             }
 
             var node = new Node_WallMain();
             node.position = cell.position + (direction.ToVector() * CELL_PARTIAL_OFFSET);
             node.root = cell;
+            node.direction = direction;
             scaffold.wall.main.Add(node);
         }
 
-        //Spacer Parse
+        private static void Wall_ParseConnector(Room room, ref Scaffold scaffold)
+        {
+            foreach(var connector in scaffold.floor.connectors)
+            {
+                var rootNormal = connector.rootCells.First().DirectionToNeighbor(connector.rootCells.Last());
+                var directionsToTry = Directionf.Directions();
+                directionsToTry.Remove(rootNormal);
+                directionsToTry.Remove(rootNormal.Opposite());
 
-        //Corner Parse
+                foreach(var direction in directionsToTry)
+                {
+                    RenderWallConnectorNode(connector, direction, ref scaffold);
+                }
+            }
+        }
+
+        private static void RenderWallConnectorNode(Node_FloorConnector node, Direction direction, ref Scaffold scaffold)
+        {
+            var knownDoorsForRoots = Level.doors.Where(x => node.rootCells.Contains(x.cell_1) || node.rootCells.Contains(x.cell_2));
+            knownDoorsForRoots = knownDoorsForRoots.Where(x => x.ProjectDirection(node.rootCells.First()) == direction 
+            || x.ProjectDirection(node.rootCells.Last()) == direction);
+            var knownWallsForRoots = scaffold.wall.main.Where(x => node.rootCells.Contains(x.root) && x.direction == direction);
+
+            if(knownDoorsForRoots.Any() || knownWallsForRoots.Any())
+            {
+                var connectorNode = new Node_WallConnector();
+                connectorNode.position = node.position + (direction.ToVector() * CELL_PARTIAL_OFFSET);
+                connectorNode.root = node;
+                connectorNode.direction = direction;
+                scaffold.wall.connectors.Add(connectorNode);
+            }
+        }
 
         #endregion
 
         #region Ceiling
 
         //Ceiling Parse
+        private static void Ceiling_Parse(Room room, ref Scaffold scaffold)
+        {
+            foreach(var main in scaffold.floor.main)
+            {
+                var node = new Node_CeilingMain();
+                node.position = main.position + (Direction.Up.ToVector());
+                node.root = main;
+                scaffold.ceiling.main.Add(node);
+            }
+
+            foreach (var connector in scaffold.floor.connectors)
+            {
+                var node = new Node_CeilingConnector();
+                node.position = connector.position + (Direction.Up.ToVector());
+                node.root = connector;
+                scaffold.ceiling.connectors.Add(node);
+            }
+
+            foreach (var column in scaffold.floor.columns)
+            {
+                var node = new Node_CeilingColumn();
+                node.position = column.position + (Direction.Up.ToVector());
+                node.root = column;
+                scaffold.ceiling.columns.Add(node);
+            }
+        }
 
         #endregion
+
+        private static void CleanScaffolding()
+        {
+            
+        }
 
         #endregion
     }

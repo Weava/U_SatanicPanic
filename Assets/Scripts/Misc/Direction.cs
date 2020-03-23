@@ -161,9 +161,9 @@ namespace Assets.Scripts
             switch(direction)
             {
                 case Direction.Down:
-                    return new Vector3(0, -1, 0);
+                    return new Vector3(0, -0.5f, 0);
                 case Direction.Up:
-                    return new Vector3(0, 1, 0);
+                    return new Vector3(0, 0.5f, 0);
                 case Direction.West:
                     return new Vector3(-1, 0, 0);
                 case Direction.East:
