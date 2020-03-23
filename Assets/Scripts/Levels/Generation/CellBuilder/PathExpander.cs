@@ -10,6 +10,8 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
     {
         public static void ExpandCellPoint(Cell rootCell, int expansionAmount = 1)
         {
+            if (rootCell.type == CellType.Elevation) return; //Elevation cells cannot expand
+
             var cellsToAddToCollection = new List<Cell>();
 
             var cellsInCurrentExpansion = new List<Cell>();

@@ -34,6 +34,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 cell.room = room;
             }
 
+            if (room.cells.Any(x => x.type == CellType.Elevation || x.type == CellType.Spawn)) { room.preventExtraConnections = true; }
+
             RoomCollection.rooms.Add(room);
 
             return true;

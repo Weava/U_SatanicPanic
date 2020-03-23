@@ -6,6 +6,7 @@ namespace Assets.Scripts.Levels.Generation.Base
 {
     public class Cell
     {
+        #region Meta
         public CellType type = CellType.Cell;
 
         public bool important { get { return (type == CellType.Pathway || type == CellType.Elevation || type == CellType.Spawn); } } 
@@ -34,6 +35,13 @@ namespace Assets.Scripts.Levels.Generation.Base
             this.type = type;
             this.position = position;
         }
+        #endregion
+
+        #region Parsing
+
+        public bool hasDoor { get { return Level.doors.Any(x => x.cell_1 == this || x.cell_2 == this); } }
+
+        #endregion
     }
 
     public static class CellCollection

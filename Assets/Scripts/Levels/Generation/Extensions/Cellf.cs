@@ -127,7 +127,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             return result;
         }
 
-        public static List<Cell> NeighborCellsInRoom(this Cell cell)
+        public static List<Cell> NeighborCellsInRoom(this Cell cell, bool includeDiagonal = false)
         {
             var result = new List<Cell>();
 
@@ -137,6 +137,15 @@ namespace Assets.Scripts.Levels.Generation.Extensions
                     && CellCollection.cells[cell.Step(direction)].room == cell.room)
                 {
                     result.Add(CellCollection.cells[cell.Step(direction)]);
+                }
+
+                if(includeDiagonal)
+                {
+                    if (CellCollection.HasCellAt(cell.Step(direction).Step(direction.Right()))
+                    && CellCollection.cells[cell.Step(direction).Step(direction.Right())].room == cell.room)
+                    {
+                        result.Add(CellCollection.cells[cell.Step(direction).Step(direction.Right())]);
+                    }
                 }
             }
 

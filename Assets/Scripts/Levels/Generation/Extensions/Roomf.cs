@@ -61,7 +61,11 @@ namespace Assets.Scripts.Levels.Generation.Extensions
         {
             //Found a path
             if(room.containsPath)
-            { return new List<Room>() { room }; }
+            {
+                if(room.preventExtraConnections)
+                { return new List<Room>(); }
+                return new List<Room>() { room };
+            }
 
             //Already saw this room, abort
             if(discoveredRooms.Contains(room))
