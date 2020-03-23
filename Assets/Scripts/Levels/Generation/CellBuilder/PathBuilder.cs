@@ -156,6 +156,8 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
             return false;
         }
 
+        //TODO: Rework path building
+
         #region Helper methods
 
         private static DirectionVector FindDirectionVector(Vector3 startPosition, Vector3 endPosition)

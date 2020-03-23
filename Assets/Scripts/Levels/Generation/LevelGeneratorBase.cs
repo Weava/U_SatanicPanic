@@ -28,6 +28,7 @@ namespace Assets.Scripts.Levels.Generation
         public bool debugShowRoomScaffolds = false;
         public bool debugShowDoors = false;
 
+        //TODO: Refactor this pipeline, allow regions to control their own parameters
         protected virtual void Start()
         {
             if(pathMarkers.Where(x => x.hasSpawn).Count() > 1)
