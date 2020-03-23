@@ -19,6 +19,10 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
         private static int sequence;
 
+        private static bool elevationFlag = false;
+        private static bool elevationInit = true;
+        private static bool recentElevation = false;
+
         public static bool BuildPath(Vector3 startPosition, Vector3 endPosition, string regionName, bool hasSpawn = false)
         {
             var direction = FindDirectionVector(startPosition, endPosition);
@@ -26,6 +30,8 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
             var xDistance = GetDistance(startPosition.x, endPosition.x);
             var yDistance = GetDistance(startPosition.y, endPosition.y);
             var zDistance = GetDistance(startPosition.z, endPosition.z);
+
+            if (yDistance > 0) elevationFlag = true;
 
             numberOfRetries = RETRIES;
 
@@ -67,10 +73,31 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
                 while(directionsLeftToGo.Any())
                 {
-                    var nextDirection = directionsLeftToGo[Random.Range(0, directionsLeftToGo.Count)];
+                    Direction nextDirection = Direction.North;
+                    if(elevationInit || recentElevation) //Prevent a new pathway region or recent elevation from immediatly going up, delay it if possible
+                    {
+                        if(directionsLeftToGo.Any(x => Directionf.Directions().Contains(x)))
+                        {
+                            var directionsLeftToGoWithoutGoingUp = directionsLeftToGo.Where(x => x != Direction.Up && x != Direction.Down).ToList();
+                            nextDirection = directionsLeftToGoWithoutGoingUp[Random.Range(0, directionsLeftToGoWithoutGoingUp.Count)];
+                        } else
+                        {
+                            nextDirection = directionsLeftToGo[Random.Range(0, directionsLeftToGo.Count)];
+                        }
+                        elevationInit = false;
+                        if(nextDirection != Direction.Up && nextDirection != Direction.Down) recentElevation = false;
+                    }
+                    else
+                    {
+                        nextDirection = directionsLeftToGo[Random.Range(0, directionsLeftToGo.Count)];
+                    }
 
+                    if(nextDirection == Direction.Up || nextDirection == Direction.Down)
+                    { recentElevation = true; }
+                    
                     var cellType = (nextDirection == Direction.Up || nextDirection == Direction.Down)
                         ? CellType.Elevation : CellType.Pathway;
+                    if (cellType == CellType.Elevation) { lastCell.type = CellType.Elevation; recentElevation = true; } //Retroactivly change the previous celltype to elevation
                     var newCell = new Cell(cellType, lastCell.Step(nextDirection));
                     newCell.region = regionName;
                     newCell.sequence = sequence++;

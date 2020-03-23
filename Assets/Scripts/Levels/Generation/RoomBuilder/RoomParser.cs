@@ -204,7 +204,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             var unconfirmedRooms = RoomCollection.rooms.Where(x => !x.pathConfirmedOverride).ToList();
             while(unconfirmedRooms.Any())
             {
-                var currentRoom = unconfirmedRooms.First(x => x.potentialDoors.Select(s => s.room).Any(y => y.pathConfirmedOverride));
+                var currentRoom = unconfirmedRooms.First(x => x.potentialDoors.Select(s => s.room).Any(y => y.pathConfirmedOverride
+                && y.cells.First().region == x.cells.First().region));
                 var neighborWithConfirmedPath = currentRoom.potentialDoors.GroupBy(g => g.room).First(x => x.Key.pathConfirmedOverride);
                 var neighborCells = neighborWithConfirmedPath.Where(x => currentRoom.potentialDoors.Contains(x)).ToList();
 

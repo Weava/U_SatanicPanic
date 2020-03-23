@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   regionName: Green Room
   hasSpawn: 0
-  endMarker: {fileID: 1708647576}
+  endMarker: {fileID: 0}
 --- !u!4 &121975626
 Transform:
   m_ObjectHideFlags: 0
@@ -160,7 +160,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 121975624}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8, y: -4, z: -8}
+  m_LocalPosition: {x: 0, y: 0, z: -32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 197086647}
@@ -293,12 +293,12 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.281
-    m_Bias: 0.05
-    m_NormalBias: 0.4
+    m_Bias: 0
+    m_NormalBias: 0
     m_NearPlane: 0.2
     m_CullingMatrixOverride:
       e00: 1
@@ -326,7 +326,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -574,7 +574,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1001274079}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8, y: 4, z: -16}
+  m_LocalPosition: {x: 8, y: 8, z: -16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 835693553}
@@ -721,11 +721,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b77dde49c7d7fbf4a95f34b1d2cd0b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  expansionAmount: 5
-  decayAmount: 0.5
+  expansionAmount: 0
+  decayAmount: 0
   pathMarkers:
   - {fileID: 1001274080}
-  - {fileID: 121975625}
   - {fileID: 1708647576}
   cellDebug: {fileID: 7029461963013348324, guid: a44f5665122a46b4e83f48046f9da54f,
     type: 3}
@@ -735,5 +734,5 @@ MonoBehaviour:
     type: 3}
   debugShowCells: 1
   debugShowRoomBase: 0
-  debugShowRoomScaffolds: 1
+  debugShowRoomScaffolds: 0
   debugShowDoors: 0
