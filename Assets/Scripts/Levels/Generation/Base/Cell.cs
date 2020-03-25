@@ -13,8 +13,6 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public int sequence = 0;
 
-        public string region = "";
-
         public Vector3 position = new Vector3();
 
         public Cell parent;
@@ -25,6 +23,8 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public bool elevationOverride_Upper = false;
         public bool elevationOverride_Lower = false;
+
+        public string region = "";
 
         public Room room;
 

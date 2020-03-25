@@ -2,7 +2,6 @@
 using Assets.Scripts.Levels.Generation.Base.Mono;
 using Assets.Scripts.Levels.Generation.Base.Mono.Debug;
 using Assets.Scripts.Levels.Generation.CellBuilder;
-using Assets.Scripts.Levels.Generation.Extensions;
 using Assets.Scripts.Levels.Generation.RoomBuilder;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +11,9 @@ namespace Assets.Scripts.Levels.Generation
 {
     public class LevelGeneratorBase : MonoBehaviour
     {
-        public int expansionAmount;
-        public float decayAmount;
+        private List<Region> regions = new List<Region>();
 
-        public List<PathMarker> pathMarkers;
-
+        #region Debug
         public CellDebug cellDebug;
 
         public RoomDebug roomDebug;
@@ -27,39 +24,50 @@ namespace Assets.Scripts.Levels.Generation
         public bool debugShowRoomBase = false;
         public bool debugShowRoomScaffolds = false;
         public bool debugShowDoors = false;
+        #endregion
 
         //TODO: Refactor this pipeline, allow regions to control their own parameters
         protected virtual void Start()
         {
-            if(pathMarkers.Where(x => x.hasSpawn).Count() > 1)
-            { throw new System.Exception("Only one region can have a spawn at a time"); }
+            //Step 1: Initialize metadata
+            Init();
 
-            foreach(var regionAnchor in pathMarkers)
-            {
-                if(regionAnchor.startPosition.x % Cellf.CELL_STEP_OFFSET != 0
-                    || regionAnchor.startPosition.y % (Cellf.CELL_STEP_OFFSET/2.0f) != 0
-                    || regionAnchor.startPosition.z % Cellf.CELL_STEP_OFFSET != 0)
-                {
-                    throw new System.Exception("Region markers are not divisible by the cell step offset.");
-                }
-            }
+            //Step 2: Build pathways and accompanying cells
+            HandleCellGeneration();
 
-            var regions = pathMarkers.OrderByDescending(o => o.hasSpawn).ToArray();
+            //Step 3: Parse rooms and doorways
+            HandleRoomParsing();
 
+            //Step 4: Apply templates
+
+            //Step 5: Decorate / Associate
+
+            //Step 6: Render debug
+            HandleDebug();
+
+            return;
+        }
+
+        #region Rendering Steps
+
+        protected void Init()
+        {
+            regions = transform.GetComponentsInChildren<Region>().ToList();
+        }
+
+        protected void HandleCellGeneration()
+        {
             //Build Path
-            foreach (var region in regions)
-            {
-                PathBuilder.BuildPath(region.startPosition, region.endPosition, region.name, region.hasSpawn);
-            }
+            regions.ForEach(x => PathBuilder.BuildPath(ref x));
 
             //Expand / Decay Cells
-            foreach(var region in regions)
-            {
-                CellCollection.GetByRegion(region.name).ForEach(x => PathExpander.ExpandCellPoint(x, expansionAmount));
-                PathExpander.DecayCells(CellCollection.GetByRegion(region.name), decayAmount);
-            }
-            PathExpander.CleanIsolatedCells();
+            regions.ForEach(x => { PathExpander.Expand(ref x); PathExpander.DecayCells(ref x); });
 
+            PathExpander.CleanIsolatedCells();
+        }
+
+        protected void HandleRoomParsing()
+        {
             //Claim Rooms
             foreach (var region in regions)
             {
@@ -68,29 +76,30 @@ namespace Assets.Scripts.Levels.Generation
 
             RoomParser.ParseDoors();
             RoomParser.ParseRoomNodes();
+        }
 
-            if(debugShowCells) RenderCells();
-            if (debugShowRoomBase) RenderRoomScaffolds();
+        #endregion
+
+        private void HandleDebug()
+        {
+            if (debugShowCells) {
+                foreach (var cell in CellCollection.cells.Values)
+                {
+                    cellDebug.RenderCellDebug(cell.position, cell.type);
+                }
+            }
+            if (debugShowRoomBase)
+            {
+                foreach (var room in RoomCollection.rooms.OrderBy(o => o.cells.First().region))
+                {
+                    roomDebug.RenderRoomDebug(room);
+                }
+            }
             if (debugShowDoors) nodeDebug.RenderDoorNodes();
-            if (debugShowRoomScaffolds) {
+            if (debugShowRoomScaffolds)
+            {
                 RoomCollection.rooms.ForEach(x => roomDebug.RenderRoomScaffoldingDebug(x));
                 roomDebug.RenderRoomScaffoldingDoorDebug();
-            }
-        }
-
-        public void RenderCells()
-        {
-            foreach(var cell in CellCollection.cells.Values)
-            {
-                cellDebug.RenderCellDebug(cell.position, cell.type);
-            }
-        }
-
-        public void RenderRoomScaffolds()
-        {
-            foreach(var room in RoomCollection.rooms.OrderBy(o => o.cells.First().region))
-            {
-                roomDebug.RenderRoomDebug(room);
             }
         }
     }

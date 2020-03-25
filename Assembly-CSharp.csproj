@@ -119,6 +119,7 @@
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Mono\Debug\NodeDebug.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Mono\Debug\RoomDebug.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Mono\PathMarker.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Base\Mono\Region.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Region.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Room.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\CellBuilder\PathBuilder.cs" />

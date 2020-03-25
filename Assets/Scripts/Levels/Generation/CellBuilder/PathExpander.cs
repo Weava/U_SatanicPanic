@@ -1,13 +1,18 @@
 ﻿using Assets.Scripts.Levels.Generation.Base;
+using Assets.Scripts.Levels.Generation.Base.Mono;
 using Assets.Scripts.Levels.Generation.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Levels.Generation.CellBuilder
 {
     public static class PathExpander
     {
+        [Obsolete]
         public static void ExpandCellPoint(Cell rootCell, int expansionAmount = 1)
         {
             if (rootCell.type == CellType.Elevation || rootCell.type == CellType.Spawn) return; //Elevation cells cannot expand
@@ -47,12 +52,88 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
             CellCollection.Add(cellsToAddToCollection);
         }
 
-        public static void DecayCells(List<Cell> cells, float decayChance)
+        public static void Expand(ref Region region)
         {
-            foreach(var cell in cells.Where(x => x.type == CellType.Cell).ToArray())
+            var cellsToAdd = new List<Cell>();
+
+            var sequenceLength = region.cells.Last().sequence;
+            var sequenceMiddle = region.cells.Sum(s => s.sequence) / region.cells.Where(x => x.sequence > 0).Count();
+
+            var pathwayCells = region.cells.Where(x => x.type == CellType.Pathway).ToArray();
+            foreach (var pathwayCell in pathwayCells) //Ignore elevation cells, those cannot expand
+            {
+                cellsToAdd = new List<Cell>();
+                var expansionAmount = 0;
+                foreach(var direction in Directionf.Directions())
+                {
+                    if (region.cellExpansionConstant)
+                    {
+                        expansionAmount = region.cellExpansionAmount;
+                        var currentCell = pathwayCell;
+                        for (int i = 0; i < expansionAmount; i++)
+                        {
+                            if(CellCollection.HasCellAt(currentCell.position.Step(direction)))
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                var cell = new Cell(CellType.Cell, currentCell.position.Step(direction));
+                                cell.parent = currentCell;
+                                cell.region = region.regionName;
+                                cellsToAdd.Add(cell);
+                                currentCell = cell;
+                            }
+                        }
+                    } else
+                    {
+                        if(pathwayCell.sequence <= sequenceMiddle)
+                        {
+                            expansionAmount = Mathf.FloorToInt(
+                                Mathf.Lerp(region.cellExpansionStart, 
+                                region.cellExpansionMiddle, 
+                                pathwayCell.sequence / (sequenceLength - sequenceMiddle)));
+                        } else
+                        {
+                            expansionAmount = Mathf.FloorToInt(
+                                Mathf.Lerp(region.cellExpansionMiddle,
+                                region.cellExpansionEnd,
+                                (pathwayCell.sequence - sequenceMiddle)  / (sequenceLength - sequenceMiddle)));
+                        }
+                        var currentCell = pathwayCell;
+                        for (int i = 0; i < expansionAmount; i++)
+                        {
+                            if (CellCollection.HasCellAt(currentCell.position.Step(direction)))
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                var cell = new Cell(CellType.Cell, currentCell.position.Step(direction));
+                                cell.parent = currentCell;
+                                cell.region = region.regionName;
+                                cellsToAdd.Add(cell);
+                                currentCell = cell;
+                            }
+                        }
+                    }
+                }
+                try
+                {
+                    CellCollection.Add(cellsToAdd);
+                    region.cells.AddRange(cellsToAdd);
+                }
+                catch (Exception e) {
+                    continue; }
+            }
+        }
+
+        public static void DecayCells(ref Region region)
+        {
+            foreach(var cell in region.cells.Where(x => x.type == CellType.Cell).ToArray())
             {
                 var decayHit = Random.Range(0.0f, 1.0f);
-                if(decayChance >= decayHit)
+                if(region.cellDecayAmount >= decayHit)
                 {
                     cell.children = new List<Cell>();
                     CellCollection.Remove(cell);
