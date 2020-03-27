@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 {
@@ -10,7 +11,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
         {
             var collection = new GameObject("Doors");
 
-            foreach(var door in Level.doors.ToArray())
+            foreach (var door in Level.doors.ToArray())
             {
                 var position = new Vector3(
                         (door.cell_1.position.x + door.cell_2.position.x) / 2,

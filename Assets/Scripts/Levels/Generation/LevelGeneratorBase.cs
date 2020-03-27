@@ -26,7 +26,6 @@ namespace Assets.Scripts.Levels.Generation
         public bool debugShowDoors = false;
         #endregion
 
-        //TODO: Refactor this pipeline, allow regions to control their own parameters
         protected virtual void Start()
         {
             //Step 1: Initialize metadata
@@ -50,31 +49,32 @@ namespace Assets.Scripts.Levels.Generation
 
         #region Rendering Steps
 
-        protected void Init()
+        protected virtual void Init()
         {
             regions = transform.GetComponentsInChildren<Region>().ToList();
         }
 
-        protected void HandleCellGeneration()
+        protected virtual void HandleCellGeneration()
         {
             //Build Path
             regions.ForEach(x => PathBuilder.BuildPath(ref x));
 
-            //Expand / Decay Cells
-            regions.ForEach(x => { PathExpander.Expand(ref x); PathExpander.DecayCells(ref x); });
+            var test = CellCollection.cells;
 
-            PathExpander.CleanIsolatedCells();
+            //Expand / Decay Cells
+            regions.ForEach(x => {
+                PathExpander.Expand(ref x);
+                PathExpander.Proliferate(ref x);
+                PathExpander.DecayCells(ref x);
+            });
+
+            regions.ForEach(x => PathExpander.CleanIsolatedCells(x));
         }
 
-        protected void HandleRoomParsing()
+        protected virtual void HandleRoomParsing()
         {
-            //Claim Rooms
-            foreach (var region in regions)
-            {
-                RoomClaimer.ClaimRooms(region.name, RoomClaimer.RoomClaimStrategy.Random, RoomClaimer.MAXIMUM_CLAIM_AMOUNT);
-            }
-
-            RoomParser.ParseDoors();
+            regions.ForEach(x => RoomParser.ClaimRooms(x));
+            regions.ForEach(x => RoomParser.ParseDoors(x));
             RoomParser.ParseRoomNodes();
         }
 
@@ -90,7 +90,7 @@ namespace Assets.Scripts.Levels.Generation
             }
             if (debugShowRoomBase)
             {
-                foreach (var room in RoomCollection.rooms.OrderBy(o => o.cells.First().region))
+                foreach (var room in RoomCollection.rooms)
                 {
                     roomDebug.RenderRoomDebug(room);
                 }
