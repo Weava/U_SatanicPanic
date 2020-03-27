@@ -29,25 +29,35 @@ namespace Assets.Scripts.Levels.Generation.Extensions
         {
             var result = new List<Room>();
 
-            foreach(var doorNode in Level.doors.Where(x => room.cells.Contains(x.cell_1) || room.cells.Contains(x.cell_2)))
+            foreach(var door in room.doors.ToArray())
             {
-                Room otherRoom;
-
-                if(room.cells.Contains(doorNode.cell_1))
-                {
-                    otherRoom = doorNode.cell_2.room;
-                } else
-                {
-                    otherRoom = doorNode.cell_1.room;
-                }
-
-                if(!result.Contains(otherRoom))
-                {
-                    result.Add(otherRoom);
-                }
+                var otherRoom = door.cell_1.room == room ? door.cell_2.room : door.cell_1.room;
+                result.Add(otherRoom);
             }
 
             return result;
+
+            //var result = new List<Room>();
+
+            //foreach(var doorNode in Level.doors.Where(x => room.cells.Contains(x.cell_1) || room.cells.Contains(x.cell_2)))
+            //{
+            //    Room otherRoom;
+
+            //    if(room.cells.Contains(doorNode.cell_1))
+            //    {
+            //        otherRoom = doorNode.cell_2.room;
+            //    } else
+            //    {
+            //        otherRoom = doorNode.cell_1.room;
+            //    }
+
+            //    if(!result.Contains(otherRoom))
+            //    {
+            //        result.Add(otherRoom);
+            //    }
+            //}
+
+            //return result;
         }
 
         public static List<Room> SearchForPathRoom(this Room room, bool containInRegion)

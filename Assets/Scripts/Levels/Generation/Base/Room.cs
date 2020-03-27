@@ -22,6 +22,8 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public List<Cell> potentialDoors = new List<Cell>();
 
+        public List<Node_Door> doors = new List<Node_Door>();
+
         #endregion
     }
 

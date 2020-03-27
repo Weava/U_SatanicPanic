@@ -1,8 +1,12 @@
 ﻿using Assets.Scripts.Levels.Generation.Base;
+using Assets.Scripts.Levels.Generation.Base.Mono;
 using Assets.Scripts.Levels.Generation.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Levels.Generation.RoomBuilder
 {
@@ -46,7 +50,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         /// </summary>
         /// <param name="cells"></param>
         /// <returns></returns>
-        public static bool ClaimRooms(string region, RoomClaimStrategy strategy, int claimRange)
+        [Obsolete]
+        public static bool ClaimRooms(string region, RoomClaimingStrategy strategy, int claimRange)
         {
             var cells = CellCollection.GetByRegion(region);
 
@@ -57,16 +62,11 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
             switch(strategy)
             {
-                case RoomClaimStrategy.Random:
+                case RoomClaimingStrategy.Bloom:
                     return RoomClaimStrategy_Random(cells, claimRange);
                 default:
                     return false;
             }
-        }
-
-        public enum RoomClaimStrategy
-        {
-            Random,
         }
 
         #region Room Claim Strategies

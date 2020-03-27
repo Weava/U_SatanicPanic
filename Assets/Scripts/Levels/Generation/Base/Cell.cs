@@ -13,8 +13,6 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public int sequence = 0;
 
-        public string region = "";
-
         public Vector3 position = new Vector3();
 
         public Cell parent;
@@ -25,6 +23,8 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public bool elevationOverride_Upper = false;
         public bool elevationOverride_Lower = false;
+
+        public string region = "";
 
         public Room room;
 
@@ -69,12 +69,11 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public static bool Add(this List<Cell> cellsToAdd)
         {
-            if(cellsToAdd.Any(x => cells.ContainsKey(x.position)))
-            { return false; }
+            cellsToAdd.Where(x => cells.ContainsKey(x.position)).ToList().ForEach(x => cellsToAdd.Remove(x));
 
             foreach(var cell in cellsToAdd)
             {
-                cells.Add(cell.position, cell);
+                if(!HasCellAt(cell.position)) cells.Add(cell.position, cell);
             }
 
             return true;

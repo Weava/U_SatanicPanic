@@ -87,7 +87,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
 
         public static Cell FindClosestPathway(this Cell cell)
         {
-            if (cell.type != CellType.Cell) return cell;
+            if (cell.type != CellType.Cell && cell.type != CellType.Elevation) return cell;
             if (cell.parent == null) { return null; }
 
             return FindClosestPathway(cell.parent);
@@ -111,7 +111,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             return result;
         }
 
-        public static List<Cell> NeighborCellsOutOfRoom(this Cell cell)
+        public static List<Cell> NeighborCellsOutOfRoom(this Cell cell, bool includeElevation = false)
         {
             var result = new List<Cell>();
 
@@ -120,6 +120,9 @@ namespace Assets.Scripts.Levels.Generation.Extensions
                 if (CellCollection.HasCellAt(cell.Step(direction))
                     && CellCollection.cells[cell.Step(direction)].room != cell.room)
                 {
+                    if (!includeElevation && CellCollection.cells[cell.Step(direction)].type == CellType.Elevation)
+                        continue;
+                    else
                     result.Add(CellCollection.cells[cell.Step(direction)]);
                 }
             }
@@ -152,6 +155,21 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             return result;
         }
 
+        public static List<Direction> NeighborOpenings(this Cell cell)
+        {
+            var result = new List<Direction>();
+
+            foreach(var direction in Directionf.Directions())
+            {
+                if(!CellCollection.cells.Any(x => x.Key == cell.Step(direction)))
+                {
+                    result.Add(direction);
+                }
+            }
+
+            return result;
+        }
+         
         #endregion
     }
 }

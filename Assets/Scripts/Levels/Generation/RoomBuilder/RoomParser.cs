@@ -1,5 +1,7 @@
 ﻿using Assets.Scripts.Levels.Generation.Base;
+using Assets.Scripts.Levels.Generation.Base.Mono;
 using Assets.Scripts.Levels.Generation.Extensions;
+using Assets.Scripts.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,150 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
     {
         public const int CELL_PARTIAL_OFFSET = 3;
         public const int CEILING_OFFSET = 4;
+
+        #region Room Claiming
+
+        public static void ClaimRooms(Region region)
+        {
+            //Until all cells are claimed by a room
+            while(region.cells.Any(x => ! x.claimedByRoom))
+            {
+                var cellsLeftToClaim = region.cells.Where(x => !x.claimedByRoom).ToList();
+                var rootCell = cellsLeftToClaim[Random.Range(0, cellsLeftToClaim.Count)];
+
+                var projection = ProjectRoom(rootCell, ref cellsLeftToClaim, Random.Range(1, region.maximumRoomSize+1), region.claimChance, region.roomClaimingStrategy);
+                if(projection.Any())
+                {
+                    var room = new Room();
+                    if(!ClaimRoom(projection, ref room))
+                    { continue; }
+                    region.rooms.Add(room);
+                    RoomCollection.rooms.Add(room);
+                }
+            }
+        }
+
+        #region Room Projection Strategies
+
+        private static List<Cell> ProjectRoom(Cell root, ref List<Cell> cellsLeftToClaim, int claimAmount, float claimChange, RoomClaimingStrategy strategy)
+        {
+            switch(strategy)
+            {
+                case RoomClaimingStrategy.Bloom:
+                    return ProjectRoom_Bloom(root, ref cellsLeftToClaim, claimAmount);
+                case RoomClaimingStrategy.PartialBloom:
+                    return ProjectRoom_PartialBloom(root, ref cellsLeftToClaim, claimAmount, claimChange);
+                default:
+                    throw new Exception("A strategy must be assigned to a region.");
+            }
+        }
+
+        private static List<Cell> ProjectRoom_Bloom(Cell root, ref List<Cell> cellsLeftToClaim, int claimAmount)
+        {
+            var result = new List<Cell>() { root };
+            var claimedAmount = result.Count;
+
+            var currentRoots = new List<Cell> { root };
+
+            while(claimedAmount < claimAmount)
+            {
+                var nextRoots = new List<Cell>();
+                foreach (var currentRoot in currentRoots.ToList())
+                {
+                    foreach (var direction in Directionf.Directions().Shuffle())
+                    {
+                        var target = currentRoot.Step(direction);
+                        if (CellCollection.HasCellAt(target) && cellsLeftToClaim.Any(x => x.position == target))
+                        {
+                            nextRoots.Add(CellCollection.cells[target]);
+                            cellsLeftToClaim.Remove(CellCollection.cells[target]);
+                            claimedAmount++;
+                            result.Add(CellCollection.cells[target]);
+                        }
+                    }
+                    if(!nextRoots.Any()) //Ran out of cells to claim, just take what we got
+                    {  return result; }
+                }
+                currentRoots = nextRoots;
+            }
+
+            return result;
+        }
+
+        private static List<Cell> ProjectRoom_PartialBloom(Cell root, ref List<Cell> cellsLeftToClaim, int claimAmount, float claimChance)
+        {
+            var result = new List<Cell>() { root };
+            var claimedAmount = result.Count;
+
+            var currentRoots = new List<Cell> { root };
+
+            while (claimedAmount < claimAmount)
+            {
+                var nextRoots = new List<Cell>();
+                foreach (var currentRoot in currentRoots.ToList())
+                {
+                    foreach (var direction in Directionf.Directions().Shuffle())
+                    {
+                        var target = currentRoot.Step(direction);
+                        if (CellCollection.HasCellAt(target) && cellsLeftToClaim.Any(x => x.position == target))
+                        {
+                            var chanceRoll = Random.Range(0.0f, 1.0f);
+                            if (chanceRoll <= claimChance)
+                            {
+
+                                nextRoots.Add(CellCollection.cells[target]);
+                                cellsLeftToClaim.Remove(CellCollection.cells[target]);
+                                claimedAmount++;
+                                result.Add(CellCollection.cells[target]);
+                            }
+                            else
+                            {
+                                claimedAmount--;
+                            }
+                        }
+                    }
+                    if (!nextRoots.Any()) //Ran out of cells to claim, just take what we got
+                    { return result; }
+                }
+                currentRoots = nextRoots;
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        private static bool ClaimRoom(List<Cell> cells, ref Room room)
+        {
+            /*Rooms can only exist within one region*/
+            if (cells.Select(s => s.region).Distinct().Count() > 1) { return false; }
+
+            /*A room can only contain a complete sequence of sequenced cells*/
+            if (cells.Any(x => x.type != CellType.Cell))
+            {
+                var sequencedCells = cells.Where(x => x.type != CellType.Cell).OrderBy(o => o.sequence).ToList();
+                for (int i = 0; i < sequencedCells.Count() - 1; i++)
+                {
+                    if (sequencedCells[i].sequence != sequencedCells[i + 1].sequence - 1)
+                    { return false; }
+                }
+            }
+
+            room.cells = cells;
+
+            foreach (var cell in cells)
+            {
+                cell.room = room;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #endregion
 
         #region Door Parsing
 
@@ -177,57 +323,87 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             }
         }
 
-        public static void ParseDoors()
+        public static void ParseDoors(Region region)
         {
-            //Fetch potential doors for all existing rooms
-            foreach (var room in RoomCollection.rooms)
-            { room.potentialDoors = room.cells.SelectMany(s => s.NeighborCellsOutOfRoom()).ToList(); }
-
-            #region Pathway connections
-            //Establish pathway connections between path rooms
-            foreach (var room in RoomCollection.rooms.Where(x => x.containsPath))
+            //Pathway door pass - Connect each important pathway room when they meetup
+            #region Pathway Pass
+            foreach (var importantRoom in region.rooms.Where(x => x.containsPath).ToArray())
             {
-                var pathNeighbors = room.potentialDoors.Where(x => x.room.containsPath).GroupBy(g => g.room);
-                foreach(var neighbor in pathNeighbors)
+                importantRoom.pathConfirmedOverride = true;
+                var importantNeighbors = importantRoom.neighborRooms.Where(x => x.containsPath);
+                foreach(var neighbor in importantNeighbors)
                 {
-                    if (!AllowCrossRegionConnections && room.connectedRooms.Count == 2) break;
+                    if (neighbor.connectedRooms.Count > 0 && neighbor.cells.Any(x => x.type == CellType.Elevation)) continue;
+                    if (neighbor.connectedRooms.Any(x => x == importantRoom)) continue;
 
-                    var cells = neighbor.Select(s => s).ToList();
-                    var targetCell = cells[Random.Range(0, cells.Count)];
-                    CreateDoor(targetCell, room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell)));
+                    var potentialDoors = importantRoom.cells.Where(x => x.NeighborCellsOutOfRoom(true).Any(a => a.room == neighbor)).ToList();
+
+                    if(importantRoom.connectedRooms.Count > 1 && potentialDoors.Any(x => x.type == CellType.Elevation)
+                        || potentialDoors.Any(x => x.NeighborCellsOutOfRoom(true).Any(y => y.type == CellType.Elevation && y.room == neighbor && neighbor.connectedRooms.Count > 1))){
+                        potentialDoors.Where(x => x.type == CellType.Elevation).ToList().ForEach(x => potentialDoors.Remove(x));
+                    }
+
+                    if (!potentialDoors.Any()) continue;
+
+                    var selectDoor = potentialDoors[Random.Range(0, potentialDoors.Count)];
+                    var door = CreateDoor(selectDoor, selectDoor.NeighborCellsOutOfRoom(true).First(x => x.room == neighbor));
+                    neighbor.doors.Add(door);
+                    importantRoom.doors.Add(door);
+                    neighbor.pathConfirmedOverride = true;
                 }
-                room.pathConfirmedOverride = true;
             }
             #endregion
 
-            #region Other connections
-            var unconfirmedRooms = RoomCollection.rooms.Where(x => !x.pathConfirmedOverride).ToList();
-            while(unconfirmedRooms.Any())
+
+            //Other room pass
+            #region Other Room Pass
+            var roomsLeft = region.rooms.Where(x => x.connectedRooms.Count == 0).ToList();
+            var retries = 10;
+            while (roomsLeft.Any() && retries > 0)
             {
-                var currentRoom = unconfirmedRooms.First(x => x.potentialDoors.Select(s => s.room).Any(y => y.pathConfirmedOverride
-                && y.cells.First().region == x.cells.First().region));
-                var neighborWithConfirmedPath = currentRoom.potentialDoors.GroupBy(g => g.room).First(x => x.Key.pathConfirmedOverride);
-                var neighborCells = neighborWithConfirmedPath.Where(x => currentRoom.potentialDoors.Contains(x)).ToList();
+                var roomsNextToPathwayConfirmed = roomsLeft.Where(x => x.neighborRooms.Any(y => y.pathConfirmedOverride)).ToList();
+                if (!roomsNextToPathwayConfirmed.Any()) { retries--; continue; };
+                var rootRoom = roomsNextToPathwayConfirmed[Random.Range(0, roomsNextToPathwayConfirmed.Count)];
 
-                var targetCell = neighborCells[Random.Range(0, neighborCells.Count)];
-                var cell = currentRoom.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell));
+                var neighbors = rootRoom.neighborRooms.Where(x => x.pathConfirmedOverride).ToList();
+                var targetNeighbor = neighbors[Random.Range(0, neighbors.Count)];
 
-                CreateDoor(cell, targetCell);
+                var potentialDoors = rootRoom.cells.Where(x => x.NeighborCellsOutOfRoom().Any(a => a.room == targetNeighbor)
+                && x.type != CellType.Elevation).ToList();
 
-                currentRoom.pathConfirmedOverride = true;
+                if (!potentialDoors.Any()) { retries--; continue; };
 
-                unconfirmedRooms.Remove(currentRoom);
+                var targetDoor = potentialDoors[Random.Range(0, potentialDoors.Count)];
+                var targetNeighborDoor = targetDoor.NeighborCellsOutOfRoom().First(x => x.room == targetNeighbor);
+
+                var door = CreateDoor(targetDoor, targetNeighborDoor);
+                rootRoom.doors.Add(door);
+                targetNeighbor.doors.Add(door);
+                rootRoom.pathConfirmedOverride = true;
+                targetNeighbor.pathConfirmedOverride = true;
+
+                roomsLeft = region.rooms.Where(x => x.connectedRooms.Count == 0).ToList();
             }
             #endregion
         }
 
-        private static void CreateDoor(Cell cell_1, Cell cell_2)
+        private static Node_Door CreateDoor(Cell cell_1, Cell cell_2)
         {
-            Level.doors.Add(new Node_Door()
+            var room_1 = RoomCollection.rooms.First(x => x.cells.Contains(cell_1));
+            var room_2 = RoomCollection.rooms.First(x => x.cells.Contains(cell_2));
+
+            var door = new Node_Door()
             {
                 cell_1 = cell_1,
                 cell_2 = cell_2
-            });
+            };
+
+            room_1.doors.Add(door);
+            room_2.doors.Add(door);
+
+            Level.doors.Add(door);
+
+            return door;
         }
 
         #endregion
