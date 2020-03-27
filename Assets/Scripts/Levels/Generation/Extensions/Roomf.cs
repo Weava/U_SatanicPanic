@@ -10,10 +10,10 @@ namespace Assets.Scripts.Levels.Generation.Extensions
         {
             var result = new List<Room>();
 
-            foreach(var cell in room.cells)
+            foreach(var cell in room.GetCells())
             {
                 var neighbors = cell.NeighborCellsOutOfRoom();
-                foreach(var neighborRoom in neighbors.Select(s => s.room))
+                foreach(var neighborRoom in neighbors.Select(s => s.GetRoom()))
                 {
                     if(!result.Contains(neighborRoom))
                     {
@@ -31,8 +31,8 @@ namespace Assets.Scripts.Levels.Generation.Extensions
 
             foreach(var door in room.doors.ToArray())
             {
-                var otherRoom = door.cell_1.room == room ? door.cell_2.room : door.cell_1.room;
-                result.Add(otherRoom);
+                var otherRoom = door.cell_1.roomId == room.id ? door.cell_2.roomId : door.cell_1.roomId;
+                result.Add(RoomCollection.rooms[otherRoom]);
             }
 
             return result;
@@ -60,40 +60,40 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             //return result;
         }
 
-        public static List<Room> SearchForPathRoom(this Room room, bool containInRegion)
-        {
-            var searchedRooms = new List<Room>();
+        //public static List<Room> SearchForPathRoom(this Room room, bool containInRegion)
+        //{
+        //    var searchedRooms = new List<Room>();
 
-            return SearchForPathRoom_R(room, searchedRooms, containInRegion);
-        }
+        //    return SearchForPathRoom_R(room, searchedRooms, containInRegion);
+        //}
 
-        private static List<Room> SearchForPathRoom_R(Room room, List<Room> discoveredRooms, bool containInRegion)
-        {
-            //Found a path
-            if(room.containsPath)
-            {
-                if(room.preventExtraConnections)
-                { return new List<Room>(); }
-                return new List<Room>() { room };
-            }
+        //private static List<Room> SearchForPathRoom_R(Room room, List<Room> discoveredRooms, bool containInRegion)
+        //{
+        //    //Found a path
+        //    if(room.containsPath)
+        //    {
+        //        if(room.preventExtraConnections)
+        //        { return new List<Room>(); }
+        //        return new List<Room>() { room };
+        //    }
 
-            //Already saw this room, abort
-            if(discoveredRooms.Contains(room))
-            {  return new List<Room>(); }
+        //    //Already saw this room, abort
+        //    if(discoveredRooms.Contains(room))
+        //    {  return new List<Room>(); }
 
-            discoveredRooms.Add(room);
+        //    discoveredRooms.Add(room);
 
-            var result = new List<Room>();
+        //    var result = new List<Room>();
 
-            foreach(var potentialRoom in room.potentialDoors.Select(s => s.room))
-            {
-                if (containInRegion && potentialRoom.cells.First().region != room.cells.First().region)
-                { continue; }
-                result.AddRange(SearchForPathRoom_R(potentialRoom, discoveredRooms, containInRegion));
-                if(result.Count > 0) { break; }
-            }
+        //    foreach(var potentialRoom in room.potentialDoors.Select(s => s.room))
+        //    {
+        //        if (containInRegion && potentialRoom.cells.First().region != room.cells.First().region)
+        //        { continue; }
+        //        result.AddRange(SearchForPathRoom_R(potentialRoom, discoveredRooms, containInRegion));
+        //        if(result.Count > 0) { break; }
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }

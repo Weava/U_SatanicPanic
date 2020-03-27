@@ -23,141 +23,8 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
         private static int sequence;
 
-        private static bool elevationFlag = false;
         private static bool elevationInit = true;
         private static bool recentElevation = false;
-
-        [Obsolete]
-        public static bool BuildPath_OLD(Vector3 startPosition, Vector3 endPosition, string regionName, bool hasSpawn = false)
-        {
-            var direction = FindDirectionVector(startPosition, endPosition);
-
-            var xDistance = GetDistance(startPosition.x, endPosition.x, Cellf.CELL_STEP_OFFSET);
-            var yDistance = GetDistance(startPosition.y, endPosition.y, Cellf.CELL_STEP_OFFSET / 2);
-            var zDistance = GetDistance(startPosition.z, endPosition.z, Cellf.CELL_STEP_OFFSET);
-
-            if (yDistance > 0) elevationFlag = true;
-
-            numberOfRetries = RETRIES;
-
-            bool success = true;
-
-            while (numberOfRetries > 0) { 
-
-                cellsToAdd = new List<Cell>();
-                sequence = 0;
-
-                var xTemp = xDistance;
-                var yTemp = yDistance;
-                var zTemp = zDistance;
-
-                Cell lastCell = null;
-
-                var directionsLeftToGo = new List<Direction>();
-                if (xTemp > 0) directionsLeftToGo.Add(direction.xDirection);
-                if (yTemp > 0) directionsLeftToGo.Add(direction.yDirection);
-                if (zTemp > 0) directionsLeftToGo.Add(direction.zDirection);
-
-                if(lastCell == null)
-                {
-                    if(!CellCollection.HasCellAt(startPosition))
-                    {
-                        var type = hasSpawn ? CellType.Spawn : CellType.Pathway;
-                        var newCell = new Cell(type, startPosition);
-                        newCell.sequence = sequence++;
-                        newCell.parent = lastCell;
-                        cellsToAdd.Add(newCell);
-                        lastCell = newCell;
-                    }
-                    else
-                    {
-                        lastCell = CellCollection.cells[startPosition];
-                    }
-                }
-
-                while(directionsLeftToGo.Any())
-                {
-                    Direction nextDirection = Direction.North;
-                    if(elevationInit || recentElevation) //Prevent a new pathway region or recent elevation from immediatly going up, delay it if possible
-                    {
-                        if(directionsLeftToGo.Any(x => Directionf.Directions().Contains(x)))
-                        {
-                            var directionsLeftToGoWithoutGoingUp = directionsLeftToGo.Where(x => x != Direction.Up && x != Direction.Down).ToList();
-                            nextDirection = directionsLeftToGoWithoutGoingUp[Random.Range(0, directionsLeftToGoWithoutGoingUp.Count)];
-                        } else
-                        {
-                            nextDirection = directionsLeftToGo[Random.Range(0, directionsLeftToGo.Count)];
-                        }
-                        elevationInit = false;
-                        if(nextDirection != Direction.Up && nextDirection != Direction.Down) recentElevation = false;
-                    }
-                    else
-                    {
-                        nextDirection = directionsLeftToGo[Random.Range(0, directionsLeftToGo.Count)];
-                    }
-
-                    if(nextDirection == Direction.Up || nextDirection == Direction.Down)
-                    { recentElevation = true; }
-                    
-                    var cellType = (nextDirection == Direction.Up || nextDirection == Direction.Down)
-                        ? CellType.Elevation : CellType.Pathway;
-                    if (cellType == CellType.Elevation) { lastCell.type = CellType.Elevation; recentElevation = true; } //Retroactivly change the previous celltype to elevation
-                    var newCell = new Cell(cellType, lastCell.Step(nextDirection));
-                    newCell.sequence = sequence++;
-                    newCell.parent = lastCell;
-                    lastCell.children.Add(newCell);
-                    lastCell = newCell;
-
-                    if (CellCollection.HasCellAt(lastCell.position))
-                    {
-                        if(xTemp + yTemp + zTemp == 1) //Implies that this is the end cell, which can be claimed by another path
-                        {
-                            success = true;
-                            break;
-                        }
-
-                        numberOfRetries--;
-                        success = false;
-                        break;
-                    }
-                    else
-                    {
-                        cellsToAdd.Add(lastCell);
-                    }
-
-                    switch(nextDirection)
-                    {
-                        case Direction.Up:
-                        case Direction.Down:
-                            yTemp--;
-                            if (yTemp <= 0) directionsLeftToGo.Remove(direction.yDirection); 
-                            break;
-                        case Direction.North:
-                        case Direction.South:
-                            zTemp--;
-                            if (zTemp <= 0) directionsLeftToGo.Remove(direction.zDirection);
-                            break;
-                        case Direction.East:
-                        case Direction.West:
-                            xTemp--;
-                            if (xTemp <= 0) directionsLeftToGo.Remove(direction.xDirection);
-                            break;
-                        default:
-                            numberOfRetries--;//Something is wrong, kill this process
-                            break;
-                    }
-                    success = true;
-                }
-
-                if (success)
-                {
-                    CellCollection.Add(cellsToAdd);
-                    return true;
-                };
-            }
-
-            return false;
-        }
 
         public static bool BuildPath(ref Region region)
         {
@@ -197,7 +64,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                 {
                     var cell = new Cell(CellType.Pathway, region.startPosition);
                     cell.sequence = sequence++;
-                    cell.region = region.regionName;
+                    cell.regionId = region.id;
                     cell.parent = currentCell;
                     cellsToAdd.Add(cell);
                     currentCell = cell;
@@ -224,7 +91,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
                     var cell = new Cell(CellType.Pathway, currentCell.Step(directionToGo));
                     cell.sequence = sequence++;
-                    cell.region = region.regionName;
+                    cell.regionId = region.id;
                     cell.parent = currentCell;
                     currentCell.children.Add(cell);
                     cellsToAdd.Add(cell);
@@ -241,7 +108,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                     var cell = new Cell(CellType.Pathway, region.endPosition);
                     //Sequence and parents will have to be added later
                     finishEndCellMetadata = true;
-                    cell.region = region.regionName;
+                    cell.regionId = region.id;
                     cellsToAdd.Add(cell);
                     lastCell = cell;
                 }
@@ -281,9 +148,9 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
                     var cell = new Cell(CellType.Pathway, lastCell.Step(directionToGo));
                     //Sequence and parent will have to be added later
-                    cellsToAdd.Add(cell);
                     cell.children.Add(lastCell);
-                    cell.region = region.regionName;
+                    cell.regionId = region.id;
+                    cellsToAdd.Add(cell);
 
                     lastCell.parent = cell; //End cell parent finalized
                     secondLastCell = cell; //Save this for metadata finalization at the end
@@ -308,7 +175,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                     var cell = new Cell(type, currentCell.position.Step(currentDirection));
                     cell.parent = currentCell;
                     currentCell.children.Add(cell);
-                    cell.region = region.regionName;
+                    cell.regionId = region.id;
                     cell.sequence = sequence++;
                     cellsToAdd.Add(cell);
                     currentCell = cell;
@@ -348,7 +215,6 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
                 if (success) {
                     CellCollection.Add(cellsToAdd.OrderBy(o => o.sequence).ToList());
-                    region.cells.AddRange(cellsToAdd.OrderBy(o => o.sequence));
                     break;
                 }
             }

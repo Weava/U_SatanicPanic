@@ -78,7 +78,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
 
         public static bool HasSameRoom(this Cell cell, Cell target)
         {
-            return cell.room == target.room;
+            return cell.roomId == target.roomId;
         }
 
         #endregion
@@ -97,12 +97,12 @@ namespace Assets.Scripts.Levels.Generation.Extensions
         {
             var result = new List<Cell>();
 
-            if (cell.region == "") return result;
+            if (cell.regionId == "") return result;
 
             foreach(var direction in Directionf.Directions())
             {
                 if(CellCollection.HasCellAt(cell.Step(direction))
-                    && CellCollection.cells[cell.Step(direction)].region == cell.region)
+                    && CellCollection.cells[cell.Step(direction)].regionId == cell.regionId)
                 {
                     result.Add(CellCollection.cells[cell.Step(direction)]);
                 }
@@ -118,7 +118,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             foreach (var direction in Directionf.Directions())
             {
                 if (CellCollection.HasCellAt(cell.Step(direction))
-                    && CellCollection.cells[cell.Step(direction)].room != cell.room)
+                    && CellCollection.cells[cell.Step(direction)].roomId != cell.roomId)
                 {
                     if (!includeElevation && CellCollection.cells[cell.Step(direction)].type == CellType.Elevation)
                         continue;
@@ -137,7 +137,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             foreach (var direction in Directionf.Directions())
             {
                 if (CellCollection.HasCellAt(cell.Step(direction))
-                    && CellCollection.cells[cell.Step(direction)].room == cell.room)
+                    && CellCollection.cells[cell.Step(direction)].roomId == cell.roomId)
                 {
                     result.Add(CellCollection.cells[cell.Step(direction)]);
                 }
@@ -145,7 +145,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
                 if(includeDiagonal)
                 {
                     if (CellCollection.HasCellAt(cell.Step(direction).Step(direction.Right()))
-                    && CellCollection.cells[cell.Step(direction).Step(direction.Right())].room == cell.room)
+                    && CellCollection.cells[cell.Step(direction).Step(direction.Right())].roomId == cell.roomId)
                     {
                         result.Add(CellCollection.cells[cell.Step(direction).Step(direction.Right())]);
                     }

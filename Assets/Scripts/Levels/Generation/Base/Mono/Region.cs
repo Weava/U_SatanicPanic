@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base.Mono
 {
     public class Region : MonoBehaviour
     {
+        public string id = Guid.NewGuid().ToString();
+
         public string regionName;
 
         public bool cellExpansionConstant = true;
@@ -29,17 +33,32 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
         [HideInInspector]
         public Vector3 endPosition { get { return endNode.transform.position; } }
 
-        [HideInInspector]
-        public List<Cell> cells = new List<Cell>();
+        //[HideInInspector]
+        //public List<Cell> cells = new List<Cell>();
 
-        [HideInInspector]
-        public List<Room> rooms = new List<Room>();
+        //[HideInInspector]
+        //public List<Room> rooms = new List<Room>();
 
         void OnDrawGizmos()
         {
              Gizmos.color = Color.yellow;
              if (startNode != null && endNode != null)
                  Gizmos.DrawLine(startNode.transform.position, endNode.transform.position);
+        }
+    }
+
+    public static class RegionCollection
+    {
+        public static Dictionary<string, Region> regions = new Dictionary<string, Region>();
+
+        public static List<Cell> GetCells(this Region region)
+        {
+            return CellCollection.cells.Where(x => x.Value.regionId == region.id).Select(s => s.Value).ToList();
+        }
+
+        public static List<Room> GetRooms(this Region region)
+        {
+            return RoomCollection.rooms.Where(x => x.Value.regionId == region.id).Select(s => s.Value).ToList();
         }
     }
 

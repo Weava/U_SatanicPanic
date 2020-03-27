@@ -1,18 +1,27 @@
 ﻿using System.Collections.Generic;
 using Assets.Scripts.Levels.Generation.Extensions;
 using System.Linq;
+using System;
 
 namespace Assets.Scripts.Levels.Generation.Base
 {
     public class Room
     {
-        public List<Cell> cells = new List<Cell>();
+        public Room()
+        {
+            id = Guid.NewGuid().ToString();
+        }
+
+        public string id = Guid.NewGuid().ToString();
+
+        public string regionId = "";
+        //public List<Vector3> cells = new List<Vector3>();
 
         public List<Room> neighborRooms { get { return this.NeighborRooms(); } }
 
         public List<Room> connectedRooms { get { return this.ConnectedRooms(); } }
 
-        public bool containsPath { get { return cells.Any(x => x.important); } }
+        public bool containsPath { get { return CellCollection.GetByRoom(id).Any(x => x.important); } }
 
         public bool pathConfirmedOverride = false;
 
@@ -20,7 +29,7 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         #region Parsing Properties
 
-        public List<Cell> potentialDoors = new List<Cell>();
+        //public List<Cell> potentialDoors = new List<Cell>();
 
         public List<Node_Door> doors = new List<Node_Door>();
 
@@ -29,6 +38,33 @@ namespace Assets.Scripts.Levels.Generation.Base
 
     public static class RoomCollection
     {
-        public static List<Room> rooms = new List<Room>();
+        public static Dictionary<string, Room> rooms = new Dictionary<string, Room>();
+
+        public static List<Room> GetAll()
+        {
+            return rooms.Select(s => s.Value).ToList();
+        }
+
+        public static List<Cell> GetCells(this Room room)
+        {
+            return CellCollection.cells.Where(x => x.Value.roomId == room.id).Select(s => s.Value).ToList();
+        }
+
+        public static bool Add(Room room)
+        {
+            if (!rooms.ContainsKey(room.id))
+            {
+                rooms.Add(room.id, room);
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool Update(this Room room)
+        {
+            rooms[room.id] = room;
+            return true;
+        }
     }
 }

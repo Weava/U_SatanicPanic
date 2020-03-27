@@ -25,10 +25,11 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
         public void RenderRoomDebug(Room room)
         {
-            var container = new GameObject("Room - " + room.cells.First().region);
-            container.name += room.cells.Any(x => x.important) ? " - Pathway" : "";
-            container.name += room.cells.Any(x => x.type == CellType.Elevation) ? " - Elevation" : "";
-            foreach (var cell in room.cells)
+            var cells = room.GetCells();
+            var container = new GameObject("Room - " + cells.First().GetRegion().regionName);
+            container.name += cells.Any(x => x.important) ? " - Pathway" : "";
+            container.name += cells.Any(x => x.type == CellType.Elevation) ? " - Elevation" : "";
+            foreach (var cell in cells)
             {
                 if(cell.type != CellType.Cell)
                 {
@@ -45,7 +46,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
         public void RenderRoomScaffoldingDebug(Room room)
         {
-            var scaffolding = Level.roomScaffolds[room];
+            var scaffolding = Level.roomScaffolds[room.id];
             var roomContainer = new GameObject("Room");
 
             #region Floor

@@ -17,7 +17,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         public static bool ClaimRoom(List<Cell> cells)
         {
             /*Rooms can only exist within one region*/
-            if(cells.Select(s => s.region).Distinct().Count() > 1) { return false; }
+            if(cells.Select(s => s.GetRegion()).Distinct().Count() > 1) { return false; }
 
             /*A room can only contain a complete sequence of sequenced cells*/
             if(cells.Any(x => x.type != CellType.Cell))
@@ -31,16 +31,19 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             }
 
             var room = new Room();
-            room.cells = cells;
+            //room.cells = cells;
 
             foreach(var cell in cells)
             {
-                cell.room = room;
+                if(cell.type == CellType.Elevation || cell.type == CellType.Spawn)
+                {
+                    room.preventExtraConnections = true;
+                }
+                cell.roomId = room.id;
+                CellCollection.Update(cell);
             }
 
-            if (room.cells.Any(x => x.type == CellType.Elevation || x.type == CellType.Spawn)) { room.preventExtraConnections = true; }
-
-            RoomCollection.rooms.Add(room);
+            RoomCollection.Add(room);
 
             return true;
         }
@@ -271,7 +274,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         private static void TryAddProjection(this Cell cell, ref RoomProjection result, CellProjectionLevel level)
         {
-            if (cell.region == result.cellProj.First().cell.region && !cell.claimedByRoom)
+            if (cell.GetRegion() == result.cellProj.First().cell.GetRegion() && !cell.claimedByRoom)
             { result.cellProj.Add(new CellProjection() {
                 cell = cell,
                 level = level

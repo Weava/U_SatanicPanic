@@ -30,7 +30,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
             }
 
             var cell = CellCollection.cells[position];
-            instance.gameObject.name = cell.region + " - " + cell.type;
+            instance.gameObject.name = RegionCollection.regions[cell.regionId].regionName + " - " + cell.type;
             if(cell.type != CellType.Cell)
             {
                 instance.name += " [" + cell.sequence.ToString() + "]";

@@ -52,6 +52,7 @@ namespace Assets.Scripts.Levels.Generation
         protected virtual void Init()
         {
             regions = transform.GetComponentsInChildren<Region>().ToList();
+            regions.ForEach(x => RegionCollection.regions.Add(x.id, x));
         }
 
         protected virtual void HandleCellGeneration()
@@ -74,6 +75,8 @@ namespace Assets.Scripts.Levels.Generation
         protected virtual void HandleRoomParsing()
         {
             regions.ForEach(x => RoomParser.ClaimRooms(x));
+            var test2 = regions.First().GetCells();
+            var test = RoomCollection.rooms;
             regions.ForEach(x => RoomParser.ParseDoors(x));
             RoomParser.ParseRoomNodes();
         }
@@ -90,7 +93,7 @@ namespace Assets.Scripts.Levels.Generation
             }
             if (debugShowRoomBase)
             {
-                foreach (var room in RoomCollection.rooms)
+                foreach (var room in RoomCollection.GetAll())
                 {
                     roomDebug.RenderRoomDebug(room);
                 }
@@ -98,7 +101,7 @@ namespace Assets.Scripts.Levels.Generation
             if (debugShowDoors) nodeDebug.RenderDoorNodes();
             if (debugShowRoomScaffolds)
             {
-                RoomCollection.rooms.ForEach(x => roomDebug.RenderRoomScaffoldingDebug(x));
+                RoomCollection.GetAll().ForEach(x => roomDebug.RenderRoomScaffoldingDebug(x));
                 roomDebug.RenderRoomScaffoldingDoorDebug();
             }
         }

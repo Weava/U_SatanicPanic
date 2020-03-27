@@ -11,7 +11,7 @@ namespace Assets.Scripts.Levels.Generation.Base
     public static class Level
     {
         public static List<Node_Door> doors = new List<Node_Door>();
-        public static Dictionary<Room, Scaffold> roomScaffolds = new Dictionary<Room, Scaffold>();
+        public static Dictionary<string, Scaffold> roomScaffolds = new Dictionary<string, Scaffold>();
     }
 
     #region Meta Containers
