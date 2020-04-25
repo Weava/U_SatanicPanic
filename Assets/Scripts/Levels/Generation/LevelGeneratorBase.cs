@@ -24,9 +24,15 @@ namespace Assets.Scripts.Levels.Generation
         public bool debugShowRoomBase = false;
         public bool debugShowRoomScaffolds = false;
         public bool debugShowDoors = false;
+        public bool debugShowPOI = false;
         #endregion
 
-        protected virtual void Start()
+        protected void Start()
+        {
+            StartCoroutine("GenerateLevel");
+        }
+
+        protected virtual void GenerateLevel()
         {
             //Step 1: Initialize metadata
             Init();
@@ -34,10 +40,11 @@ namespace Assets.Scripts.Levels.Generation
             //Step 2: Build pathways and accompanying cells
             HandleCellGeneration();
 
-            //Step 3: Parse rooms and doorways
-            HandleRoomParsing();
+            //Step 3: Scaffold rooms and doorways
+            HandleRoomScaffolding();
 
-            //Step 4: Apply templates
+            //Step 4: Parse Rooms
+            HandleRoomParsing();
 
             //Step 5: Decorate / Associate
 
@@ -72,13 +79,21 @@ namespace Assets.Scripts.Levels.Generation
             regions.ForEach(x => PathExpander.CleanIsolatedCells(x));
         }
 
-        protected virtual void HandleRoomParsing()
+        protected virtual void HandleRoomScaffolding()
         {
             regions.ForEach(x => RoomParser.ClaimRooms(x));
             var test2 = regions.First().GetCells();
             var test = RoomCollection.rooms;
             regions.ForEach(x => RoomParser.ParseDoors(x));
-            RoomParser.ParseRoomNodes();
+            RoomParser.ScaffoldRoomNodes();
+        }
+
+        protected virtual void HandleRoomParsing()
+        {
+            foreach(var room in RoomCollection.rooms.Select(s => s.Value).ToArray())
+            {
+                room.ParseRoom();
+            }
         }
 
         #endregion
@@ -103,6 +118,10 @@ namespace Assets.Scripts.Levels.Generation
             {
                 RoomCollection.GetAll().ForEach(x => roomDebug.RenderRoomScaffoldingDebug(x));
                 roomDebug.RenderRoomScaffoldingDoorDebug();
+            }
+            if (debugShowPOI)
+            {
+                nodeDebug.RenderPOI();
             }
         }
     }

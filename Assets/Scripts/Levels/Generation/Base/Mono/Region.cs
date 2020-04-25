@@ -7,7 +7,8 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
 {
     public class Region : MonoBehaviour
     {
-        public string id = Guid.NewGuid().ToString();
+        [HideInInspector]
+        public string id;
 
         public string regionName;
 
@@ -24,6 +25,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
         public RoomClaimingStrategy roomClaimingStrategy;
         public int maximumRoomSize = 1;
         public float claimChance = 1;
+        public bool greedyClaiming = false;
 
         public PathMarker startNode;
         public PathMarker endNode;
@@ -38,6 +40,11 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
 
         //[HideInInspector]
         //public List<Room> rooms = new List<Room>();
+
+        private void Awake()
+        {
+            id = Guid.NewGuid().ToString();
+        }
 
         void OnDrawGizmos()
         {
@@ -66,5 +73,6 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
     {
         Bloom, //Fan out from a root cell in each direction
         PartialBloom, //Randomly decide not to claim cells within a fan step
+        LimitedStep, //Controlled procedure for more regular shaped rooms
     }
 }

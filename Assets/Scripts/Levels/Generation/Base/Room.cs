@@ -2,6 +2,7 @@
 using Assets.Scripts.Levels.Generation.Extensions;
 using System.Linq;
 using System;
+using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
 
 namespace Assets.Scripts.Levels.Generation.Base
 {
@@ -55,6 +56,7 @@ namespace Assets.Scripts.Levels.Generation.Base
             if (!rooms.ContainsKey(room.id))
             {
                 rooms.Add(room.id, room);
+                Level.roomData.Add(new RoomData(room.id));
                 return true;
             }
 

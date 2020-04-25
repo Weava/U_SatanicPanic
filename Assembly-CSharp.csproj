@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_2019_2_0;UNITY_2019_2;UNITY_2019;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_INCLUDE_TESTS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;INCLUDE_DYNAMIC_GI;ENABLE_MONO_BDWGC;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_EVENT_QUEUE;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_AR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_VSTU;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_2019_2_0;UNITY_2019_2;UNITY_2019;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2019_1_OR_NEWER;UNITY_2019_2_OR_NEWER;UNITY_INCLUDE_TESTS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_TEXTURE_STREAMING;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;ENABLE_MANAGED_AUDIO_JOBS;INCLUDE_DYNAMIC_GI;ENABLE_MONO_BDWGC;ENABLE_SCRIPTING_GC_WBARRIERS;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_VIDEO;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_EVENT_QUEUE;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_AR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;ENABLE_VSTU;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_DIRECTOR;ENABLE_LOCALIZATION;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_TILEMAP;ENABLE_TIMELINE;UNITY_POST_PROCESSING_STACK_V2;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
@@ -67,52 +67,6 @@
     <Compile Include="Assets\Scripts\Actor\Player.cs" />
     <Compile Include="Assets\Scripts\Actor\Prop.cs" />
     <Compile Include="Assets\Scripts\GameSettings.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprint.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_1_1.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_1_2.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_2_2.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_2_3.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_3_3.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Room_4_4.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\BlueprintFactories\BPFactory_Rooms.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprints\Blueprint_Room_1_1.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprints\Blueprint_Room_1_2.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprints\Blueprint_Room_2_2.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprints\Blueprint_Room_2_3.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprints\Blueprint_Room_3_3.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Blueprints\Blueprint_Room_4_4.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Mask.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Patterns\Patterms_Room_1_2.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Patterns\Patterns_Global.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Patterns\Patterns_Room_1_1.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Patterns\Patterns_Room_2_2.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Patterns\Patterns_Room_2_3.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Patterns\Patterns_Room_3_3.cs" />
-    <Compile Include="Assets\Scripts\Generation\Blueprinting\Patterns\Patterns_Room_4_4.cs" />
-    <Compile Include="Assets\Scripts\Generation\Extensions\Cellf.cs" />
-    <Compile Include="Assets\Scripts\Generation\Extensions\Roomf.cs" />
-    <Compile Include="Assets\Scripts\Generation\Painter\Cells\Base\Cell.cs" />
-    <Compile Include="Assets\Scripts\Generation\Painter\Cells\Base\CellCollection.cs" />
-    <Compile Include="Assets\Scripts\Generation\Painter\Cells\Base\CellMarker.cs" />
-    <Compile Include="Assets\Scripts\Generation\Painter\Cells\Factory\CellBuilder.cs" />
-    <Compile Include="Assets\Scripts\Generation\Painter\Cells\Factory\PathBuilder.cs" />
-    <Compile Include="Assets\Scripts\Generation\Painter\Rooms\Base\Room.cs" />
-    <Compile Include="Assets\Scripts\Generation\Painter\Rooms\Base\RoomCollection.cs" />
-    <Compile Include="Assets\Scripts\Generation\Painter\Rooms\RoomBuilder.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Base\RoomNode.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Base\RoomNodeObject.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Base\RoomScaffold.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_1_1_Scaffold.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_1_2_Scaffold.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_2_2_Scaffold.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_2_3_Scaffold.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_3_3_Scaffold.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Scaffolds\Room_4_4_Scaffold.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\SimpleRoomScaffolding.cs" />
-    <Compile Include="Assets\Scripts\Generation\RoomBuilding\Suite\Base\RoomSuite.cs" />
-    <Compile Include="Assets\Scripts\Levels\Base\LevelGenerator.cs" />
-    <Compile Include="Assets\Scripts\Levels\Base\RoomInstance.cs" />
-    <Compile Include="Assets\Scripts\Levels\Demo_0\Demo_0_Generator.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Cell.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Level.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Base\Mono\Debug\CellDebug.cs" />
@@ -126,9 +80,22 @@
     <Compile Include="Assets\Scripts\Levels\Generation\Extensions\Cellf.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Extensions\Roomf.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\LevelGeneratorBase.cs" />
-    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\RoomClaimer.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Decoration\Base\Decoration.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Features\Base\Feature.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Suites\Base\Suite.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Node.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Parsing\Base\Parsing_Node.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Placement\Base\Placement_Node.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Scaffolding\Base\Scaffold_Node.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Scaffolding\Ceiling.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Scaffolding\Door.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Scaffolding\Elevation.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Scaffolding\Floor.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Scaffolding\Wall.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\ProjectionStrategies\Projection_Bloom.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\ProjectionStrategies\Projection_LimitedStep.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\ProjectionStrategies\Projection_PartialBloom.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\RoomParser.cs" />
-    <Compile Include="Assets\Scripts\Levels\RoomDebugPackage.cs" />
     <Compile Include="Assets\Scripts\Misc\Billboard_Sprite.cs" />
     <Compile Include="Assets\Scripts\Misc\Direction.cs" />
     <Compile Include="Assets\Scripts\Misc\Gib.cs" />
@@ -151,8 +118,20 @@
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Editor">
+      <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Runtime">
+      <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Lightweight.Runtime">
+      <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.RenderPipelines.Lightweight.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Lightweight.Editor">
+      <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.RenderPipelines.Lightweight.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
@@ -163,8 +142,23 @@
     <Reference Include="Unity.CollabProxy.Editor">
       <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Postprocessing.Editor">
+      <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.Postprocessing.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
+      <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Postprocessing.Runtime">
+      <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ShaderGraph.Editor">
+      <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
+      <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>A:/Unity_Projects/Satanic Panic/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>

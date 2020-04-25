@@ -157,7 +157,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 121975624}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.8, y: -6.09, z: -47.88}
+  m_LocalPosition: {x: 6.6, y: -6.09, z: -52.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 197086647}
@@ -391,17 +391,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec350cb03c69314eb82c839b9565ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: d55015dd-bc95-4811-9fad-0986fb8f6c80
   regionName: Yellow Region 2
   cellExpansionConstant: 1
   cellExpansionAmount: 2
   cellExpansionStart: 0
   cellExpansionMiddle: 0
   cellExpansionEnd: 0
-  proliferationAmount: 1
-  cellDecayAmount: 0.45
-  roomClaimingStrategy: 1
+  proliferationAmount: 2
+  cellDecayAmount: 0.5
+  roomClaimingStrategy: 2
   maximumRoomSize: 9
-  claimChance: 0.8
+  claimChance: 1
+  greedyClaiming: 1
   startNode: {fileID: 1001274080}
   endNode: {fileID: 1554300330}
 --- !u!1 &529996696
@@ -572,17 +574,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec350cb03c69314eb82c839b9565ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 5b44a23c-69ac-41b9-9a72-d1806a5ce897
   regionName: Yellow Region
   cellExpansionConstant: 1
-  cellExpansionAmount: 3
+  cellExpansionAmount: 2
   cellExpansionStart: 0
   cellExpansionMiddle: 0
   cellExpansionEnd: 0
-  proliferationAmount: 1
-  cellDecayAmount: 0.25
-  roomClaimingStrategy: 1
+  proliferationAmount: 2
+  cellDecayAmount: 0.5
+  roomClaimingStrategy: 2
   maximumRoomSize: 9
-  claimChance: 0.95
+  claimChance: 1
+  greedyClaiming: 1
   startNode: {fileID: 1001274080}
   endNode: {fileID: 121975625}
 --- !u!1 &835693552
@@ -977,7 +981,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1554300329}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 35.72, y: -2.05, z: -10.1}
+  m_LocalPosition: {x: 35.8, y: -2.05, z: -20.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 174767503}
@@ -1071,17 +1075,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec350cb03c69314eb82c839b9565ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: d474fec1-b2e8-40b7-ba54-64c84b8ad895
   regionName: Blue Region
   cellExpansionConstant: 1
-  cellExpansionAmount: 1
+  cellExpansionAmount: 2
   cellExpansionStart: 0
   cellExpansionMiddle: 0
   cellExpansionEnd: 0
-  proliferationAmount: 1
+  proliferationAmount: 2
   cellDecayAmount: 0.5
-  roomClaimingStrategy: 1
-  maximumRoomSize: 4
-  claimChance: 0.45
+  roomClaimingStrategy: 2
+  maximumRoomSize: 9
+  claimChance: 1
+  greedyClaiming: 1
   startNode: {fileID: 1708647576}
   endNode: {fileID: 1001274080}
 --- !u!1 &2005727335
@@ -1109,7 +1115,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2005727335}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -17.33, y: -0.32, z: -52.5}
+  m_LocalPosition: {x: -27.8, y: -0.32, z: -63.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1385633820}
@@ -1171,17 +1177,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec350cb03c69314eb82c839b9565ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: c8625dc5-0266-45b9-a54a-e4f072780dba
   regionName: Red Region
   cellExpansionConstant: 1
   cellExpansionAmount: 2
   cellExpansionStart: 0
   cellExpansionMiddle: 0
   cellExpansionEnd: 0
-  proliferationAmount: 1
+  proliferationAmount: 2
   cellDecayAmount: 0.5
-  roomClaimingStrategy: 1
-  maximumRoomSize: 6
-  claimChance: 0.75
+  roomClaimingStrategy: 2
+  maximumRoomSize: 9
+  claimChance: 1
+  greedyClaiming: 1
   startNode: {fileID: 121975625}
   endNode: {fileID: 2005727337}
 --- !u!1001 &8400747289475040377
@@ -1285,5 +1293,6 @@ MonoBehaviour:
     type: 3}
   debugShowCells: 0
   debugShowRoomBase: 0
-  debugShowRoomScaffolds: 1
+  debugShowRoomScaffolds: 0
   debugShowDoors: 0
+  debugShowPOI: 0

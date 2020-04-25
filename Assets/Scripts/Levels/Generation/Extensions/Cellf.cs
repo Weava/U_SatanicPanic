@@ -52,13 +52,24 @@ namespace Assets.Scripts.Levels.Generation.Extensions
                 (position.z + otherPosition.z) / 2);
         }
 
-        public static Vector3 PositionBetween(List<Cell> cells)
+        public static Vector3 PositionBetween(this List<Cell> cells)
         {
             var result = new Vector3();
 
             result.x = cells.Sum(s => s.position.x) / cells.Count();
             result.y = cells.Sum(s => s.position.y) / cells.Count();
             result.z = cells.Sum(s => s.position.z) / cells.Count();
+
+            return result;
+        }
+
+        public static Vector3 PositionBetween(this List<Vector3> points)
+        {
+            var result = new Vector3();
+
+            result.x = points.Sum(s => s.x) / points.Count();
+            result.y = points.Sum(s => s.y) / points.Count();
+            result.z = points.Sum(s => s.z) / points.Count();
 
             return result;
         }

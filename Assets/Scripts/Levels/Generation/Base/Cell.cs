@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Levels.Generation.Base.Mono;
+using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,6 +20,8 @@ namespace Assets.Scripts.Levels.Generation.Base
         public Cell parent;
 
         public List<Cell> children = new List<Cell>();
+
+        public List<Node_Door> doors { get { return Level.doors.Where(x => x.Contains(this)).ToList(); } }
 
         public bool claimedByRoom { get {
                 if(roomId != "")
