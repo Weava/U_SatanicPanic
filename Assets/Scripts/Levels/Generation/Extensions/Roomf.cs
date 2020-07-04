@@ -60,40 +60,42 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             //return result;
         }
 
-        //public static List<Room> SearchForPathRoom(this Room room, bool containInRegion)
-        //{
-        //    var searchedRooms = new List<Room>();
+        public static List<Cell> GetBlockableCells(this Room room)
+        {
+            return CellCollection.GetByRoom(room.id).Where(x => !x.mustNotBeBlocked).ToList();
+        }
 
-        //    return SearchForPathRoom_R(room, searchedRooms, containInRegion);
-        //}
+        public static bool VerifyCellCollectionDoesNotBlockRoomPathways(this Room room, List<Cell> blockingCells, List<Cell> additionalImportantCells)
+        {
+            var importantCellsInRoom = CellCollection.GetByRoom(room.id).Where(x => x.mustNotBeBlocked).ToList();
+            importantCellsInRoom.AddRange(additionalImportantCells);
 
-        //private static List<Room> SearchForPathRoom_R(Room room, List<Room> discoveredRooms, bool containInRegion)
-        //{
-        //    //Found a path
-        //    if(room.containsPath)
-        //    {
-        //        if(room.preventExtraConnections)
-        //        { return new List<Room>(); }
-        //        return new List<Room>() { room };
-        //    }
+            return Verify_Step(importantCellsInRoom.First(), importantCellsInRoom, blockingCells, new List<Cell>(), new List<Cell>());
+        }
 
-        //    //Already saw this room, abort
-        //    if(discoveredRooms.Contains(room))
-        //    {  return new List<Room>(); }
+        private static bool Verify_Step(this Cell root, List<Cell> importantCells, List<Cell> blockingCells, List<Cell> searchedCells, List<Cell> foundImportantCells)
+        {
+            var foundInstance = foundImportantCells;
 
-        //    discoveredRooms.Add(room);
+            searchedCells.Add(root);
 
-        //    var result = new List<Room>();
+            if (importantCells.Contains(root))
+            { foundImportantCells.Add(root); }
 
-        //    foreach(var potentialRoom in room.potentialDoors.Select(s => s.room))
-        //    {
-        //        if (containInRegion && potentialRoom.cells.First().region != room.cells.First().region)
-        //        { continue; }
-        //        result.AddRange(SearchForPathRoom_R(potentialRoom, discoveredRooms, containInRegion));
-        //        if(result.Count > 0) { break; }
-        //    }
+            //Found all the cells, we're good.
+            if (importantCells.All(x => foundInstance.Contains(x))) return true;
 
-        //    return result;
-        //}
+            var nextCellsToCheck = root.NeighborCellsInRoom()
+                .Where(x => !blockingCells.Contains(x) && !searchedCells.Contains(x));
+
+            foreach (var nextCell in nextCellsToCheck)
+            {
+                var result = Verify_Step(nextCell, importantCells, blockingCells, searchedCells, foundImportantCells);
+
+                if (result) return true;
+            }
+
+            return false;
+        }
     }
 }

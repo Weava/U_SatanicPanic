@@ -8,7 +8,7 @@ using Assets.Scripts.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Numerics;
 using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Levels.Generation.RoomBuilder
@@ -22,6 +22,22 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         public static void ClaimRooms(this Region region)
         {
+            //Elevation cells are grouped into their own room to prevent complications
+            while (region.GetCells().Where(x => x.type == CellType.Elevation).Any(x => !x.claimedByRoom))
+            {
+                var elevationGroups = region.GetCells().Where(x => x.type == CellType.Elevation)
+                    .GroupBy(g => new Vector2(g.position.x, g.position.y));
+
+                foreach (var elevationGroup in elevationGroups)
+                {
+                    var room = new Room();
+                    if (!ClaimRoom(elevationGroup.ToList(), ref room))
+                    { continue; }
+                    room.regionId = region.id;
+                    RoomCollection.Add(room);
+                }
+            }
+
             //Until all cells are claimed by a room
             while(region.GetCells().Any(x => ! x.claimedByRoom))
             {
@@ -245,6 +261,9 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 cell_2 = cell_2
             };
 
+            CellCollection.cells[cell_1.position].mustNotBeBlocked = true;
+            CellCollection.cells[cell_2.position].mustNotBeBlocked = true;
+
             //room_1.doors.Add(door);
             //room_2.doors.Add(door);
 
@@ -260,7 +279,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         {
             foreach(var room in RoomCollection.GetAll())
             {
-                var scaffold = new Scaffold();
+                var scaffold = new Scaffold {roomId = room.id};
 
                 Elevation_Parse(room, ref scaffold);
 
@@ -292,27 +311,13 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                         node.lower = cell;
                         node.upper = upper;
                         node.position = upper.position;
+                        node.rootCells.Add(upper);
+                        node.rootCells.Add(cell);
                         cell.elevationOverride_Lower = true;
                         upper.elevationOverride_Upper = true;
                         scaffold.elevation.Add(node);
                     }
                 }
-
-                ////Lower Scan
-                //if (CellCollection.HasCellAt(cell.Step(Direction.Down)))
-                //{
-                //    var lower = CellCollection.cells[cell.Step(Direction.Down)];
-                //    if (!scaffold.elevation.Any(x => x.upper == cell))
-                //    {
-                //        var node = new Node_Elevation();
-                //        node.upper = cell;
-                //        node.lower = lower;
-                //        node.position = cell.position;
-                //        lower.elevationOverride_Lower = true;
-                //        cell.elevationOverride_Upper = true;
-                //        scaffold.elevation.Add(node);
-                //    }
-                //}
             }
         }
 
@@ -325,7 +330,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             {
                 var node = new Node_FloorMain();
                 node.position = cell.position;
-                node.root = cell;
+                node.root = cell;          //This redundancy is for simplifing the scaffold rendering process
+                node.rootCells.Add(cell);  // <--
                 scaffold.floor.main.Add(node);
             }
         }
@@ -342,6 +348,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                     {
                         var node = new Node_FloorConnector();
                         node.position = cell.PositionBetween(neighbor);
+                        node.rootCells.Add(cell);
+                        node.rootCells.Add(neighbor);
                         node.rootCells = new List<Cell>() { cell, neighbor };
                         scaffold.floor.connectors.Add(node);
                     }
@@ -365,7 +373,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                     {
                         var node = new Node_FloorColumn();
                         node.position = Cellf.PositionBetween(cellGrouping);
-                        node.roots = cellGrouping;
+                        node.rootCells = cellGrouping;
                         scaffold.floor.columns.Add(node);
                     }
                 }
@@ -439,6 +447,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
             var node = new Node_WallMain();
             node.position = cell.position + (direction.ToVector() * CELL_PARTIAL_OFFSET);
+            node.rootCells.Add(cell);
             node.root = cell;
             node.direction = direction;
             scaffold.wall.main.Add(node);
@@ -472,6 +481,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var connectorNode = new Node_WallConnector();
                 connectorNode.position = node.position + (direction.ToVector() * CELL_PARTIAL_OFFSET);
                 connectorNode.root = node;
+                connectorNode.rootCells.AddRange(node.rootCells);
+                connectorNode.offsetRoot = node.position;
                 connectorNode.direction = direction;
                 scaffold.wall.connectors.Add(connectorNode);
             }
@@ -489,6 +500,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var node = new Node_CeilingMain();
                 node.position = main.position + (Direction.Up.ToVector());
                 node.root = main;
+                node.rootCells.AddRange(main.rootCells);
                 scaffold.ceiling.main.Add(node);
             }
 
@@ -497,6 +509,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var node = new Node_CeilingConnector();
                 node.position = connector.position + (Direction.Up.ToVector());
                 node.root = connector;
+                node.rootCells.AddRange(connector.rootCells);
                 scaffold.ceiling.connectors.Add(node);
             }
 
@@ -505,6 +518,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var node = new Node_CeilingColumn();
                 node.position = column.position + (Direction.Up.ToVector());
                 node.root = column;
+                node.rootCells.AddRange(column.rootCells);
                 scaffold.ceiling.columns.Add(node);
             }
         }

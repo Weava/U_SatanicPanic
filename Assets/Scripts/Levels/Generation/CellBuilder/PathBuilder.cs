@@ -158,10 +158,30 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                 #endregion
 
                 #region Generate
+
+                bool elevationMode = false;
+
                 while (xTemp + zTemp + yTemp > 0)
                 {
-                    var directionsLeft = GetDirectionsLeft(xTemp, yTemp, zTemp, directions);
+                    var directionsLeft = new List<Direction>();
+
+                    //Force elevation to all generate at once, don't let it scatter because it is weird and non-sense
+                    if (elevationMode)
+                    {
+                        directionsLeft = GetDirectionsLeft(0, yTemp, 0, directions);
+                        if (!directionsLeft.Any())
+                        {
+                            elevationMode = false;
+                            directionsLeft = GetDirectionsLeft(xTemp, yTemp, zTemp, directions);
+                        }
+                    }
+                    else
+                    {  directionsLeft = GetDirectionsLeft(xTemp, yTemp, zTemp, directions); }
+
                     var currentDirection = directionsLeft[Random.Range(0, directionsLeft.Count)];
+
+                    if (currentDirection == Direction.Up || currentDirection == Direction.Down)
+                    { elevationMode = true; }
 
                     var type = (currentDirection == Direction.Up || currentDirection == Direction.Down) ? CellType.Elevation : CellType.Pathway;
                     if(type == CellType.Elevation) //Retroactivly change the previous generated cell to be an elevation cell as well

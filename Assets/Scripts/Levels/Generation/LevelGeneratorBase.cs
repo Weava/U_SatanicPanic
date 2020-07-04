@@ -2,16 +2,22 @@
 using Assets.Scripts.Levels.Generation.Base.Mono;
 using Assets.Scripts.Levels.Generation.Base.Mono.Debug;
 using Assets.Scripts.Levels.Generation.CellBuilder;
+using Assets.Scripts.Levels.Generation.Rendering.Suites;
 using Assets.Scripts.Levels.Generation.RoomBuilder;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Misc;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation
 {
     public class LevelGeneratorBase : MonoBehaviour
     {
-        private List<Region> regions = new List<Region>();
+        [HideInInspector] public List<Region> regions = new List<Region>();
+
+        [HideInInspector] public static List<GameObject> roomInstances = new List<GameObject>();
+
+        public List<Suite> globalSuites = new List<Suite>();
 
         #region Debug
         public CellDebug cellDebug;
@@ -45,8 +51,10 @@ namespace Assets.Scripts.Levels.Generation
 
             //Step 4: Parse Rooms
             HandleRoomParsing();
+            InstantiateRoomInstanceContainers();
 
             //Step 5: Decorate / Associate
+            HandleSuiteRendering();
 
             //Step 6: Render debug
             HandleDebug();
@@ -60,6 +68,17 @@ namespace Assets.Scripts.Levels.Generation
         {
             regions = transform.GetComponentsInChildren<Region>().ToList();
             regions.ForEach(x => RegionCollection.regions.Add(x.id, x));
+
+            foreach (var globalSuite in globalSuites)
+            {
+                globalSuite.Init();
+
+                if (!Level.suiteCollection.ContainsKey(globalSuite.id))
+                {
+                    Level.suiteCollection.Add(globalSuite.id, globalSuite);
+                    globalSuite.regionsAllowed.AddRange(RegionCollection.regions.Select(s => s.Value).ToList());
+                }
+            }
         }
 
         protected virtual void HandleCellGeneration()
@@ -81,10 +100,8 @@ namespace Assets.Scripts.Levels.Generation
 
         protected virtual void HandleRoomScaffolding()
         {
-            regions.ForEach(x => RoomParser.ClaimRooms(x));
-            var test2 = regions.First().GetCells();
-            var test = RoomCollection.rooms;
-            regions.ForEach(x => RoomParser.ParseDoors(x));
+            regions.ForEach(RoomParser.ClaimRooms);
+            regions.ForEach(RoomParser.ParseDoors);
             RoomParser.ScaffoldRoomNodes();
         }
 
@@ -95,6 +112,25 @@ namespace Assets.Scripts.Levels.Generation
                 room.ParseRoom();
             }
         }
+
+        protected virtual void InstantiateRoomInstanceContainers()
+        {
+            foreach(var room in Level.roomData.Select(s => s.room))
+            {
+                var instance = new GameObject(room.id);
+                roomInstances.Add(instance);
+            }
+        }
+
+        protected virtual void HandleSuiteRendering()
+        {
+            SuiteRenderHandler.RenderGlobalRequired();
+            SuiteRenderHandler.RenderSuitesForRegions();
+        }
+
+        //Feature Rendering
+
+        //Decoration Rendering
 
         #endregion
 

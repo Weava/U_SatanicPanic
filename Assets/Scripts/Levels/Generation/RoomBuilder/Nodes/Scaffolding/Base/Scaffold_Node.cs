@@ -1,24 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Levels.Generation.Base;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base
 {
     public class Scaffold_Node : Node
     {
         public ScaffoldNodeType type;
+        public List<Cell> rootCells = new List<Cell>();
+        public Vector3 offsetRoot; //Used for nodes that base their position off of another position
     }
 
     public class Scaffold
     {
+        public string roomId;
+
         public Floor floor = new Floor();
         public Wall wall = new Wall();
         public Ceiling ceiling = new Ceiling();
 
         public List<Node_Elevation> elevation = new List<Node_Elevation>();
 
-        public List<Node> GetNodes()
+        public List<Scaffold_Node> GetFlattenedNodes()
         {
-            var result = new List<Node>();
+            var result = new List<Scaffold_Node>();
 
             result.AddRange(floor.columns);
             result.AddRange(floor.connectors);
@@ -41,50 +47,64 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base
             if(floor.columns.Any(x => x.id == nodeId))
             {
                 floor.columns.First(x => x.id == nodeId).claimed = true;
+                SaveChanges();
                 return true;
             }
             else if (floor.connectors.Any(x => x.id == nodeId))
             {
                 floor.connectors.First(x => x.id == nodeId).claimed = true;
+                SaveChanges();
                 return true;
             }
             else if (floor.main.Any(x => x.id == nodeId))
             {
                 floor.main.First(x => x.id == nodeId).claimed = true;
+                SaveChanges();
                 return true;
             }
             else if (wall.main.Any(x => x.id == nodeId))
             {
                 wall.main.First(x => x.id == nodeId).claimed = true;
+                SaveChanges();
                 return true;
             }
             else if (wall.connectors.Any(x => x.id == nodeId))
             {
                 wall.connectors.First(x => x.id == nodeId).claimed = true;
+                SaveChanges();
                 return true;
             }
             else if (ceiling.columns.Any(x => x.id == nodeId))
             {
                 ceiling.columns.First(x => x.id == nodeId).claimed = true;
+                SaveChanges();
                 return true;
             }
             else if (ceiling.connectors.Any(x => x.id == nodeId))
             {
                 ceiling.connectors.First(x => x.id == nodeId).claimed = true;
+                SaveChanges();
                 return true;
             }
             else if (ceiling.main.Any(x => x.id == nodeId))
             {
                 ceiling.main.First(x => x.id == nodeId).claimed = true;
+                SaveChanges();
                 return true;
             }
             else if (elevation.Any(x => x.id == nodeId))
             {
                 elevation.First(x => x.id == nodeId).claimed = true;
+                SaveChanges();
                 return true;
             }
 
             return false;
+        }
+
+        public void SaveChanges()
+        {
+            Level.roomScaffolds[roomId] = this;
         }
     }
 

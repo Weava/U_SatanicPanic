@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Levels.Generation.Rendering.Suites;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -30,6 +31,8 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
         public PathMarker startNode;
         public PathMarker endNode;
 
+        public List<Suite> suites = new List<Suite>();
+
         [HideInInspector]
         public Vector3 startPosition { get { return startNode.transform.position; } }
         [HideInInspector]
@@ -44,6 +47,20 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
         private void Awake()
         {
             id = Guid.NewGuid().ToString();
+        }
+
+        private void Start()
+        {
+            foreach (var suite in suites)
+            {
+                suite.Init();
+
+                if (!Level.suiteCollection.ContainsKey(suite.id))
+                {
+                    Level.suiteCollection.Add(suite.id, suite);
+                    suite.regionsAllowed.Add(this);
+                }
+            }
         }
 
         void OnDrawGizmos()

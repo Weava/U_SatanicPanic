@@ -42,7 +42,44 @@ namespace Assets.Scripts
         {
             return DirectionToVector(direction);
         }
+
+        public static float ToAngle(this Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.East:
+                    return 90f;
+                case Direction.South:
+                    return 180f;
+                case Direction.West:
+                    return 270f;
+                default:
+                    return 0f;
+            }
+        }
         #endregion
+
+        /// <summary>
+        /// Assumes that 0,0,0 is the pivot of this projection and North is the default normal
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <returns></returns>
+        public static Vector3 ProjectOffsetToNormal(this Vector3 offset, Direction normal)
+        {
+            switch (normal)
+            {
+                case Direction.West:
+                    return new Vector3(-offset.z, offset.y, offset.x);
+                case Direction.East:
+                    return new Vector3(offset.z, offset.y, -offset.x);
+                case Direction.South:
+                    return new Vector3(-offset.x, offset.y, -offset.z);
+                default:
+                    return offset;
+            }
+        }
+
+        #region Obsolete
 
         [Obsolete]
         public static Direction GetOppositeDirection(this Direction direction)
@@ -175,6 +212,8 @@ namespace Assets.Scripts
                     return new Vector3(0, 0, 1);
             }
         }
+
+        #endregion
     }
 
     public enum Direction

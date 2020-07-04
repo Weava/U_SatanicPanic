@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,6 +12,10 @@ namespace Assets.Scripts.Levels.Generation.Extensions
     public static class Cellf
     {
         public const int CELL_STEP_OFFSET = 8;
+
+        public const int CELL_MAIN_OFFSET = 6;
+
+        public const int CELL_ELEVATION_OFFSET = 4;
 
         #region Directional Positioning
 
@@ -180,7 +185,17 @@ namespace Assets.Scripts.Levels.Generation.Extensions
 
             return result;
         }
-         
+
+        public static bool IsClaimedBySuite(this Cell cell)
+        {
+            return CellCollection.cells[cell.position].claimedBySuite;
+        }
+
+        public static bool AnyAreClaimedBySuite(this List<Cell> cells)
+        {
+            return cells.Any(cell => cell.IsClaimedBySuite());
+        }
+
         #endregion
     }
 }

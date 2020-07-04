@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &227131050436482088
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 227131050436482090}
+  - component: {fileID: 4794714524655269611}
+  m_Layer: 0
+  m_Name: Suite_Fill_Yellow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &227131050436482090
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227131050436482088}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4794714524655269611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227131050436482088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 941674bb3ce380440b587153658f4353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 4cda5a0e-3180-4db5-bf61-d359efeecfd4
+  roomInstanceContainer: {fileID: 0}
+  regionsAllowed:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  type: 1
+  priority: 0
+  required: 0
+  chanceToRender: 100
+  frequencyCap: 1
+  timesUsed: 0
+  Floor_Mains:
+  - {fileID: 8755663942343118889, guid: ce9c24d6064b24647889d07c15bf7bf5, type: 3}
+  Floor_Connectors:
+  - {fileID: 6684948947582212108, guid: 5533b1bbd86fb7d45898bac0339c009b, type: 3}
+  Floor_Columns:
+  - {fileID: 3695575709702049511, guid: b9017fb04f0742444b014bafb3ae89f1, type: 3}
+  Wall_Mains:
+  - {fileID: 7065248010361062230, guid: 8f2618fff01640945b7a4101f43d9d34, type: 3}
+  Wall_Connectors:
+  - {fileID: 4366077838538983147, guid: 2886588b057035b4884bee54eb3781f6, type: 3}
+  Ceiling_Mains:
+  - {fileID: 3373939903768897146, guid: 56d58530d9662ff44b08c97b09912cc4, type: 3}
+  Ceiling_Connectors:
+  - {fileID: 3992367543652362585, guid: ad87c39294fa30f4593828afa41f511f, type: 3}
+  Ceiling_Columns:
+  - {fileID: 8285256026932609453, guid: 6b832d77539ca5c4291f36e924bc1567, type: 3}

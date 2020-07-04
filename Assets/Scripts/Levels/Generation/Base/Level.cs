@@ -1,9 +1,11 @@
-﻿using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes;
+﻿using Assets.Scripts.Levels.Generation.Rendering.Suites;
+using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Parsing.Base;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base
 {
@@ -13,15 +15,18 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         #region Metadata
 
+        public static bool spawnIsPlaced = false;
+
         //Scaffolding
         public static List<Node_Door> doors = new List<Node_Door>();
         public static Dictionary<string, Scaffold> roomScaffolds = new Dictionary<string, Scaffold>();
+        public static Dictionary<string, Suite> suiteCollection = new Dictionary<string, Suite>();
 
         //Parsing
         public static Dictionary<string, Parsing_Node> roomParsings = new Dictionary<string, Parsing_Node>();
 
-        ////Placements
-        //public static Dictionary<string, Placement> roomPlacement = new Dictionary<string, Placement>();
+        //Generated Level Data
+        public static Dictionary<string, LevelRoom> Rooms = new Dictionary<string, LevelRoom>();
 
         #endregion
 
@@ -35,6 +40,15 @@ namespace Assets.Scripts.Levels.Generation.Base
         public static RoomData GetRoomData(string roomId)
         {
             return roomData.First(x => x.roomId == roomId);
+        }
+
+        #endregion
+
+        #region Setters
+
+        public static void SaveChanges(this Suite suite)
+        {
+            suiteCollection[suite.id] = suite;
         }
 
         #endregion
@@ -54,9 +68,9 @@ namespace Assets.Scripts.Levels.Generation.Base
             roomId = id;
         }
 
-        public List<Node> UnclaimedNodes()
+        public List<Scaffold_Node> UnclaimedNodes()
         {
-            return scaffold.GetNodes().Where(x => !x.claimed).ToList();
+            return scaffold.GetFlattenedNodes().Where(x => !x.claimed).ToList();
         }
 
         public void SetNodesClaimed(List<Node> nodes)
@@ -67,9 +81,20 @@ namespace Assets.Scripts.Levels.Generation.Base
             }
         }
 
+        public bool IsNodeClaimed(Node node)
+        {
+            return scaffold.GetFlattenedNodes().First(x => x.id == node.id).claimed;
+        }
+
         public void SetNodeClaimed(Node node)
         {
             scaffold.SetNodeClaimed(node.id);
         }
+    }
+
+    public class LevelRoom
+    {
+        public string roomId;
+        public GameObject renderContainer;
     }
 }

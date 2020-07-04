@@ -2,6 +2,7 @@
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Levels.Generation.Extensions;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base
@@ -11,7 +12,13 @@ namespace Assets.Scripts.Levels.Generation.Base
         #region Meta
         public CellType type = CellType.Cell;
 
-        public bool important { get { return (type == CellType.Pathway || type == CellType.Elevation || type == CellType.Spawn); } } 
+        public bool important => (type == CellType.Pathway || type == CellType.Elevation || type == CellType.Spawn);
+
+        public bool mustNotBeBlocked = false;
+
+        public bool blocked = false;
+
+        public bool claimedBySuite = false;
 
         public int sequence = 0;
 

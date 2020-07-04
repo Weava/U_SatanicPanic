@@ -82,7 +82,12 @@
     <Compile Include="Assets\Scripts\Levels\Generation\LevelGeneratorBase.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Decoration\Base\Decoration.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Features\Base\Feature.cs" />
-    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Suites\Base\Suite.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Suites\Suite.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Suites\SuiteEntity.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Suites\SuiteRenderHandler.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Suites\Types\Suite_Elevator.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Suites\Types\Suite_Fill.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\Rendering\Suites\Types\Suite_Static.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Node.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Parsing\Base\Parsing_Node.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Placement\Base\Placement_Node.cs" />
@@ -98,6 +103,7 @@
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\RoomParser.cs" />
     <Compile Include="Assets\Scripts\Misc\Billboard_Sprite.cs" />
     <Compile Include="Assets\Scripts\Misc\Direction.cs" />
+    <Compile Include="Assets\Scripts\Misc\Extensions\CollectionExtensions.cs" />
     <Compile Include="Assets\Scripts\Misc\Gib.cs" />
     <Compile Include="Assets\Scripts\Misc\Lifetime.cs" />
     <Compile Include="Assets\Scripts\Misc\Randomf.cs" />

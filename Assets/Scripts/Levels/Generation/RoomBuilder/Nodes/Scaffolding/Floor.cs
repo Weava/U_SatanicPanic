@@ -6,20 +6,32 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding
 {
     public class Node_FloorMain : Scaffold_Node
     {
-        public new ScaffoldNodeType type = ScaffoldNodeType.Floor_Main;
         public bool elevationOverride = false;
         public Cell root;
+
+        public Node_FloorMain()
+        {
+            type = ScaffoldNodeType.Floor_Main;
+        }
     }
 
     public class Node_FloorConnector : Scaffold_Node
     {
-        public new ScaffoldNodeType type = ScaffoldNodeType.Floor_Connector;
-        public List<Cell> rootCells = new List<Cell>();
+        //public List<Cell> rootCells = new List<Cell>();
+
+        public Node_FloorConnector()
+        {
+            type = ScaffoldNodeType.Floor_Connector;
+        }
     }
 
     public class Node_FloorColumn : Scaffold_Node
     {
-        public new ScaffoldNodeType type = ScaffoldNodeType.Floor_Column;
-        public List<Cell> roots = new List<Cell>();
+        //public List<Cell> roots = new List<Cell>();
+
+        public Node_FloorColumn()
+        {
+            type = ScaffoldNodeType.Floor_Column;
+        }
     }
 }
