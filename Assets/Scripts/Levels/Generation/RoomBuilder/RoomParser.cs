@@ -350,6 +350,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                         node.position = cell.PositionBetween(neighbor);
                         node.rootCells.Add(cell);
                         node.rootCells.Add(neighbor);
+                        node.normal = Directionf.GetNormalTowards(node.position, node.rootCells.First().position);
                         node.rootCells = new List<Cell>() { cell, neighbor };
                         scaffold.floor.connectors.Add(node);
                     }
@@ -509,6 +510,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var node = new Node_CeilingConnector();
                 node.position = connector.position + (Direction.Up.ToVector());
                 node.root = connector;
+                node.normal = connector.normal;
                 node.rootCells.AddRange(connector.rootCells);
                 scaffold.ceiling.connectors.Add(node);
             }

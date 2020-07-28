@@ -57,6 +57,39 @@ namespace Assets.Scripts
                     return 0f;
             }
         }
+
+        public static Direction GetNormalTowards(Vector3 root, Vector3 towards)
+        {
+            var normal = (towards - root).normalized;
+            if (normal.x > 0)
+            {
+                if (normal.z > 0)
+                {
+                    if (normal.z - normal.x > 0) return Direction.North;
+                    return Direction.East;
+                }
+                else
+                {
+                    if (normal.z + normal.x > 0) return Direction.East;
+                    return Direction.South;
+                }
+            } else if (normal.x < 0)
+            {
+                if (normal.z > 0)
+                {
+                    if (normal.z + normal.x > 0) return Direction.North;
+                    return Direction.West;
+                }
+                else
+                {
+                    if (normal.z - normal.x > 0) return Direction.West;
+                    return Direction.South;
+                }
+            }
+
+            return Direction.Up;
+        }
+
         #endregion
 
         /// <summary>

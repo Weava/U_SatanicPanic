@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Levels.Generation.Base;
+﻿using System;
+using Assets.Scripts.Levels.Generation.Base;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -65,6 +66,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             return CellCollection.GetByRoom(room.id).Where(x => !x.mustNotBeBlocked).ToList();
         }
 
+        [Obsolete]
         public static bool VerifyCellCollectionDoesNotBlockRoomPathways(this Room room, List<Cell> blockingCells, List<Cell> additionalImportantCells)
         {
             var importantCellsInRoom = CellCollection.GetByRoom(room.id).Where(x => x.mustNotBeBlocked).ToList();
@@ -73,6 +75,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             return Verify_Step(importantCellsInRoom.First(), importantCellsInRoom, blockingCells, new List<Cell>(), new List<Cell>());
         }
 
+        [Obsolete]
         private static bool Verify_Step(this Cell root, List<Cell> importantCells, List<Cell> blockingCells, List<Cell> searchedCells, List<Cell> foundImportantCells)
         {
             var foundInstance = foundImportantCells;

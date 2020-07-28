@@ -56,12 +56,14 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
             foreach (var main in scaffolding.floor.main)
             {
                 if (main.root.elevationOverride_Upper) continue;
+                if (main.claimed) continue;
                 var instance = Instantiate(floor_main, roomContainer.transform);
                 instance.transform.position = main.position;
             }
 
             foreach(var connector in scaffolding.floor.connectors)
             {
+                if (connector.claimed) continue;
                 var instance = Instantiate(floor_connector, roomContainer.transform);
                 instance.transform.position = connector.position;
                 instance.transform.LookAt(connector.rootCells.First().position);
@@ -69,6 +71,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach (var column in scaffolding.floor.columns)
             {
+                if (column.claimed) continue;
                 var instance = Instantiate(floor_column, roomContainer.transform);
                 instance.transform.position = column.position;
             }
@@ -77,6 +80,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
             #region Wall
             foreach(var main in scaffolding.wall.main)
             {
+                if (main.claimed) continue;
                 var instance = Instantiate(wall_main, roomContainer.transform);
                 instance.transform.position = main.position;
                 instance.transform.LookAt(main.root.position);
@@ -84,6 +88,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach(var connector in scaffolding.wall.connectors)
             {
+                if (connector.claimed) continue;
                 var instance = Instantiate(wall_connector, roomContainer.transform);
                 instance.transform.position = connector.position;
                 instance.transform.LookAt(connector.root.position);
@@ -94,6 +99,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach (var main in scaffolding.ceiling.main)
             {
+                if (main.claimed) continue;
                 if (main.root.root.elevationOverride_Lower) continue;
                 var instance = Instantiate(ceiling_main, roomContainer.transform);
                 instance.transform.position = main.position;
@@ -101,6 +107,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach (var connector in scaffolding.ceiling.connectors)
             {
+                if (connector.claimed) continue;
                 var instance = Instantiate(ceiling_connector, roomContainer.transform);
                 instance.transform.position = connector.root.position;
                 instance.transform.LookAt(connector.root.rootCells.First().position);
@@ -109,6 +116,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach (var column in scaffolding.ceiling.columns)
             {
+                if (column.claimed) continue;
                 var instance = Instantiate(ceiling_column, roomContainer.transform);
                 instance.transform.position = column.position;
             }

@@ -5,6 +5,7 @@ using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base
@@ -20,7 +21,7 @@ namespace Assets.Scripts.Levels.Generation.Base
         //Scaffolding
         public static List<Node_Door> doors = new List<Node_Door>();
         public static Dictionary<string, Scaffold> roomScaffolds = new Dictionary<string, Scaffold>();
-        public static Dictionary<string, Suite> suiteCollection = new Dictionary<string, Suite>();
+        //public static Dictionary<string, Suite> suiteCollection = new Dictionary<string, Suite>();
 
         //Parsing
         public static Dictionary<string, Parsing_Node> roomParsings = new Dictionary<string, Parsing_Node>();
@@ -40,15 +41,6 @@ namespace Assets.Scripts.Levels.Generation.Base
         public static RoomData GetRoomData(string roomId)
         {
             return roomData.First(x => x.roomId == roomId);
-        }
-
-        #endregion
-
-        #region Setters
-
-        public static void SaveChanges(this Suite suite)
-        {
-            suiteCollection[suite.id] = suite;
         }
 
         #endregion
@@ -95,6 +87,14 @@ namespace Assets.Scripts.Levels.Generation.Base
     public class LevelRoom
     {
         public string roomId;
+        public string regionId;
+
+        //Physical container for rendering room in scene
         public GameObject renderContainer;
+
+        public void SaveChanges()
+        {
+            Level.Rooms[roomId] = this;
+        }
     }
 }

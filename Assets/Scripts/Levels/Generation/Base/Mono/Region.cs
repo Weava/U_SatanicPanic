@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base.Mono
@@ -51,16 +52,16 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
 
         private void Start()
         {
-            foreach (var suite in suites)
-            {
-                suite.Init();
+            //foreach (var suite in suites)
+            //{
+            //    suite.Init();
 
-                if (!Level.suiteCollection.ContainsKey(suite.id))
-                {
-                    Level.suiteCollection.Add(suite.id, suite);
-                    suite.regionsAllowed.Add(this);
-                }
-            }
+            //    if (!Level.suiteCollection.ContainsKey(suite.id))
+            //    {
+            //        Level.suiteCollection.Add(suite.id, suite);
+            //        suite.regionsAllowed.Add(this);
+            //    }
+            //}
         }
 
         void OnDrawGizmos()

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7708819997615909792}
   - component: {fileID: 4613695221761710388}
-  - component: {fileID: 3373939903768897146}
+  - component: {fileID: 5948932473255154649}
   m_Layer: 0
   m_Name: SE_Gray_Ceiling_Main
   m_TagString: Untagged
@@ -46,7 +46,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 6, y: 0.2, z: 6}
   m_Center: {x: 0, y: 3.1, z: 0}
---- !u!114 &3373939903768897146
+--- !u!114 &5948932473255154649
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -55,7 +55,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 658132145932888508}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe5796b1cf2ec5e41852e8cb23e1520d, type: 3}
+  m_Script: {fileID: 11500000, guid: f48ff6a81d1ab494fad16d3fa79b8311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &7162717170753483034

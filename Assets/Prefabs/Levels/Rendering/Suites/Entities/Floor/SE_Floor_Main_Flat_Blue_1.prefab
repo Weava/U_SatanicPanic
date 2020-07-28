@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 704240782492164483}
   - component: {fileID: 3802670050195529742}
-  - component: {fileID: 1332081931340884690}
+  - component: {fileID: 817464335072017785}
   m_Layer: 0
   m_Name: SE_Floor_Main_Flat_Blue_1
   m_TagString: Untagged
@@ -46,7 +46,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 6, y: 0.5, z: 6}
   m_Center: {x: 0, y: -0.25, z: 0}
---- !u!114 &1332081931340884690
+--- !u!114 &817464335072017785
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -55,7 +55,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6723374845652763734}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe5796b1cf2ec5e41852e8cb23e1520d, type: 3}
+  m_Script: {fileID: 11500000, guid: f48ff6a81d1ab494fad16d3fa79b8311, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &7706233627764757242

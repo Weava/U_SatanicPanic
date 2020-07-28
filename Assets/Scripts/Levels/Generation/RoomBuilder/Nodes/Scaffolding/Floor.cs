@@ -18,6 +18,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding
     public class Node_FloorConnector : Scaffold_Node
     {
         //public List<Cell> rootCells = new List<Cell>();
+        public Direction normal;
 
         public Node_FloorConnector()
         {

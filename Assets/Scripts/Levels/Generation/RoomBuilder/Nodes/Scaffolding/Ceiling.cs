@@ -17,6 +17,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding
     {
         public Node_FloorConnector root;
 
+        public Direction normal;
+
         public Node_CeilingConnector()
         {
             type = ScaffoldNodeType.Ceiling_Connector;

@@ -150,9 +150,5 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base
         Ceiling_Main,
         Ceiling_Connector,
         Ceiling_Column,
-
-        //Override Scaffolds
-
-        Wall_Corner,
     }
 }

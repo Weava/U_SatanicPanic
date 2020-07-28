@@ -6,6 +6,7 @@ using Assets.Scripts.Levels.Generation.Rendering.Suites;
 using Assets.Scripts.Levels.Generation.RoomBuilder;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
 using Assets.Scripts.Misc;
 using UnityEngine;
 
@@ -51,7 +52,7 @@ namespace Assets.Scripts.Levels.Generation
 
             //Step 4: Parse Rooms
             HandleRoomParsing();
-            InstantiateRoomInstanceContainers();
+            InstantiateRoomInstances();
 
             //Step 5: Decorate / Associate
             HandleSuiteRendering();
@@ -69,16 +70,16 @@ namespace Assets.Scripts.Levels.Generation
             regions = transform.GetComponentsInChildren<Region>().ToList();
             regions.ForEach(x => RegionCollection.regions.Add(x.id, x));
 
-            foreach (var globalSuite in globalSuites)
-            {
-                globalSuite.Init();
+            //foreach (var globalSuite in globalSuites)
+            //{
+            //    globalSuite.Init();
 
-                if (!Level.suiteCollection.ContainsKey(globalSuite.id))
-                {
-                    Level.suiteCollection.Add(globalSuite.id, globalSuite);
-                    globalSuite.regionsAllowed.AddRange(RegionCollection.regions.Select(s => s.Value).ToList());
-                }
-            }
+            //    if (!Level.suiteCollection.ContainsKey(globalSuite.id))
+            //    {
+            //        Level.suiteCollection.Add(globalSuite.id, globalSuite);
+            //        globalSuite.regionsAllowed.AddRange(RegionCollection.regions.Select(s => s.Value).ToList());
+            //    }
+            //}
         }
 
         protected virtual void HandleCellGeneration()
@@ -113,19 +114,24 @@ namespace Assets.Scripts.Levels.Generation
             }
         }
 
-        protected virtual void InstantiateRoomInstanceContainers()
+        protected virtual void InstantiateRoomInstances()
         {
             foreach(var room in Level.roomData.Select(s => s.room))
             {
-                var instance = new GameObject(room.id);
-                roomInstances.Add(instance);
+                Level.Rooms.Add(room.id, 
+                    new LevelRoom
+                    {
+                        roomId = room.id,
+                        regionId = room.regionId,
+                        renderContainer = new GameObject()
+                    });
             }
         }
 
         protected virtual void HandleSuiteRendering()
         {
-            SuiteRenderHandler.RenderGlobalRequired();
-            SuiteRenderHandler.RenderSuitesForRegions();
+            SuiteRenderHandler.GlobalSuites = globalSuites;
+            SuiteRenderHandler.RenderLevelSuites();
         }
 
         //Feature Rendering

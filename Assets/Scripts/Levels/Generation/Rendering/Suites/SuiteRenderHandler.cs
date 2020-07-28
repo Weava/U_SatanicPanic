@@ -1,238 +1,179 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Assets.Scripts.Levels.Generation.Base;
 using Assets.Scripts.Levels.Generation.Base.Mono;
-using Assets.Scripts.Levels.Generation.Rendering.Suites.Types;
-using Assets.Scripts.Misc.Extensions;
-using System.Linq;
+using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using Assets.Scripts.Misc.Extensions;
 
 namespace Assets.Scripts.Levels.Generation.Rendering.Suites
 {
+    /// <summary>
+    /// Handles Suite rendering per region
+    /// </summary>
     public static class SuiteRenderHandler
     {
-        //Pass for assigning globally available suites that are required to render
-        public static void RenderGlobalRequired()
+        #region Rendering Metadata Properties
+
+        public static List<Suite> GlobalSuites = new List<Suite>();
+        public static Dictionary<string, List<Suite>> RegionSuites = new Dictionary<string, List<Suite>>();
+
+        /// <summary>
+        /// Actual collection of suites that will be attempted to render
+        /// </summary>
+        public static Dictionary<string, List<Suite>> RenderPool = new Dictionary<string, List<Suite>>();
+
+        #endregion
+
+        public static bool RenderLevelSuites()
         {
-            var globalRequired = Level.suiteCollection.Select(s => s.Value)
-                .Where(x => x.regionsAllowed.Count == RegionCollection.regions.Count && x.required && x.timesUsed == 0);
+            Init(); //Setups render pool
+            return RenderRegions();
+        }
 
-            var roomsAcrossRegions = Level.roomData.Select(s => s.room).ToList().Shuffle();
+        #region Rendering Process
 
-            foreach (var suite in globalRequired)
+        private static void Init()
+        {
+            foreach (var region in RegionCollection.regions.Select(s => s.Value))
             {
-                foreach (var room in roomsAcrossRegions)
+                RegionSuites.Add(region.id, region.suites);
+            }
+
+            var globalPool = new List<Suite>();
+            var regions = RegionCollection.regions.Select(s => s.Value).ToList();
+
+            //Populate global suites into regions for render pool
+            foreach (var globalSuite in GlobalSuites)
+            {
+                globalSuite.isGlobalSuite = true;
+
+                if (globalSuite.noLimitToRenderCap)
                 {
-                    if (suite.type == SuiteType.Fill)
+                    foreach (var region in regions)
                     {
-                        if (AttemptFillRenderPass(suite as Suite_Fill, room))
+                        if (RenderPool.ContainsKey(region.id))
                         {
-                            break;
+                            RenderPool[region.id].Add(globalSuite);
                         }
-                    } else if (suite.type == SuiteType.Static)
-                    {
-                        if (AttemptStaticRenderPass(suite as Suite_Static, room))
+                        else
                         {
-                            break;
+                            RenderPool.Add(region.id, new List<Suite> { globalSuite });
+                        }
+                    }
+                }
+                else
+                {
+
+                    var timesToRender = Random.Range(globalSuite.required ? 1 : 0, globalSuite.renderAmountCap + 1);
+                    for (int i = 0; i < timesToRender; i++)
+                    {
+                        var randomRegion = regions.Random();
+                        if (RenderPool.ContainsKey(randomRegion.id))
+                        {
+                            RenderPool[randomRegion.id].Add(globalSuite);
+                        }
+                        else
+                        {
+                            RenderPool.Add(randomRegion.id, new List<Suite> {globalSuite});
+                        }
+                    }
+                }
+            }
+
+            //Populate region suites into respective regions for render pool
+            foreach (var region in RegionSuites.Select(s => s.Key))
+            {
+                foreach (var suite in RegionSuites[region])
+                {
+                    if (suite.noLimitToRenderCap)
+                    {
+                        if (RenderPool.ContainsKey(region))
+                        {
+                            RenderPool[region].Add(suite);
+                        }
+                        else
+                        {
+                            RenderPool.Add(region, new List<Suite> { suite });
                         }
                     }
                     else
                     {
-                        return;
+                        var timesToRender = Random.Range(suite.required ? 1 : 0, suite.renderAmountCap + 1);
+                        for (int i = 0; i < timesToRender; i++)
+                        {
+                            if (RenderPool.ContainsKey(region))
+                            {
+                                RenderPool[region].Add(suite);
+                            }
+                            else
+                            {
+                                RenderPool.Add(region, new List<Suite> {suite});
+                            }
+                        }
+                    }
+
+                    foreach (var overridingSuite in RenderPool[region].Where(x => x.overrideGlobalTag != "").ToList())
+                    {
+                        var globalSuiteToOverride = RenderPool[region].FirstOrDefault(x =>
+                            x.isGlobalSuite && x.overrideGlobalTag == overridingSuite.overrideGlobalTag);
+                        if (globalSuiteToOverride != null)
+                        {
+                            RenderPool[region].Remove(globalSuiteToOverride);
+                        }
                     }
                 }
             }
-
-            if (Level.suiteCollection.Any(a => a.Value.required && a.Value.timesUsed == 0))
-            {
-                throw new Exception("Some globally required suites did not render. Make sure the level has the requirements to render all of the suites.");
-            }
         }
 
-        public static void RenderSuitesForRegions()
+        private static bool RenderRegions()
         {
-            foreach (var region in RegionCollection.regions.Select(s => s.Value).ToList())
+            foreach (var regionId in RenderPool.Select(s => s.Key))
             {
-                var suites = Level.suiteCollection.Select(s => s.Value).Where(x => x.regionsAllowed.Contains(region));
-                var regionRooms = Level.roomData.Where(x => x.room.regionId == region.id).Select(s => s.room);
-
-                //Required pass
-                var required = suites.Where(x => x.required && x.timesUsed == 0).ToList();
-                foreach (var suite in required)
+                var regionSuites = RenderPool[regionId];
+                foreach (var room in Level.Rooms.Select(s => s.Value).Where(x => x.regionId == regionId).ToList())
                 {
-                    foreach (var room in regionRooms)
+                    //TODO: Order suites by bias preference per room
+                    regionSuites = regionSuites.Shuffle();
+                    foreach (var suite in regionSuites)
                     {
-                        if (suite.type == SuiteType.Fill)
+                        if (RenderRoom(room, suite)) //Successful suite render, remove from pools
                         {
-                            if (AttemptFillRenderPass(suite as Suite_Fill, room))
+                            if (!suite.noLimitToRenderCap)
                             {
-                                break;
+                                RenderPool[regionId].Remove(suite);
                             }
-                        }
-                        else if (suite.type == SuiteType.Static)
-                        {
-                            if (AttemptStaticRenderPass(suite as Suite_Static, room))
-                            {
-                                break;
-                            }
-                        }
-                        else
-                        {
                             break;
                         }
                     }
                 }
 
-                if (Level.suiteCollection.Any(a => a.Value.required && a.Value.timesUsed == 0))
-                {
-                    throw new Exception("Some region required suites did not render. Make sure the level has the requirements to render all of the suites.");
-                }
-
-                //Priority pass
-                var remainingSuites = suites.Where(x => !x.required).ToList();
-                var suitePool = new Dictionary<int, List<string>>();
-                foreach (var remainingSuitePriority in remainingSuites) //Create Suite pool
-                {
-                    if(!suitePool.ContainsKey(remainingSuitePriority.priority))
-                    { suitePool.Add(remainingSuitePriority.priority, new List<string>());}
-
-                    var amount = remainingSuitePriority.SuiteChanceRollSuccess();
-                    for (int i = 0; i < amount; i++)
-                    {
-                        suitePool[remainingSuitePriority.priority].Add(remainingSuitePriority.id);
-                    }
-                }
-
-                if (suitePool.Keys.Any(x => x > 0))
-                {
-                    var priorityGroupings = suitePool.Keys.Where(x => x > 0).OrderByDescending(o => o);
-                    foreach (var priority in priorityGroupings)
-                    {
-                        var poolSubset = suitePool[priority];
-                        while (poolSubset.Any())
-                        {
-                            var suite = poolSubset.Random();
-                            foreach (var regionRoom in regionRooms)
-                            {
-                                if (AttemptRender(Level.suiteCollection[suite], regionRoom))
-                                {
-                                    break;
-                                }
-                            }
-
-                            poolSubset.Remove(suite);
-                        }
-                    }
-                }
-
-                //Priority 0 Pass
-                if (suitePool.Keys.Any(x => x == 0))
-                {
-                    var suitPool = suitePool[0].ToList().Shuffle();
-                    foreach (var suite in suitPool)
-                    {
-                        foreach (var regionRoom in regionRooms)
-                        {
-                            AttemptRender(Level.suiteCollection[suite], regionRoom);
-                        }
-                    }
-                }
+                if (RenderPool[regionId].Any(x => x.required)) //Generation failed to render all required suites
+                { return false; }
             }
-        }
-
-        public static bool AttemptRender(Suite suite, Room room)
-        {
-            if (!Level.Rooms.ContainsKey(room.id))
-            {
-                Level.Rooms[room.id] = new LevelRoom()
-                {
-                    roomId = room.id,
-                    renderContainer = new GameObject("Render Container")
-                };
-
-                Level.Rooms[room.id].renderContainer.transform.parent =
-                    LevelGeneratorBase.roomInstances.FirstOrDefault(x => x.name == room.id).transform;
-            }
-
-            if (suite.type == SuiteType.Fill)
-            {
-                if (AttemptFillRenderPass(suite as Suite_Fill, room))
-                {
-                    return true;
-                }
-            }
-            else if (suite.type == SuiteType.Static)
-            {
-                if (AttemptStaticRenderPass(suite as Suite_Static, room))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool AttemptStaticRenderPass(Suite_Static suite, Room room)
-        {
-            var cells = room.GetCells();
-
-            suite.targetRoom = room;
-
-            foreach (var root in cells)
-            {
-                suite.rootCell = root;
-                if (suite.IsValid())
-                {
-                    suite.Render();
-                    suite.SaveChanges();
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool AttemptFillRenderPass(Suite_Fill suite, Room room)
-        {
-            suite.targetRoom = room;
-
-            if (suite.IsValid())
-            {
-                suite.Render();
-                suite.SaveChanges();
-            }
-            else
-            { return false; }
 
             return true;
         }
 
-        /// <summary>
-        /// Rolls for the chance that a suite renders successfully, out putting a total amount of successes which will be the population of a suite
-        /// </summary>
-        /// <param name="suite"></param>
-        /// <param name="repeats"></param>
-        /// <returns></returns>
-        public static int SuiteChanceRollSuccess(this Suite suite)
+        private static bool RenderRoom(LevelRoom room, Suite suite)
         {
-            var attempts = 0;
-            var repeats = 0;
-            while (attempts < suite.frequencyCap)
+            if (!suite.ValidateRoom(room)) return false; //Check if room even has a chance with this suite
+
+            var success = suite.Build(room);
+            suite.renderContainer.roomId = room.roomId;
+
+            if (success)
             {
-                var result = Random.Range(0, 100);
-                if (suite.chanceToRender >= result)
-                {
-                    repeats++;
-                    attempts++;
-                }
-                else //Terminate on fail
-                {
-                    return repeats;
-                }
+                room.renderContainer.name = suite.suiteName;
+                suite.Render(ref room);
+                room.SaveChanges();
             }
 
-            return repeats;
+            return success;
         }
+
+        #endregion
     }
 }
