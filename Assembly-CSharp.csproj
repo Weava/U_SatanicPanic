@@ -108,6 +108,7 @@
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Scaffolding\Floor.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\Nodes\Scaffolding\Wall.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\ProjectionStrategies\Projection_Bloom.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\ProjectionStrategies\Projection_Deterministic.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\ProjectionStrategies\Projection_LimitedStep.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\ProjectionStrategies\Projection_PartialBloom.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\RoomParser.cs" />

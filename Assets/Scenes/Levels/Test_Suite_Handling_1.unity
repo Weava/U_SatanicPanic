@@ -38,13 +38,13 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 1
+  m_GIWorkflowMode: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -96,7 +96,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: cfccc8f5332ba264ea951bcf92c31ccb,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -144,7 +145,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1811783}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.0023780756, y: 0.000001901129, z: -0.008397547, w: 0.9999619}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -152,7 +153,7 @@ Transform:
   - {fileID: 608569278}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.272, y: 0.003, z: -0.9620001}
 --- !u!114 &1811785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   regions: []
   globalSuites:
-  - {fileID: 6954340085865920554, guid: f401bde807cbcc54f8328b35738572ea, type: 3}
+  - {fileID: 8103650155462457221, guid: 4745881ade2d1fd429e68a2448906b02, type: 3}
   cellDebug: {fileID: 7029461963013348324, guid: a44f5665122a46b4e83f48046f9da54f,
     type: 3}
   roomDebug: {fileID: 3717548046446686917, guid: dc18439aef9285341864f26ba4ef8ff0,
@@ -263,14 +264,13 @@ MonoBehaviour:
   cellExpansionEnd: 6
   proliferationAmount: 5
   cellDecayAmount: 0.25
-  roomClaimingStrategy: 0
+  roomClaimingStrategy: 3
   maximumRoomSize: 9
   claimChance: 0.7
   greedyClaiming: 0
   startNode: {fileID: 783069034}
   endNode: {fileID: 931198471}
-  suites:
-  - {fileID: 6503315896463921397, guid: 86437aba9f576a64b96e2f167d0dd96f, type: 3}
+  suites: []
 --- !u!1 &783069032
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,7 +296,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 783069032}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -19.6, y: 0, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1081027752}
@@ -341,14 +341,14 @@ Light:
   m_Enabled: 1
   serializedVersion: 9
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 0.7815504, g: 0.8584906, b: 0.84544986, a: 1}
+  m_Intensity: 1.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -473,7 +473,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 950766312}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 25.3, y: 0, z: 48.4}
+  m_LocalPosition: {x: -16.1, y: 0, z: 50.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1081027752}
@@ -543,14 +543,13 @@ MonoBehaviour:
   cellExpansionEnd: 2
   proliferationAmount: 8
   cellDecayAmount: 0.25
-  roomClaimingStrategy: 2
+  roomClaimingStrategy: 3
   maximumRoomSize: 9
   claimChance: 1
   greedyClaiming: 0
   startNode: {fileID: 931198471}
   endNode: {fileID: 950766314}
-  suites:
-  - {fileID: 1554462399755978524, guid: 94229ada63c9c584b99909a9ca85b3b4, type: 3}
+  suites: []
 --- !u!1 &1081027751
 GameObject:
   m_ObjectHideFlags: 0

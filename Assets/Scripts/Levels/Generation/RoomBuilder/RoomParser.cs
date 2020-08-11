@@ -69,6 +69,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                     return ProjectionStrategies.Projection_PartialBloom.Project(root, ref cellsLeftToClaim, claimAmount, claimChance);
                 case RoomClaimingStrategy.LimitedStep:
                     return ProjectionStrategies.Projection_LimitedStep.Project(root, ref cellsLeftToClaim, claimAmount, claimChance);
+                case RoomClaimingStrategy.Deterministic:
+                    return ProjectionStrategies.Projection_Deterministic.Project(root, ref cellsLeftToClaim);
                 default:
                     throw new Exception("A strategy must be assigned to a region.");
             }

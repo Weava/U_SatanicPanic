@@ -58,7 +58,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 
         #endregion
 
-        #region Rendering Methods
+        #region Virtual Rendering Methods
 
         /// <summary>
         /// 
@@ -104,7 +104,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             var doorways = Level.doors.Where(x => roomCells.Any(c => x.rootCells.Contains(c)));
             var openCells = roomCells.Where(x => doorways.Any(a => a.rootCells.Contains(x)));
 
-            renderContainer.openSpaces.AddRange(openCells.Select(s => s.position));
+            renderContainer.spaces.AddRange(openCells.Select(s => (Vector4)s.position));
 
             nextContainerInstance = renderContainer.Copy();
         }
@@ -131,17 +131,15 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                 {
                     var projection = entity.BuildProjection(cell.position, direction);
                     //Projection cannot clip room cell space
-                    if (projection.spaces.SelectMany(s => s.Value)
-                        .Any(x => CellCollection.cells[x].roomId != room.roomId))
+                    if (projection.spaces.Any(x => !CellCollection.HasCellAt(x) || CellCollection.cells[x].roomId != room.roomId))
                     { continue; }
 
                     //Projection cannot intersect existing projections
-                    var projectionSpace = projection.FlattenedSpace();
-                    if (nextContainerInstance.cellPositionsTaken.Any(a => projectionSpace.Contains(a)))
+                    if (nextContainerInstance.cellPositionsTaken.Any(a => projection.spaces.Contains(a)))
                     { continue; }
 
                     //Project cannot intersect with existing scaffold claims
-                    if (!VerifyProjectionScaffoldDoesntIntersect(projection, entity, room, out projectionScaffolds))
+                    if (!VerifyProjectionScaffoldDoesntIntersect(projection, entity, room, cell.position, direction, out projectionScaffolds))
                     { continue;}
 
                     //Projection cannot block navigation through room
@@ -286,15 +284,14 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 
         public void ClaimProjection(SuiteProjection projection, List<Scaffold_Node> projectionScaffold, Cell root, Direction direction, SuiteEntity entity)
         {
-            nextContainerInstance.openSpaces.AddRange(projection.spaces[EntitySpaceType.open]);
-            nextContainerInstance.blockedSpaces.AddRange(projection.spaces[EntitySpaceType.blocked]);
+            nextContainerInstance.spaces.AddRange(projection.spaces);
             nextContainerInstance.claimedScaffolds.AddRange(projectionScaffold);
             nextContainerInstance.entities.Add(new Tuple<Vector3, Direction>(root.position, direction), entity);
         }
 
         public bool VerifyProjectionDoesNotBlockRoomPathways(SuiteProjection projection)
         {
-            return Verify_Step(nextContainerInstance.openSpaces.First(), new List<Vector3>());
+            return Verify_Step(nextContainerInstance.spaces.FirstOrDefault(x => x.w == 0), new List<Vector3>());
         }
 
         private bool Verify_Step(Vector3 root, List<Vector3> searchedSpaces)
@@ -302,10 +299,10 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             searchedSpaces.Add(root);
 
             ////Found all the open spaces, we're good.
-            if (nextContainerInstance.openSpaces.All(x => searchedSpaces.Contains(x))) return true;
+            if (nextContainerInstance.spaces.Where(x => x.w == 0).All(x => searchedSpaces.Contains(x))) return true;
 
             var nextPositionsToCheck = CellCollection.cells[root].NeighborCellsInRoom().Select(s => s.position)
-                .Where(x => !searchedSpaces.Contains(x) && !nextContainerInstance.blockedSpaces.Contains(x));
+                .Where(x => !searchedSpaces.Contains(x) && !IsBlockedPath(root, x)/*!nextContainerInstance.blockedSpaces.Contains(x)*/);
 
             foreach (var nextPosition in nextPositionsToCheck)
             {
@@ -317,22 +314,22 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             return false;
         }
 
-        public bool VerifyProjectionScaffoldDoesntIntersect(SuiteProjection projection, SuiteEntity entity, LevelRoom room, out List<Scaffold_Node> projectionNodes)
+        public bool VerifyProjectionScaffoldDoesntIntersect(SuiteProjection projection, SuiteEntity entity, LevelRoom room, Vector3 root, Direction normal, out List<Scaffold_Node> projectionNodes)
         {
             if (entity.partial)
             {
                 return VerifyScaffoldsForPartialSpace(projection, entity, room, out projectionNodes);
             }
 
-            return VerifyScaffoldsForFullSpace(projection, entity, room, out projectionNodes);
+            return VerifyScaffoldsForFullSpace(projection, entity, room, root, normal, out projectionNodes);
         }
 
-        private bool VerifyScaffoldsForFullSpace(SuiteProjection projection, SuiteEntity entity, LevelRoom room, out List<Scaffold_Node> projectionNodes)
+        private bool VerifyScaffoldsForFullSpace(SuiteProjection projection, SuiteEntity entity, LevelRoom room, Vector3 root, Direction normal, out List<Scaffold_Node> projectionNodes)
         {
             projectionNodes = new List<Scaffold_Node>();
             var roomScaffold = Level.roomScaffolds[room.roomId];
 
-            var projectionSpace = projection.FlattenedSpace();
+            var projectionSpace = projection.spaces;
 
             var projectionCells = CellCollection.cells.Select(s => s.Value).Where(x => projectionSpace.Contains(x.position));
 
@@ -361,15 +358,21 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             var wall_main = new List<Node_WallMain>();
             var wall_connector = new List<Node_WallConnector>();
 
-            foreach (var entityWall in entity.walls)
-            {
-                var direction = (Direction) entityWall.z;
-                var position = (Vector3) entityWall;
+            var wallProjections = entity.BuildWallProjection(root, normal);
 
-                wall_main.AddRange(roomScaffold.wall.main.Where(x => x.rootCells.All(a => a.position == position) && x.direction == direction));
+            foreach (var wall in wallProjections.spaces)
+            {
+                var direction = (Direction)wall.w;
+
+                var result = roomScaffold.wall.main.FirstOrDefault(x => x.rootCells.All(a => a.position == (Vector3)wall) && x.direction == direction);
+                if (result == null) return false;
+                wall_main.Add(result);
                 if (nextContainerInstance.claimedScaffolds.Any(a => wall_main.Select(s => s.id).Contains(a.id))) { return false; }
                 projectionNodes.AddRange(wall_main);
-                wall_connector.AddRange(roomScaffold.wall.connectors.Where(x => x.rootCells.All(a => a.position == position) && x.direction == direction));
+
+                var result_C = roomScaffold.wall.connectors.FirstOrDefault(x =>
+                    x.rootCells.All(a => a.position == (Vector3)wall) && x.direction == direction);
+                if (result_C != null) wall_connector.Add(result_C);
                 if (nextContainerInstance.claimedScaffolds.Any(a => wall_connector.Select(s => s.id).Contains(a.id))) { return false; }
                 projectionNodes.AddRange(wall_connector);
             }
@@ -381,6 +384,35 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
         private bool VerifyScaffoldsForPartialSpace(SuiteProjection projection, SuiteEntity entity, LevelRoom room, out List<Scaffold_Node> projectionNodes)
         {
             throw new NotImplementedException();
+        }
+
+        //private bool VerifyProjectionFitsRoomConfiguration(SuiteProjection projection, SuiteEntity entity, LevelRoom room, Direction direction)
+        //{
+        //    var wallScaffolds = Level.roomScaffolds[room.roomId].wall.main .Where(x => projection.spacesAsVec3.Contains(x.root.position));
+
+        //    foreach (var wallScaffold in wallScaffolds)
+        //    {
+        //        var root = projection.spacesAsVec3.FirstOrDefault(x =>
+        //            wallScaffolds.Select(s => s.root.position).Contains(x));
+        //        if (root != null)
+        //        {
+
+        //        }
+        //    }
+        //}
+
+        private bool IsBlockedPath(Vector3 root, Vector3 direction)
+        {
+            var root_Vec4Rep =
+                nextContainerInstance.spaces.FirstOrDefault(x => x.x == root.x && x.y == root.y && x.z == root.z);
+            var direction_Vec4Rep =
+                nextContainerInstance.spaces.FirstOrDefault(x =>
+                    x.x == direction.x && x.y == direction.y && x.z == direction.z);
+
+            var normal = Directionf.GetNormalTowards(root, direction);
+
+            return root_Vec4Rep != null && ((int)root.z).GetDirectionsFromByte().Contains(normal)
+                   || direction_Vec4Rep != null && ((int)root.z).GetDirectionsFromByte().Contains(normal.Opposite());
         }
 
         private Vector3 OffsetWall(Vector3 root, Direction normal)
@@ -403,22 +435,11 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
     {
         public string roomId;
 
-        public List<Vector3> cellPositionsTaken
-        {
-            get
-            {
-                var result = new List<Vector3>();
-                result.AddRange(openSpaces);
-                result.AddRange(blockedSpaces);
-                return result;
-            }
-        }
+        public List<Vector4> cellPositionsTaken => spaces;
 
         public List<Scaffold_Node> claimedScaffolds = new List<Scaffold_Node>();
 
-        public List<Vector3> openSpaces = new List<Vector3>();
-
-        public List<Vector3> blockedSpaces = new List<Vector3>();
+        public List<Vector4> spaces = new List<Vector4>();
 
         public Dictionary<Tuple<Vector3, Direction>, SuiteEntity> entities = new Dictionary<Tuple<Vector3, Direction>, SuiteEntity>();
 

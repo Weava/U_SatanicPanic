@@ -145,6 +145,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites
                             {
                                 RenderPool[regionId].Remove(suite);
                             }
+                            suite.renderContainer = null;
                             break;
                         }
                     }
@@ -168,6 +169,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites
             {
                 room.renderContainer.name = suite.suiteName;
                 suite.Render(ref room);
+                suite.renderContainer.claimedScaffolds.ForEach(x => Level.roomScaffolds[room.roomId].SetNodeClaimed(x.id));
                 room.SaveChanges();
             }
 

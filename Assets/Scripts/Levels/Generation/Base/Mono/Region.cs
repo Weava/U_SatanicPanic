@@ -92,5 +92,6 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
         Bloom, //Fan out from a root cell in each direction
         PartialBloom, //Randomly decide not to claim cells within a fan step
         LimitedStep, //Controlled procedure for more regular shaped rooms
+        Deterministic
     }
 }

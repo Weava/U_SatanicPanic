@@ -90,6 +90,40 @@ namespace Assets.Scripts
             return Direction.Up;
         }
 
+        public static Direction ToDirection(this int value)
+        {
+            if (value == 1) return Direction.East;
+            if (value == 2) return Direction.South;
+            if (value == 3) return Direction.West;
+            return Direction.North;
+        }
+
+        public static int ToByteValue(this Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.East:
+                    return 1;
+                case Direction.South:
+                    return 2;
+                case Direction.West:
+                    return 3;
+                    default: return 0;
+            }
+        }
+
+        public static List<Direction> GetDirectionsFromByte(this int value)
+        {
+            var result = new List<Direction>();
+
+            if ((value & 0b_0001) == 0b_0001) result.Add(Direction.North);
+            if ((value & 0b_0010) == 0b_0010) result.Add(Direction.East);
+            if ((value & 0b_0100) == 0b_0100) result.Add(Direction.South);
+            if ((value & 0b_1000) == 0b_1000) result.Add(Direction.West);
+
+            return result;
+        }
+
         #endregion
 
         /// <summary>
@@ -107,6 +141,21 @@ namespace Assets.Scripts
                     return new Vector3(offset.z, offset.y, -offset.x);
                 case Direction.South:
                     return new Vector3(-offset.x, offset.y, -offset.z);
+                default:
+                    return offset;
+            }
+        }
+
+        public static Vector4 ProjectOffsetToNormal(this Vector4 offset, Direction normal)
+        {
+            switch (normal)
+            {
+                case Direction.West:
+                    return new Vector4(-offset.z, offset.y, offset.x, ((int)offset.w).ToDirection().Left().ToByteValue());
+                case Direction.East:
+                    return new Vector4(offset.z, offset.y, -offset.x, ((int)offset.w).ToDirection().Right().ToByteValue());
+                case Direction.South:
+                    return new Vector4(-offset.x, offset.y, -offset.z, ((int)offset.w).ToDirection().Opposite().ToByteValue());
                 default:
                     return offset;
             }

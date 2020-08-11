@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Levels.Generation.Extensions;
@@ -19,11 +20,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 
         public bool partial;
 
-        //Treated as a cell space if not a partial, else becomes a floor partition
-        public List<Vector3> openSpaces = new List<Vector3>();
-
-        //Treated as a cell space
-        public List<Vector3> blockedSpaces = new List<Vector3>();
+        public List<Vector4> spaces = new List<Vector4>();
 
         public List<Vector4> walls = new List<Vector4>();
 
@@ -43,7 +40,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             get
             {
                 if (partial) return 0;
-                return openSpaces.Count + blockedSpaces.Count;
+                return spaces.Count;
             }
         }
 
@@ -64,23 +61,29 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
         public SuiteProjection BuildProjection(Vector3 position = new Vector3(), Direction normal = Direction.North)
         {
             var result = new SuiteProjection();
-            result.spaces[EntitySpaceType.open] = new List<Vector3>();
-            result.spaces[EntitySpaceType.blocked] = new List<Vector3>();
 
-            foreach (var openSpace in openSpaces)
+            foreach (var openSpace in spaces)
             {
-                result.spaces[EntitySpaceType.open].Add(new Vector3(
+                result.spaces.Add(new Vector3(
                     position.x + openSpace.x * Cellf.CELL_STEP_OFFSET,
                     position.y + openSpace.y * Cellf.CELL_STEP_OFFSET,
                     position.z + openSpace.z * Cellf.CELL_STEP_OFFSET).ProjectOffsetToNormal(normal));
             }
 
-            foreach (var blockedSpace in blockedSpaces)
+            return result;
+        }
+
+        public SuiteProjection BuildWallProjection(Vector3 position = new Vector3(), Direction normal = Direction.North)
+        {
+            var result = new SuiteProjection();
+
+            foreach (var wall in walls)
             {
-                result.spaces[EntitySpaceType.blocked].Add(new Vector3(
-                    position.x + blockedSpace.x * Cellf.CELL_STEP_OFFSET,
-                    position.y + blockedSpace.y * Cellf.CELL_STEP_OFFSET,
-                    position.z + blockedSpace.z * Cellf.CELL_STEP_OFFSET).ProjectOffsetToNormal(normal));
+                result.spaces.Add(new Vector4(
+                    position.x + wall.x * Cellf.CELL_STEP_OFFSET,
+                    position.y + wall.y * Cellf.CELL_STEP_OFFSET,
+                    position.z + wall.z * Cellf.CELL_STEP_OFFSET,
+                     wall.w).ProjectOffsetToNormal(normal));
             }
 
             return result;
@@ -102,15 +105,15 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawCube(new Vector3(), new Vector3(1, 1, 1)); //Root
 
-                foreach (var space in openSpaces)
+                foreach (var space in spaces)
                 {
-                    RenderCellSpace(space);
+                    DrawCell(space);
                 }
 
-                foreach (var space in blockedSpaces)
-                {
-                    RenderCellSpace(space, true);
-                }
+                //foreach (var space in blockedSpaces)
+                //{
+                //    RenderCellSpace(space, true);
+                //}
 
                 foreach (var space in walls)
                 {
@@ -124,71 +127,71 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             }
         }
 
-        private void RenderCellSpace(Vector3 position, bool blocked = false)
+        private void RenderCellSpace(Vector4 position)
         {
-            if (blocked)
-            { Gizmos.color = Color.red; }
-            else
-            { Gizmos.color = Color.cyan; }
+            //position = ProjectToCellSpace(position);
 
-            position = ProjectToCellSpace(position);
+            //var floorOffset = Cellf.CELL_MAIN_OFFSET / 2.0f;
+            //var heightOffset = Cellf.CELL_ELEVATION_OFFSET;
 
-            var floorOffset = Cellf.CELL_MAIN_OFFSET / 2.0f;
-            var heightOffset = Cellf.CELL_ELEVATION_OFFSET;
+            //var wireFrame_floor = new List<Vector3>()
+            //{
+            //    new Vector3(position.x + floorOffset, position.y, position.z + floorOffset),
+            //    new Vector3(position.x + floorOffset, position.y, position.z - floorOffset),
+            //    new Vector3(position.x - floorOffset, position.y, position.z - floorOffset),
+            //    new Vector3(position.x - floorOffset, position.y, position.z + floorOffset),
+            //};
 
-            var wireFrame_floor = new List<Vector3>()
-            {
-                new Vector3(position.x + floorOffset, position.y, position.z + floorOffset),
-                new Vector3(position.x + floorOffset, position.y, position.z - floorOffset),
-                new Vector3(position.x - floorOffset, position.y, position.z - floorOffset),
-                new Vector3(position.x - floorOffset, position.y, position.z + floorOffset),
-            };
+            //var wireFrame_elevated = new List<Vector3>()
+            //{
+            //    new Vector3(position.x + floorOffset, position.y + heightOffset, position.z + floorOffset),
+            //    new Vector3(position.x + floorOffset, position.y + heightOffset, position.z - floorOffset),
+            //    new Vector3(position.x - floorOffset, position.y + heightOffset, position.z - floorOffset),
+            //    new Vector3(position.x - floorOffset, position.y + heightOffset, position.z + floorOffset),
+            //};
 
-            var wireFrame_elevated = new List<Vector3>()
-            {
-                new Vector3(position.x + floorOffset, position.y + heightOffset, position.z + floorOffset),
-                new Vector3(position.x + floorOffset, position.y + heightOffset, position.z - floorOffset),
-                new Vector3(position.x - floorOffset, position.y + heightOffset, position.z - floorOffset),
-                new Vector3(position.x - floorOffset, position.y + heightOffset, position.z + floorOffset),
-            };
+            //var fullLineList = wireFrame_elevated;
+            //fullLineList.AddRange(wireFrame_floor);
 
-            var fullLineList = wireFrame_elevated;
-            fullLineList.AddRange(wireFrame_floor);
+            //for (int i = 0; i < 3; i++)
+            //{
+            //    Gizmos.DrawLine(wireFrame_floor[i], wireFrame_elevated[i]);
+            //    Gizmos.DrawLine(wireFrame_floor[i], wireFrame_floor[i + 1]);
+            //    Gizmos.DrawLine(wireFrame_elevated[i], wireFrame_elevated[i + 1]);
+            //}
 
-            for (int i = 0; i < 3; i++)
-            {
-                Gizmos.DrawLine(wireFrame_floor[i], wireFrame_elevated[i]);
-                Gizmos.DrawLine(wireFrame_floor[i], wireFrame_floor[i + 1]);
-                Gizmos.DrawLine(wireFrame_elevated[i], wireFrame_elevated[i + 1]);
-            }
+            //Gizmos.DrawLine(wireFrame_floor[3], wireFrame_floor[0]);
+            //Gizmos.DrawLine(wireFrame_elevated[3], wireFrame_elevated[0]);
+            //Gizmos.DrawLine(wireFrame_floor[3], wireFrame_elevated[3]);
 
-            Gizmos.DrawLine(wireFrame_floor[3], wireFrame_floor[0]);
-            Gizmos.DrawLine(wireFrame_elevated[3], wireFrame_elevated[0]);
-            Gizmos.DrawLine(wireFrame_floor[3], wireFrame_elevated[3]);
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(wireFrame_floor[0], wireFrame_floor[2]);
+            //Gizmos.DrawLine(wireFrame_floor[0], wireFrame_floor[2]);
         }
 
         private void RenderWallSpace(Vector4 root, bool door = false)
         {
+            Color color = Color.clear;
             if (door)
-            { Gizmos.color = Color.green; }
+            { color = Color.green; }
             else
-            { Gizmos.color = Color.yellow; }
+            { color = Color.yellow; }
 
             var rootBase = ProjectToCellSpace(root);
             root.x = rootBase.x;
             root.y = rootBase.y;
             root.z = rootBase.z;
 
+            DrawWall(root, ((int)root.w).ToDirection(), color);
+        }
+
+        private static void DrawWall(Vector3 root, Direction normal, Color color)
+        {
             var floorOffset = Cellf.CELL_MAIN_OFFSET / 2.0f;
             var heightOffset = Cellf.CELL_ELEVATION_OFFSET;
 
             List<Vector3> wireFrame;
-            switch (root.w)
+            switch (normal)
             {
-                case 1:
+                case Direction.East:
                     wireFrame = new List<Vector3>()
                     {
                         new Vector3(root.x + floorOffset, root.y, root.z + floorOffset),
@@ -197,7 +200,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                         new Vector3(root.x + floorOffset, root.y + heightOffset, root.z + floorOffset)
                     };
                     break;
-                case 2:
+                case Direction.South:
                     wireFrame = new List<Vector3>()
                     {
                         new Vector3(root.x + floorOffset, root.y, root.z - floorOffset),
@@ -206,7 +209,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                         new Vector3(root.x + floorOffset, root.y + heightOffset, root.z - floorOffset)
                     };
                     break;
-                case 3:
+                case Direction.West:
                     wireFrame = new List<Vector3>()
                     {
                         new Vector3(root.x - floorOffset, root.y, root.z - floorOffset),
@@ -215,7 +218,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                         new Vector3(root.x - floorOffset, root.y + heightOffset, root.z - floorOffset)
                     };
                     break;
-                default:
+                default: //North
                     wireFrame = new List<Vector3>()
                     {
                         new Vector3(root.x - floorOffset, root.y, root.z + floorOffset),
@@ -226,6 +229,8 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                     break;
             }
 
+            Gizmos.color = color;
+
             for (int i = 0; i < 3; i++)
             {
                 Gizmos.DrawLine(wireFrame[i], wireFrame[i + 1]);
@@ -235,12 +240,24 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             Gizmos.DrawLine(wireFrame[0], wireFrame[2]);
         }
 
-        private static Vector3 ProjectToCellSpace(Vector3 offset)
+        private static void DrawCell(Vector4 position)
         {
-            return new Vector3(
+            position = ProjectToCellSpace(position);
+            var normals = ((int) position.w).GetDirectionsFromByte();
+
+            foreach (var direction in Directionf.Directions())
+            {
+                DrawWall(position, direction, normals.Contains(direction) ? Color.red : Color.cyan);
+            }
+        }
+
+        private static Vector4 ProjectToCellSpace(Vector4 offset)
+        {
+            return new Vector4(
                 offset.x * Cellf.CELL_STEP_OFFSET,
                 offset.y * Cellf.CELL_ELEVATION_OFFSET,
-                offset.z * Cellf.CELL_STEP_OFFSET
+                offset.z * Cellf.CELL_STEP_OFFSET,
+                offset.w
                 );
         }
 
@@ -250,28 +267,8 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 
     public class SuiteProjection
     {
-        public Dictionary<EntitySpaceType, List<Vector3>> spaces = new Dictionary<EntitySpaceType, List<Vector3>>();
+        public List<Vector4> spaces = new List<Vector4>();
 
-        public SuiteProjection()
-        {
-            spaces[EntitySpaceType.open] = new List<Vector3>();
-            spaces[EntitySpaceType.blocked] = new List<Vector3>();
-        }
-
-        public List<Vector3> FlattenedSpace()
-        {
-            var result = new List<Vector3>();
-
-            result.AddRange(spaces[EntitySpaceType.open]);
-            result.AddRange(spaces[EntitySpaceType.blocked]);
-
-            return result;
-        }
-    }
-
-    public enum EntitySpaceType
-    {
-        open,
-        blocked
+        public List<Vector3> spacesAsVec3 => spaces.Select(s => (Vector3) s).ToList();
     }
 }
