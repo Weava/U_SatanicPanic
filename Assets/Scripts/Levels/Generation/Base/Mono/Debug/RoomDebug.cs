@@ -25,10 +25,12 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
         public void RenderRoomDebug(Room room)
         {
-            var container = new GameObject("Room - " + room.cells.First().region);
-            container.name += room.cells.Any(x => x.important) ? " - Pathway" : "";
-            container.name += room.cells.Any(x => x.type == CellType.Elevation) ? " - Elevation" : "";
-            foreach (var cell in room.cells)
+            var cells = room.GetCells();
+            var container = new GameObject("Room - " + cells.First().GetRegion().regionName);
+            container.name += cells.Any(x => x.important) ? " - Pathway" : "";
+            container.name += cells.Any(x => x.type == CellType.Elevation) ? " - Elevation" : "";
+            container.name += " [" + room.Data().parsing.roomType.ToString() + "]";
+            foreach (var cell in cells)
             {
                 if(cell.type != CellType.Cell)
                 {
@@ -45,19 +47,23 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
         public void RenderRoomScaffoldingDebug(Room room)
         {
-            var scaffolding = Level.roomScaffolds[room];
+            var scaffolding = Level.roomScaffolds[room.id];
             var roomContainer = new GameObject("Room");
+
+            roomContainer.name += " [" + room.Data().parsing.roomType.ToString() + "]";
 
             #region Floor
             foreach (var main in scaffolding.floor.main)
             {
                 if (main.root.elevationOverride_Upper) continue;
+                if (main.claimed) continue;
                 var instance = Instantiate(floor_main, roomContainer.transform);
                 instance.transform.position = main.position;
             }
 
             foreach(var connector in scaffolding.floor.connectors)
             {
+                if (connector.claimed) continue;
                 var instance = Instantiate(floor_connector, roomContainer.transform);
                 instance.transform.position = connector.position;
                 instance.transform.LookAt(connector.rootCells.First().position);
@@ -65,6 +71,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach (var column in scaffolding.floor.columns)
             {
+                if (column.claimed) continue;
                 var instance = Instantiate(floor_column, roomContainer.transform);
                 instance.transform.position = column.position;
             }
@@ -73,6 +80,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
             #region Wall
             foreach(var main in scaffolding.wall.main)
             {
+                if (main.claimed) continue;
                 var instance = Instantiate(wall_main, roomContainer.transform);
                 instance.transform.position = main.position;
                 instance.transform.LookAt(main.root.position);
@@ -80,6 +88,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach(var connector in scaffolding.wall.connectors)
             {
+                if (connector.claimed) continue;
                 var instance = Instantiate(wall_connector, roomContainer.transform);
                 instance.transform.position = connector.position;
                 instance.transform.LookAt(connector.root.position);
@@ -90,6 +99,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach (var main in scaffolding.ceiling.main)
             {
+                if (main.claimed) continue;
                 if (main.root.root.elevationOverride_Lower) continue;
                 var instance = Instantiate(ceiling_main, roomContainer.transform);
                 instance.transform.position = main.position;
@@ -97,6 +107,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach (var connector in scaffolding.ceiling.connectors)
             {
+                if (connector.claimed) continue;
                 var instance = Instantiate(ceiling_connector, roomContainer.transform);
                 instance.transform.position = connector.root.position;
                 instance.transform.LookAt(connector.root.rootCells.First().position);
@@ -105,6 +116,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             foreach (var column in scaffolding.ceiling.columns)
             {
+                if (column.claimed) continue;
                 var instance = Instantiate(ceiling_column, roomContainer.transform);
                 instance.transform.position = column.position;
             }

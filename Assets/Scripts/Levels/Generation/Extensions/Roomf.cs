@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Levels.Generation.Base;
+﻿using System;
+using Assets.Scripts.Levels.Generation.Base;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,10 +11,10 @@ namespace Assets.Scripts.Levels.Generation.Extensions
         {
             var result = new List<Room>();
 
-            foreach(var cell in room.cells)
+            foreach(var cell in room.GetCells())
             {
                 var neighbors = cell.NeighborCellsOutOfRoom();
-                foreach(var neighborRoom in neighbors.Select(s => s.room))
+                foreach(var neighborRoom in neighbors.Select(s => s.GetRoom()))
                 {
                     if(!result.Contains(neighborRoom))
                     {
@@ -31,8 +32,8 @@ namespace Assets.Scripts.Levels.Generation.Extensions
 
             foreach(var door in room.doors.ToArray())
             {
-                var otherRoom = door.cell_1.room == room ? door.cell_2.room : door.cell_1.room;
-                result.Add(otherRoom);
+                var otherRoom = door.cell_1.roomId == room.id ? door.cell_2.roomId : door.cell_1.roomId;
+                result.Add(RoomCollection.rooms[otherRoom]);
             }
 
             return result;
@@ -60,40 +61,44 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             //return result;
         }
 
-        public static List<Room> SearchForPathRoom(this Room room, bool containInRegion)
+        public static List<Cell> GetBlockableCells(this Room room)
         {
-            var searchedRooms = new List<Room>();
-
-            return SearchForPathRoom_R(room, searchedRooms, containInRegion);
+            return CellCollection.GetByRoom(room.id).Where(x => !x.mustNotBeBlocked).ToList();
         }
 
-        private static List<Room> SearchForPathRoom_R(Room room, List<Room> discoveredRooms, bool containInRegion)
+        [Obsolete]
+        public static bool VerifyCellCollectionDoesNotBlockRoomPathways(this Room room, List<Cell> blockingCells, List<Cell> additionalImportantCells)
         {
-            //Found a path
-            if(room.containsPath)
+            var importantCellsInRoom = CellCollection.GetByRoom(room.id).Where(x => x.mustNotBeBlocked).ToList();
+            importantCellsInRoom.AddRange(additionalImportantCells);
+
+            return Verify_Step(importantCellsInRoom.First(), importantCellsInRoom, blockingCells, new List<Cell>(), new List<Cell>());
+        }
+
+        [Obsolete]
+        private static bool Verify_Step(this Cell root, List<Cell> importantCells, List<Cell> blockingCells, List<Cell> searchedCells, List<Cell> foundImportantCells)
+        {
+            var foundInstance = foundImportantCells;
+
+            searchedCells.Add(root);
+
+            if (importantCells.Contains(root))
+            { foundImportantCells.Add(root); }
+
+            //Found all the cells, we're good.
+            if (importantCells.All(x => foundInstance.Contains(x))) return true;
+
+            var nextCellsToCheck = root.NeighborCellsInRoom()
+                .Where(x => !blockingCells.Contains(x) && !searchedCells.Contains(x));
+
+            foreach (var nextCell in nextCellsToCheck)
             {
-                if(room.preventExtraConnections)
-                { return new List<Room>(); }
-                return new List<Room>() { room };
+                var result = Verify_Step(nextCell, importantCells, blockingCells, searchedCells, foundImportantCells);
+
+                if (result) return true;
             }
 
-            //Already saw this room, abort
-            if(discoveredRooms.Contains(room))
-            {  return new List<Room>(); }
-
-            discoveredRooms.Add(room);
-
-            var result = new List<Room>();
-
-            foreach(var potentialRoom in room.potentialDoors.Select(s => s.room))
-            {
-                if (containInRegion && potentialRoom.cells.First().region != room.cells.First().region)
-                { continue; }
-                result.AddRange(SearchForPathRoom_R(potentialRoom, discoveredRooms, containInRegion));
-                if(result.Count > 0) { break; }
-            }
-
-            return result;
+            return false;
         }
     }
 }

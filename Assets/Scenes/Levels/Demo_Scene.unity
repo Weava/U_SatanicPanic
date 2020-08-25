@@ -157,7 +157,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 121975624}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.8, y: -6.09, z: -47.88}
+  m_LocalPosition: {x: 6.6, y: -6.09, z: -52.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 197086647}
@@ -391,19 +391,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec350cb03c69314eb82c839b9565ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: d55015dd-bc95-4811-9fad-0986fb8f6c80
   regionName: Yellow Region 2
   cellExpansionConstant: 1
   cellExpansionAmount: 2
   cellExpansionStart: 0
   cellExpansionMiddle: 0
   cellExpansionEnd: 0
-  proliferationAmount: 1
-  cellDecayAmount: 0.45
-  roomClaimingStrategy: 1
+  proliferationAmount: 2
+  cellDecayAmount: 0.5
+  roomClaimingStrategy: 2
   maximumRoomSize: 9
-  claimChance: 0.8
+  claimChance: 1
+  greedyClaiming: 1
   startNode: {fileID: 1001274080}
   endNode: {fileID: 1554300330}
+  suites:
+  - {fileID: 4794714524655269611, guid: 8fe1f130135003e4cadf304bc93a0e47, type: 3}
 --- !u!1 &529996696
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,19 +576,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec350cb03c69314eb82c839b9565ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 5b44a23c-69ac-41b9-9a72-d1806a5ce897
   regionName: Yellow Region
   cellExpansionConstant: 1
-  cellExpansionAmount: 3
+  cellExpansionAmount: 2
   cellExpansionStart: 0
   cellExpansionMiddle: 0
   cellExpansionEnd: 0
-  proliferationAmount: 1
-  cellDecayAmount: 0.25
-  roomClaimingStrategy: 1
+  proliferationAmount: 2
+  cellDecayAmount: 0.5
+  roomClaimingStrategy: 2
   maximumRoomSize: 9
-  claimChance: 0.95
+  claimChance: 1
+  greedyClaiming: 1
   startNode: {fileID: 1001274080}
   endNode: {fileID: 121975625}
+  suites:
+  - {fileID: 4794714524655269611, guid: 8fe1f130135003e4cadf304bc93a0e47, type: 3}
 --- !u!1 &835693552
 GameObject:
   m_ObjectHideFlags: 0
@@ -977,7 +985,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1554300329}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 35.72, y: -2.05, z: -10.1}
+  m_LocalPosition: {x: 35.8, y: -2.05, z: -20.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 174767503}
@@ -1071,19 +1079,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec350cb03c69314eb82c839b9565ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: d474fec1-b2e8-40b7-ba54-64c84b8ad895
   regionName: Blue Region
   cellExpansionConstant: 1
-  cellExpansionAmount: 1
+  cellExpansionAmount: 2
   cellExpansionStart: 0
   cellExpansionMiddle: 0
   cellExpansionEnd: 0
-  proliferationAmount: 1
+  proliferationAmount: 2
   cellDecayAmount: 0.5
-  roomClaimingStrategy: 1
-  maximumRoomSize: 4
-  claimChance: 0.45
+  roomClaimingStrategy: 2
+  maximumRoomSize: 9
+  claimChance: 1
+  greedyClaiming: 1
   startNode: {fileID: 1708647576}
   endNode: {fileID: 1001274080}
+  suites:
+  - {fileID: 4113943442276176945, guid: 6cf58ba8eee2f18419d27095a04f7cb0, type: 3}
 --- !u!1 &2005727335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1109,7 +1121,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2005727335}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -17.33, y: -0.32, z: -52.5}
+  m_LocalPosition: {x: -27.8, y: -0.32, z: -63.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1385633820}
@@ -1171,19 +1183,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec350cb03c69314eb82c839b9565ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: c8625dc5-0266-45b9-a54a-e4f072780dba
   regionName: Red Region
   cellExpansionConstant: 1
   cellExpansionAmount: 2
   cellExpansionStart: 0
   cellExpansionMiddle: 0
   cellExpansionEnd: 0
-  proliferationAmount: 1
+  proliferationAmount: 2
   cellDecayAmount: 0.5
-  roomClaimingStrategy: 1
-  maximumRoomSize: 6
-  claimChance: 0.75
+  roomClaimingStrategy: 2
+  maximumRoomSize: 9
+  claimChance: 1
+  greedyClaiming: 1
   startNode: {fileID: 121975625}
   endNode: {fileID: 2005727337}
+  suites:
+  - {fileID: 4924907719052276570, guid: 8b75516d157571c40999e43ea23c4522, type: 3}
 --- !u!1001 &8400747289475040377
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1277,6 +1293,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b77dde49c7d7fbf4a95f34b1d2cd0b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  regions: []
+  globalSuites:
+  - {fileID: 2678205277695724473, guid: e79f4d6f7ff10824baaf15064c57a585, type: 3}
   cellDebug: {fileID: 7029461963013348324, guid: a44f5665122a46b4e83f48046f9da54f,
     type: 3}
   roomDebug: {fileID: 3717548046446686917, guid: dc18439aef9285341864f26ba4ef8ff0,
@@ -1285,5 +1304,6 @@ MonoBehaviour:
     type: 3}
   debugShowCells: 0
   debugShowRoomBase: 0
-  debugShowRoomScaffolds: 1
+  debugShowRoomScaffolds: 0
   debugShowDoors: 0
+  debugShowPOI: 0

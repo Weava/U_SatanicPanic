@@ -1,11 +1,14 @@
 ﻿using Assets.Scripts.Levels.Generation.Base;
 using Assets.Scripts.Levels.Generation.Base.Mono;
 using Assets.Scripts.Levels.Generation.Extensions;
+using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Parsing.Base;
+using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
+using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base;
 using Assets.Scripts.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Numerics;
 using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Levels.Generation.RoomBuilder
@@ -17,13 +20,30 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         #region Room Claiming
 
-        public static void ClaimRooms(Region region)
+        public static void ClaimRooms(this Region region)
         {
-            //Until all cells are claimed by a room
-            while(region.cells.Any(x => ! x.claimedByRoom))
+            //Elevation cells are grouped into their own room to prevent complications
+            while (region.GetCells().Where(x => x.type == CellType.Elevation).Any(x => !x.claimedByRoom))
             {
-                var cellsLeftToClaim = region.cells.Where(x => !x.claimedByRoom).ToList();
+                var elevationGroups = region.GetCells().Where(x => x.type == CellType.Elevation)
+                    .GroupBy(g => new Vector2(g.position.x, g.position.y));
+
+                foreach (var elevationGroup in elevationGroups)
+                {
+                    var room = new Room();
+                    if (!ClaimRoom(elevationGroup.ToList(), ref room))
+                    { continue; }
+                    room.regionId = region.id;
+                    RoomCollection.Add(room);
+                }
+            }
+
+            //Until all cells are claimed by a room
+            while(region.GetCells().Any(x => ! x.claimedByRoom))
+            {
+                var cellsLeftToClaim = region.GetCells().Where(x => !x.claimedByRoom).ToList();
                 var rootCell = cellsLeftToClaim[Random.Range(0, cellsLeftToClaim.Count)];
+                var claimSize = region.greedyClaiming ? region.maximumRoomSize : Random.Range(1, region.maximumRoomSize + 1);
 
                 var projection = ProjectRoom(rootCell, ref cellsLeftToClaim, Random.Range(1, region.maximumRoomSize+1), region.claimChance, region.roomClaimingStrategy);
                 if(projection.Any())
@@ -31,27 +51,32 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                     var room = new Room();
                     if(!ClaimRoom(projection, ref room))
                     { continue; }
-                    region.rooms.Add(room);
-                    RoomCollection.rooms.Add(room);
+                    room.regionId = region.id;
+                    RoomCollection.Add(room);
                 }
             }
         }
 
         #region Room Projection Strategies
 
-        private static List<Cell> ProjectRoom(Cell root, ref List<Cell> cellsLeftToClaim, int claimAmount, float claimChange, RoomClaimingStrategy strategy)
+        private static List<Cell> ProjectRoom(Cell root, ref List<Cell> cellsLeftToClaim, int claimAmount, float claimChance, RoomClaimingStrategy strategy)
         {
             switch(strategy)
             {
                 case RoomClaimingStrategy.Bloom:
-                    return ProjectRoom_Bloom(root, ref cellsLeftToClaim, claimAmount);
+                    return ProjectionStrategies.Projection_Bloom.Project(root, ref cellsLeftToClaim, claimAmount);
                 case RoomClaimingStrategy.PartialBloom:
-                    return ProjectRoom_PartialBloom(root, ref cellsLeftToClaim, claimAmount, claimChange);
+                    return ProjectionStrategies.Projection_PartialBloom.Project(root, ref cellsLeftToClaim, claimAmount, claimChance);
+                case RoomClaimingStrategy.LimitedStep:
+                    return ProjectionStrategies.Projection_LimitedStep.Project(root, ref cellsLeftToClaim, claimAmount, claimChance);
+                case RoomClaimingStrategy.Deterministic:
+                    return ProjectionStrategies.Projection_Deterministic.Project(root, ref cellsLeftToClaim);
                 default:
                     throw new Exception("A strategy must be assigned to a region.");
             }
         }
 
+        [Obsolete]
         private static List<Cell> ProjectRoom_Bloom(Cell root, ref List<Cell> cellsLeftToClaim, int claimAmount)
         {
             var result = new List<Cell>() { root };
@@ -84,6 +109,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             return result;
         }
 
+        [Obsolete]
         private static List<Cell> ProjectRoom_PartialBloom(Cell root, ref List<Cell> cellsLeftToClaim, int claimAmount, float claimChance)
         {
             var result = new List<Cell>() { root };
@@ -132,7 +158,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         private static bool ClaimRoom(List<Cell> cells, ref Room room)
         {
             /*Rooms can only exist within one region*/
-            if (cells.Select(s => s.region).Distinct().Count() > 1) { return false; }
+            if (cells.Select(s => s.regionId).Distinct().Count() > 1) { return false; }
 
             /*A room can only contain a complete sequence of sequenced cells*/
             if (cells.Any(x => x.type != CellType.Cell))
@@ -145,11 +171,10 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 }
             }
 
-            room.cells = cells;
-
             foreach (var cell in cells)
             {
-                cell.room = room;
+                cell.roomId = room.id;
+                CellCollection.Update(cell);
             }
 
             return true;
@@ -163,190 +188,30 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         public static bool AllowCrossRegionConnections = false;
 
-        [Obsolete]
-        public static void ParseDoors_Old()
-        {
-            foreach(var room in RoomCollection.rooms)
-            {
-                room.potentialDoors = room.cells.SelectMany(s => s.NeighborCellsOutOfRoom()).ToList();
-            }
-
-            //Establish important room connections
-            foreach(var room in RoomCollection.rooms)
-            {
-                if(room.containsPath)
-                {
-                    var cellsConnectingToNeighborPath = room.potentialDoors.Where(x => x.room.containsPath);
-                    var cellsGroupedByRoom = cellsConnectingToNeighborPath.GroupBy(g => g.room).ToList();
-                    //Group cells by neighboring room
-                    foreach(var roomDesignation in cellsGroupedByRoom)
-                    {
-                        var cells = new List<Cell>();
-                        foreach(var cell in roomDesignation)
-                        { cells.Add(cell); }
-
-                        //Pick one of the cells at random to assign a door to
-                        var targetCell = cells[Random.Range(0, cells.Count())];
-
-                        if(!room.connectedRooms.Any(x => x.cells.Contains(targetCell)))
-                        {
-                            Level.doors.Add(new Node_Door() {
-                                cell_1 = targetCell,
-                                cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
-                            });
-                        }
-                    }
-                }
-            }
-
-            //Establish other room connections - Non-critical pass
-            foreach(var room in RoomCollection.rooms.Where(x => !x.connectedRooms.Any()).ToArray())
-            {
-                //Prefer a pathcell if making a connection
-                if (room.potentialDoors.Any(x => x.room.cells.Any(y => y.important)))
-                {
-                    var targetNeighbor = room.potentialDoors.Where(x => x.room.cells.Any(y => y.important));
-
-                    var cells = new List<Cell>();
-                    foreach (var cell in targetNeighbor)
-                    { cells.Add(cell); }
-
-                    var targetCell = cells[Random.Range(0, cells.Count())];
-
-                    Level.doors.Add(new Node_Door()
-                    {
-                        cell_1 = targetCell,
-                        cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
-                    });
-                }
-                else
-                {
-                    var potentialNeighbors = room.potentialDoors.GroupBy(g => g.room).ToList();
-
-                    var targetNeighbor = potentialNeighbors[Random.Range(0, potentialNeighbors.Count())];
-
-                    var cells = new List<Cell>();
-                    foreach (var cell in targetNeighbor)
-                    { cells.Add(cell); }
-
-                    var targetCell = cells[Random.Range(0, cells.Count())];
-
-                    Level.doors.Add(new Node_Door()
-                    {
-                        cell_1 = targetCell,
-                        cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
-                    });
-                }
-            }
-
-            //Establish room connections to ensure all rooms are interconnected
-            var roomsWithoutVerifiedPathConnection = RoomCollection.rooms.Where(x => !x.containsPath).ToList();
-            while(roomsWithoutVerifiedPathConnection.Any())
-            {
-                var room = roomsWithoutVerifiedPathConnection.First();
-                var connectedRooms = room.connectedRooms; //One of the random neighbors assigned in step 2 of this parsing method
-           
-                var neighborSuccess = false;
-                if(connectedRooms.Any()) //First, check if current connection has a pathway that doesn't intersect with this room
-                {
-                    var neighbor = connectedRooms.First();
-                    if (neighbor.pathConfirmedOverride) {
-                        neighborSuccess = true;
-                        var targetNeighborCells = room.potentialDoors.Where(x => x.room == neighbor);
-
-                        var cells = new List<Cell>();
-                        foreach (var cell in targetNeighborCells)
-                        { cells.Add(cell); }
-
-                        var targetCell = cells[Random.Range(0, cells.Count())];
-
-                        Level.doors.Add(new Node_Door()
-                        {
-                            cell_1 = targetCell,
-                            cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
-                        });
-
-                        room.pathConfirmedOverride = true;
-                    } else {
-                        var neighborConnectionToPath = neighbor.SearchForPathRoom(true);
-                        if (neighborConnectionToPath.Any() && !neighborConnectionToPath.Contains(room))
-                        {
-                            neighborSuccess = true;
-                            var targetNeighborCells = room.potentialDoors.Where(x => x.room == neighbor);
-
-                            var cells = new List<Cell>();
-                            foreach (var cell in targetNeighborCells)
-                            { cells.Add(cell); }
-
-                            var targetCell = cells[Random.Range(0, cells.Count())];
-
-                            Level.doors.Add(new Node_Door()
-                            {
-                                cell_1 = targetCell,
-                                cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
-                            });
-
-                            room.pathConfirmedOverride = true;
-                        }
-                    }
-                }
-
-                if (!neighborSuccess)
-                {
-                    var pathConnection = room.SearchForPathRoom(true);
-
-                    if (pathConnection.Any())
-                    {
-                        var pathRoom = pathConnection.Last();
-                        pathConnection.Remove(room);
-                        var neighborRoom = pathConnection.First();
-
-                        var targetNeighborCells = room.potentialDoors.Where(x => x.room == neighborRoom);
-
-                        var cells = new List<Cell>();
-                        foreach (var cell in targetNeighborCells)
-                        { cells.Add(cell); }
-
-                        var targetCell = cells[Random.Range(0, cells.Count())];
-
-                        Level.doors.Add(new Node_Door()
-                        {
-                            cell_1 = targetCell,
-                            cell_2 = room.cells.First(x => x.NeighborCellsOutOfRoom().Contains(targetCell))
-                        });
-
-                        room.pathConfirmedOverride = true;
-                    }
-                }
-
-                roomsWithoutVerifiedPathConnection.Remove(room);
-            }
-        }
-
         public static void ParseDoors(Region region)
         {
             //Pathway door pass - Connect each important pathway room when they meetup
             #region Pathway Pass
-            foreach (var importantRoom in region.rooms.Where(x => x.containsPath).ToArray())
+            foreach (var importantRoom in region.GetRooms().Where(x => x.containsPath).ToArray())
             {
                 importantRoom.pathConfirmedOverride = true;
                 var importantNeighbors = importantRoom.neighborRooms.Where(x => x.containsPath);
                 foreach(var neighbor in importantNeighbors)
                 {
-                    if (neighbor.connectedRooms.Count > 0 && neighbor.cells.Any(x => x.type == CellType.Elevation)) continue;
+                    if (neighbor.connectedRooms.Count > 0 && neighbor.GetCells().Any(x => x.type == CellType.Elevation)) continue;
                     if (neighbor.connectedRooms.Any(x => x == importantRoom)) continue;
 
-                    var potentialDoors = importantRoom.cells.Where(x => x.NeighborCellsOutOfRoom(true).Any(a => a.room == neighbor)).ToList();
+                    var potentialDoors = importantRoom.GetCells().Where(x => x.NeighborCellsOutOfRoom(true).Any(a => a.roomId == neighbor.id)).ToList();
 
                     if(importantRoom.connectedRooms.Count > 1 && potentialDoors.Any(x => x.type == CellType.Elevation)
-                        || potentialDoors.Any(x => x.NeighborCellsOutOfRoom(true).Any(y => y.type == CellType.Elevation && y.room == neighbor && neighbor.connectedRooms.Count > 1))){
+                        || potentialDoors.Any(x => x.NeighborCellsOutOfRoom(true).Any(y => y.type == CellType.Elevation && y.roomId == neighbor.id && neighbor.connectedRooms.Count > 1))){
                         potentialDoors.Where(x => x.type == CellType.Elevation).ToList().ForEach(x => potentialDoors.Remove(x));
                     }
 
                     if (!potentialDoors.Any()) continue;
 
                     var selectDoor = potentialDoors[Random.Range(0, potentialDoors.Count)];
-                    var door = CreateDoor(selectDoor, selectDoor.NeighborCellsOutOfRoom(true).First(x => x.room == neighbor));
+                    var door = CreateDoor(selectDoor, selectDoor.NeighborCellsOutOfRoom(true).First(x => x.roomId == neighbor.id));
                     neighbor.doors.Add(door);
                     importantRoom.doors.Add(door);
                     neighbor.pathConfirmedOverride = true;
@@ -357,7 +222,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
             //Other room pass
             #region Other Room Pass
-            var roomsLeft = region.rooms.Where(x => x.connectedRooms.Count == 0).ToList();
+            var roomsLeft = region.GetRooms().Where(x => x.connectedRooms.Count == 0).ToList();
             var retries = 10;
             while (roomsLeft.Any() && retries > 0)
             {
@@ -368,13 +233,13 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var neighbors = rootRoom.neighborRooms.Where(x => x.pathConfirmedOverride).ToList();
                 var targetNeighbor = neighbors[Random.Range(0, neighbors.Count)];
 
-                var potentialDoors = rootRoom.cells.Where(x => x.NeighborCellsOutOfRoom().Any(a => a.room == targetNeighbor)
+                var potentialDoors = rootRoom.GetCells().Where(x => x.NeighborCellsOutOfRoom().Any(a => a.roomId == targetNeighbor.id)
                 && x.type != CellType.Elevation).ToList();
 
                 if (!potentialDoors.Any()) { retries--; continue; };
 
                 var targetDoor = potentialDoors[Random.Range(0, potentialDoors.Count)];
-                var targetNeighborDoor = targetDoor.NeighborCellsOutOfRoom().First(x => x.room == targetNeighbor);
+                var targetNeighborDoor = targetDoor.NeighborCellsOutOfRoom().First(x => x.roomId == targetNeighbor.id);
 
                 var door = CreateDoor(targetDoor, targetNeighborDoor);
                 rootRoom.doors.Add(door);
@@ -382,15 +247,15 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 rootRoom.pathConfirmedOverride = true;
                 targetNeighbor.pathConfirmedOverride = true;
 
-                roomsLeft = region.rooms.Where(x => x.connectedRooms.Count == 0).ToList();
+                roomsLeft = region.GetRooms().Where(x => x.connectedRooms.Count == 0).ToList();
             }
             #endregion
         }
 
         private static Node_Door CreateDoor(Cell cell_1, Cell cell_2)
         {
-            var room_1 = RoomCollection.rooms.First(x => x.cells.Contains(cell_1));
-            var room_2 = RoomCollection.rooms.First(x => x.cells.Contains(cell_2));
+            var room_1 = RoomCollection.rooms.First(x => x.Value.GetCells().Contains(cell_1));
+            var room_2 = RoomCollection.rooms.First(x => x.Value.GetCells().Contains(cell_2));
 
             var door = new Node_Door()
             {
@@ -398,8 +263,11 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 cell_2 = cell_2
             };
 
-            room_1.doors.Add(door);
-            room_2.doors.Add(door);
+            CellCollection.cells[cell_1.position].mustNotBeBlocked = true;
+            CellCollection.cells[cell_2.position].mustNotBeBlocked = true;
+
+            //room_1.doors.Add(door);
+            //room_2.doors.Add(door);
 
             Level.doors.Add(door);
 
@@ -408,14 +276,13 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         #endregion
 
-        #region Room Parsing
-        public static void ParseRoomNodes()
+        #region Room Scaffolding
+        public static void ScaffoldRoomNodes()
         {
-            foreach(var room in RoomCollection.rooms)
+            foreach(var room in RoomCollection.GetAll())
             {
-                var scaffold = new Scaffold();
+                var scaffold = new Scaffold {roomId = room.id};
 
-                //TODO: Bug where elevations that are lowers does not render correctly
                 Elevation_Parse(room, ref scaffold);
 
                 Floor_ParseMain(room, ref scaffold);
@@ -427,14 +294,14 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
                 Ceiling_Parse(room, ref scaffold);
 
-                Level.roomScaffolds.Add(room, scaffold);
+                Level.roomScaffolds.Add(room.id, scaffold);
             }
             CleanScaffolding();
         }
 
         private static void Elevation_Parse(Room room, ref Scaffold scaffold)
         {
-            foreach (var cell in room.cells.Where(x => x.type == CellType.Elevation))
+            foreach (var cell in room.GetCells().Where(x => x.type == CellType.Elevation))
             {
                 //Upper Scan
                 if (CellCollection.HasCellAt(cell.Step(Direction.Up)))
@@ -446,24 +313,10 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                         node.lower = cell;
                         node.upper = upper;
                         node.position = upper.position;
+                        node.rootCells.Add(upper);
+                        node.rootCells.Add(cell);
                         cell.elevationOverride_Lower = true;
                         upper.elevationOverride_Upper = true;
-                        scaffold.elevation.Add(node);
-                    }
-                }
-
-                //Lower Scan
-                if (CellCollection.HasCellAt(cell.Step(Direction.Down)))
-                {
-                    var lower = CellCollection.cells[cell.Step(Direction.Down)];
-                    if (!scaffold.elevation.Any(x => x.upper == cell))
-                    {
-                        var node = new Node_Elevation();
-                        node.upper = cell;
-                        node.lower = lower;
-                        node.position = cell.position;
-                        lower.elevationOverride_Lower = true;
-                        cell.elevationOverride_Upper = true;
                         scaffold.elevation.Add(node);
                     }
                 }
@@ -475,11 +328,12 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         //Floor Parse
         private static void Floor_ParseMain(Room room, ref Scaffold scaffold)
         {
-            foreach(var cell in room.cells)
+            foreach(var cell in room.GetCells())
             {
                 var node = new Node_FloorMain();
                 node.position = cell.position;
-                node.root = cell;
+                node.root = cell;          //This redundancy is for simplifing the scaffold rendering process
+                node.rootCells.Add(cell);  // <--
                 scaffold.floor.main.Add(node);
             }
         }
@@ -487,7 +341,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         //Connector Parse
         private static void Floor_ParseConnectors(Room room, ref Scaffold scaffold)
         {
-            foreach(var cell in room.cells)
+            foreach(var cell in room.GetCells())
             {
                 var neighborsInRoom = cell.NeighborCellsInRoom();
                 foreach(var neighbor in neighborsInRoom)
@@ -496,6 +350,9 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                     {
                         var node = new Node_FloorConnector();
                         node.position = cell.PositionBetween(neighbor);
+                        node.rootCells.Add(cell);
+                        node.rootCells.Add(neighbor);
+                        node.normal = Directionf.GetNormalTowards(node.position, node.rootCells.First().position);
                         node.rootCells = new List<Cell>() { cell, neighbor };
                         scaffold.floor.connectors.Add(node);
                     }
@@ -506,9 +363,10 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         //Column Parse
         private static void Floor_ParseColumns(Room room, ref Scaffold scaffold)
         {
-            if (room.cells.Count < 4) return; //Columns cannot show up in rooms with less than 4 cells
+            var cells = room.GetCells();
+            if (cells.Count < 4) return; //Columns cannot show up in rooms with less than 4 cells
 
-            foreach(var cell in room.cells)
+            foreach(var cell in cells)
             {
                 foreach(var direction in Directionf.Directions())
                 {
@@ -518,7 +376,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                     {
                         var node = new Node_FloorColumn();
                         node.position = Cellf.PositionBetween(cellGrouping);
-                        node.roots = cellGrouping;
+                        node.rootCells = cellGrouping;
                         scaffold.floor.columns.Add(node);
                     }
                 }
@@ -559,14 +417,14 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         private static void Wall_ParseMain(Room room, ref Scaffold scaffold)
         {
-            foreach(var cell in room.cells)
+            foreach(var cell in room.GetCells())
             {
                 foreach(var direction in Directionf.Directions())
                 {
                     if(CellCollection.HasCellAt(cell.Step(direction)))
                     {
                         var neighbor = CellCollection.cells[cell.Step(direction)];
-                        if(neighbor.room != cell.room)
+                        if(neighbor.roomId != cell.roomId)
                         {
                             RenderWallNode(cell, direction, ref scaffold);
                         }
@@ -592,6 +450,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
             var node = new Node_WallMain();
             node.position = cell.position + (direction.ToVector() * CELL_PARTIAL_OFFSET);
+            node.rootCells.Add(cell);
             node.root = cell;
             node.direction = direction;
             scaffold.wall.main.Add(node);
@@ -625,6 +484,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var connectorNode = new Node_WallConnector();
                 connectorNode.position = node.position + (direction.ToVector() * CELL_PARTIAL_OFFSET);
                 connectorNode.root = node;
+                connectorNode.rootCells.AddRange(node.rootCells);
+                connectorNode.offsetRoot = node.position;
                 connectorNode.direction = direction;
                 scaffold.wall.connectors.Add(connectorNode);
             }
@@ -642,6 +503,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var node = new Node_CeilingMain();
                 node.position = main.position + (Direction.Up.ToVector());
                 node.root = main;
+                node.rootCells.AddRange(main.rootCells);
                 scaffold.ceiling.main.Add(node);
             }
 
@@ -650,6 +512,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var node = new Node_CeilingConnector();
                 node.position = connector.position + (Direction.Up.ToVector());
                 node.root = connector;
+                node.normal = connector.normal;
+                node.rootCells.AddRange(connector.rootCells);
                 scaffold.ceiling.connectors.Add(node);
             }
 
@@ -658,6 +522,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 var node = new Node_CeilingColumn();
                 node.position = column.position + (Direction.Up.ToVector());
                 node.root = column;
+                node.rootCells.AddRange(column.rootCells);
                 scaffold.ceiling.columns.Add(node);
             }
         }
@@ -667,6 +532,220 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         private static void CleanScaffolding()
         {
             
+        }
+
+        #endregion
+
+        #region Room Parsing
+
+        public static void ParseRoom(this Room room)
+        {
+            var result = new Parsing_Node();
+
+            var roomDoors = Level.doors.Where(x => x.Contains(room)).ToList();
+
+            //Room Type
+            result.roomType = room.GetRoomType(roomDoors);
+
+            //Room Cell Evaluation
+            result.pointsOfInterest = room.EvaluatePointsOfInterest();
+
+            Level.roomParsings.Add(room.id, result);
+        }
+
+        private static RoomType GetRoomType(this Room room, List<Node_Door> doors)
+        {
+            var cells = room.GetCells();
+
+            if(doors.Count() == 1)
+            {
+                if(cells.Count == 1)
+                {
+                    return RoomType.EndRoom;
+                } else if(doors.Count <= 3)
+                {
+                    return RoomType.SideRoom;
+                }
+                else
+                {
+                    return RoomType.Arena;
+                }
+            } else if(doors.Count() == 2)
+            {
+                if(cells.Count() == 1)
+                {
+                    return RoomType.Connector;
+                } else if(cells.Count() == 2)
+                {
+                    //All doors are on one cell
+                    if(cells.Any(x => doors.All(y => y.Contains(x))))
+                    {
+                        return RoomType.SideRoom;
+                    }
+                    else
+                    {
+                        return RoomType.Connector;
+                    }
+                } else if(cells.Count() <= 3)
+                {
+                    if (cells.Any(x => doors.All(y => y.Contains(x))))
+                    {
+                        return RoomType.SideRoom;
+                    } else
+                    {
+                        RoomType temp = RoomType.Unknown;
+
+                        foreach(var cell in cells)
+                        {
+                            var neighbors = cell.NeighborCellsInRoom();
+                            var door_1 = doors.FirstOrDefault(x => x.Contains(cell));
+                            var door_2 = doors.FirstOrDefault(x => neighbors.Any(y => x.Contains(y)));
+
+                            if(door_1 == null || door_2 == null)
+                            {
+                                continue;
+                            } else if(door_1 != null && door_2 != null)
+                            {
+                                temp = RoomType.SideRoom;
+                            }
+
+                            if (temp != RoomType.Unknown) return temp;
+                        }
+
+                        return RoomType.Connector;
+                    }
+                } else if(cells.Count() <= 8)
+                {
+                    return RoomType.LargeRoom;
+                } else
+                {
+                    return RoomType.Arena;
+                }
+            } else if (doors.Count() > 2)
+            {
+                if(cells.Count() <= 5)
+                {
+                    return RoomType.Connector;
+                } else
+                {
+                    return RoomType.Courtyard;
+                }
+            }
+
+            return RoomType.Unknown;
+        }
+
+        private static List<PointOfInterest> EvaluatePointsOfInterest(this Room room)
+        {
+            var result = new List<PointOfInterest>();
+
+            var scaffold = Level.roomScaffolds[room.id];
+
+            foreach(var cell in room.GetCells())
+            {
+                result.Add(cell.EvaluateCell(scaffold));
+            }
+
+            //result.AddRange(room.EvaluateCompoundPointsOfInterest(scaffold, result));
+
+            return result;
+        }
+
+        //Determine lowest level point of interest for cell
+        private static PointOfInterest EvaluateCell(this Cell cell, Scaffold roomScaffold)
+        {
+            var result = new PointOfInterest();
+
+            result.cells.Add(cell.position);
+
+            var walls = roomScaffold.wall.main.Where(x => x.root.position == cell.position).ToList();
+            switch(walls.Count())
+            {
+                case 3:
+                    result.interestType = PointOfInterestType.Endroom;
+                    break;
+                case 2:
+                    result.interestType = cell.CellWallsAreAdjacent(walls) ? PointOfInterestType.Corner : PointOfInterestType.Hall;
+                    break;
+                case 1:
+                    result.interestType = PointOfInterestType.Side;
+                    break;
+                default:
+                    result.interestType = PointOfInterestType.Open_Area;
+                    break;
+            }
+
+            result.hasDoors = cell.doors.Count() > 0;
+
+            return result;
+        }
+
+        private static bool CellWallsAreAdjacent(this Cell cell, List<Node_WallMain> wallsForCell)
+        {
+            var directions = wallsForCell.Select(s => s.direction).ToList();
+            foreach(var direction in directions)
+            {
+                if(directions.Any(x => x.Left() == direction || x.Right() == direction))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static List<PointOfInterest> EvaluateCompoundPointsOfInterest(this Room room, Scaffold scaffold, List<PointOfInterest> simplePOI)
+        {
+            var result = new List<PointOfInterest>();
+
+            return result;
+        }
+
+        #region Compound Evaluations
+
+        #region Hallways
+
+        //Hallway                
+        private static List<PointOfInterest> EvaluateCompound_Hallway(this Room room, List<PointOfInterest> simplePOI)
+        {
+            var result = new List<PointOfInterest>();
+            var halls = simplePOI.Where(x => x.interestType == PointOfInterestType.Hall).ToList();
+
+
+
+            return result;
+        }
+
+        //Long_Hallway                 
+        //T_Hallway                 
+        //Cross_Hallway    
+
+        #endregion
+
+        #region Side Partitions
+
+        //Side_Partition              
+        //Side_Partition_Long          
+        //Side_Partition_Elbow         
+        //Side_Partition_Elbow_Enclosed
+
+        #endregion
+
+        #region Center Pieces
+
+        //Small_Center_Piece         
+        //Medium_Center_Piece          
+        //Large_Center_Piece
+
+        #endregion
+
+        #endregion
+
+        //Using this as a placeholder to enforce the improved cell referencing,
+        //uses the dirty cell parameter to fetch the consistent cell reference.
+        private static Cell GetCell(this Cell cell)
+        {
+            return CellCollection.cells[cell.position];
         }
 
         #endregion

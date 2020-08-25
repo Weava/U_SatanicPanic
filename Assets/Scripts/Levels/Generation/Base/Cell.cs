@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.Levels.Generation.Base.Mono;
+using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
+using System.Collections.Generic;
 using System.Linq;
+using Assets.Scripts.Levels.Generation.Extensions;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base
@@ -9,7 +12,13 @@ namespace Assets.Scripts.Levels.Generation.Base
         #region Meta
         public CellType type = CellType.Cell;
 
-        public bool important { get { return (type == CellType.Pathway || type == CellType.Elevation || type == CellType.Spawn); } } 
+        public bool important => (type == CellType.Pathway || type == CellType.Elevation || type == CellType.Spawn);
+
+        public bool mustNotBeBlocked = false;
+
+        public bool blocked = false;
+
+        public bool claimedBySuite = false;
 
         public int sequence = 0;
 
@@ -19,14 +28,21 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public List<Cell> children = new List<Cell>();
 
-        public bool claimedByRoom { get { return room != null; } }
+        public List<Node_Door> doors { get { return Level.doors.Where(x => x.Contains(this)).ToList(); } }
+
+        public bool claimedByRoom { get {
+                if(roomId != "")
+                { return true; }
+                return false;
+            } }
 
         public bool elevationOverride_Upper = false;
         public bool elevationOverride_Lower = false;
 
-        public string region = "";
+        public string regionId = "";
+        public string roomId = "";
 
-        public Room room;
+        //public Room room;
 
         public Cell() { }
 
@@ -81,6 +97,16 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         #endregion
 
+        #region Update
+
+        public static bool Update(this Cell cell)
+        {
+            cells[cell.position] = cell;
+            return true;
+        }
+
+        #endregion
+
         #region Remove
 
         public static bool Remove(Cell cell)
@@ -113,9 +139,32 @@ namespace Assets.Scripts.Levels.Generation.Base
             return cells.ContainsKey(position);
         }
 
-        public static List<Cell> GetByRegion(string region)
+        public static List<Cell> GetByRoom(string roomId)
         {
-            return cells.Select(s => s.Value).Where(x => x.region == region).ToList();
+            return cells.Where(x => x.Value.roomId == roomId).Select(s => s.Value).ToList();
+        }
+
+        public static List<Cell> GetByRegion(string regionId)
+        {
+            return cells.Select(s => s.Value).Where(x => x.regionId == regionId).ToList();
+        }
+
+        public static Room GetRoom(this Cell cell)
+        {
+            if(cell.roomId != "")
+            {
+                return RoomCollection.rooms[cell.roomId];
+            }
+            return null;
+        }
+
+        public static Region GetRegion(this Cell cell)
+        {
+            if (cell.regionId != "")
+            {
+                return RegionCollection.regions[cell.regionId];
+            }
+            return null;
         }
 
         #endregion

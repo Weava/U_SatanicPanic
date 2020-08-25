@@ -12,54 +12,16 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 {
     public static class PathExpander
     {
-        [Obsolete]
-        public static void ExpandCellPoint(Cell rootCell, int expansionAmount = 1)
-        {
-            if (rootCell.type == CellType.Elevation || rootCell.type == CellType.Spawn) return; //Elevation cells cannot expand
-
-            var cellsToAddToCollection = new List<Cell>();
-
-            var cellsInCurrentExpansion = new List<Cell>();
-            cellsInCurrentExpansion.Add(rootCell);
-
-            var cellsForNextExpansion = new List<Cell>();
-
-            while(expansionAmount > 0)
-            {
-                foreach(var cell in cellsInCurrentExpansion.ToArray())
-                {
-                    foreach (var direction in Directionf.Directions().ToArray())
-                    {
-                        if (!CellCollection.HasCellAt(cell.Step(direction)) 
-                            && !cellsToAddToCollection.Any(x => x.position == cell.Step(direction))
-                            && !cellsForNextExpansion.Any(x => x.position == cell.Step(direction)))
-                        {
-                            var newCell = new Cell(CellType.Cell, cell.Step(direction));
-                            newCell.region = cell.region;
-                            newCell.parent = cell;
-                            cell.children.Add(newCell);
-                            cellsForNextExpansion.Add(newCell);
-                        }
-                    }
-                }
-
-                cellsToAddToCollection.AddRange(cellsForNextExpansion);
-                cellsInCurrentExpansion = cellsForNextExpansion;
-                cellsForNextExpansion = new List<Cell>();
-                expansionAmount--;
-            }
-
-            CellCollection.Add(cellsToAddToCollection);
-        }
-
         public static void Expand(ref Region region)
         {
             var cellsToAdd = new List<Cell>();
 
-            var sequenceLength = region.cells.Last().sequence;
-            var sequenceMiddle = region.cells.Sum(s => s.sequence) / region.cells.Where(x => x.sequence > 0).Count();
+            var cells = region.GetCells();
 
-            var pathwayCells = region.cells.Where(x => x.type == CellType.Pathway).ToArray();
+            var sequenceLength = cells.Last().sequence;
+            var sequenceMiddle = cells.Sum(s => s.sequence) / cells.Where(x => x.sequence > 0).Count();
+
+            var pathwayCells = cells.Where(x => x.type == CellType.Pathway).ToArray();
             foreach (var pathwayCell in pathwayCells) //Ignore elevation cells, those cannot expand
             {
                 cellsToAdd = new List<Cell>();
@@ -80,7 +42,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                             {
                                 var cell = new Cell(CellType.Cell, currentCell.position.Step(direction));
                                 cell.parent = currentCell;
-                                cell.region = region.regionName;
+                                cell.regionId = region.id;
                                 cellsToAdd.Add(cell);
                                 currentCell = cell;
                             }
@@ -111,7 +73,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                             {
                                 var cell = new Cell(CellType.Cell, currentCell.position.Step(direction));
                                 cell.parent = currentCell;
-                                cell.region = region.regionName;
+                                cell.regionId = region.id;
                                 cellsToAdd.Add(cell);
                                 currentCell = cell;
                             }
@@ -121,7 +83,6 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                 try
                 {
                     CellCollection.Add(cellsToAdd);
-                    region.cells.AddRange(cellsToAdd);
                 }
                 catch (Exception e) {
                     continue; }
@@ -130,7 +91,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
         public static void Proliferate(ref Region region)
         {
-            var cellsWithOpenings = region.cells.Where(x => x.NeighborOpenings().Any() && x.type == CellType.Cell).ToList();
+            var cellsWithOpenings = region.GetCells().Where(x => x.NeighborOpenings().Any() && x.type == CellType.Cell).ToList();
             var cellsToAdd = new List<Cell>();
 
             foreach(var cell in cellsWithOpenings)
@@ -150,7 +111,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                         {
                             var nextCell = new Cell(CellType.Cell, currentCell.Step(opening));
                             nextCell.parent = currentCell;
-                            nextCell.region = region.regionName;
+                            nextCell.regionId = region.id;
                             cellsToAdd.Add(nextCell);
                             currentCell = cell;
                         }
@@ -158,20 +119,18 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                 }
             }
 
-            region.cells.AddRange(cellsToAdd);
             CellCollection.Add(cellsToAdd);
         }
 
         public static void DecayCells(ref Region region)
         {
-            foreach(var cell in region.cells.Where(x => x.type == CellType.Cell).ToArray())
+            foreach(var cell in region.GetCells().Where(x => x.type == CellType.Cell).ToArray())
             {
                 var decayHit = Random.Range(0.0f, 1.0f);
                 if(region.cellDecayAmount >= decayHit)
                 {
                     cell.children = new List<Cell>();
                     CellCollection.Remove(cell);
-                    region.cells.Remove(cell);
                 }
             }
         }
@@ -179,14 +138,13 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
         public static void CleanIsolatedCells(Region region)
         {
             //These should be the only type of cells that can be potentially isolated
-            var cellsToCheck = region.cells.Select(s => s).Where(x => x.type == CellType.Cell).ToList();
+            var cellsToCheck = region.GetCells().Select(s => s).Where(x => x.type == CellType.Cell).ToList();
 
             foreach (var cell in cellsToCheck)
             {
                 if (cell.FindClosestPathway() == null)
                 {
                     CellCollection.Remove(cell);
-                    region.cells.Remove(cell);
                 }
             }
         }

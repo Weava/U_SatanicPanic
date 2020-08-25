@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -11,6 +12,10 @@ namespace Assets.Scripts.Levels.Generation.Extensions
     public static class Cellf
     {
         public const int CELL_STEP_OFFSET = 8;
+
+        public const int CELL_MAIN_OFFSET = 6;
+
+        public const int CELL_ELEVATION_OFFSET = 4;
 
         #region Directional Positioning
 
@@ -52,13 +57,24 @@ namespace Assets.Scripts.Levels.Generation.Extensions
                 (position.z + otherPosition.z) / 2);
         }
 
-        public static Vector3 PositionBetween(List<Cell> cells)
+        public static Vector3 PositionBetween(this List<Cell> cells)
         {
             var result = new Vector3();
 
             result.x = cells.Sum(s => s.position.x) / cells.Count();
             result.y = cells.Sum(s => s.position.y) / cells.Count();
             result.z = cells.Sum(s => s.position.z) / cells.Count();
+
+            return result;
+        }
+
+        public static Vector3 PositionBetween(this List<Vector3> points)
+        {
+            var result = new Vector3();
+
+            result.x = points.Sum(s => s.x) / points.Count();
+            result.y = points.Sum(s => s.y) / points.Count();
+            result.z = points.Sum(s => s.z) / points.Count();
 
             return result;
         }
@@ -78,7 +94,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
 
         public static bool HasSameRoom(this Cell cell, Cell target)
         {
-            return cell.room == target.room;
+            return cell.roomId == target.roomId;
         }
 
         #endregion
@@ -97,12 +113,12 @@ namespace Assets.Scripts.Levels.Generation.Extensions
         {
             var result = new List<Cell>();
 
-            if (cell.region == "") return result;
+            if (cell.regionId == "") return result;
 
             foreach(var direction in Directionf.Directions())
             {
                 if(CellCollection.HasCellAt(cell.Step(direction))
-                    && CellCollection.cells[cell.Step(direction)].region == cell.region)
+                    && CellCollection.cells[cell.Step(direction)].regionId == cell.regionId)
                 {
                     result.Add(CellCollection.cells[cell.Step(direction)]);
                 }
@@ -118,7 +134,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             foreach (var direction in Directionf.Directions())
             {
                 if (CellCollection.HasCellAt(cell.Step(direction))
-                    && CellCollection.cells[cell.Step(direction)].room != cell.room)
+                    && CellCollection.cells[cell.Step(direction)].roomId != cell.roomId)
                 {
                     if (!includeElevation && CellCollection.cells[cell.Step(direction)].type == CellType.Elevation)
                         continue;
@@ -137,7 +153,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             foreach (var direction in Directionf.Directions())
             {
                 if (CellCollection.HasCellAt(cell.Step(direction))
-                    && CellCollection.cells[cell.Step(direction)].room == cell.room)
+                    && CellCollection.cells[cell.Step(direction)].roomId == cell.roomId)
                 {
                     result.Add(CellCollection.cells[cell.Step(direction)]);
                 }
@@ -145,7 +161,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
                 if(includeDiagonal)
                 {
                     if (CellCollection.HasCellAt(cell.Step(direction).Step(direction.Right()))
-                    && CellCollection.cells[cell.Step(direction).Step(direction.Right())].room == cell.room)
+                    && CellCollection.cells[cell.Step(direction).Step(direction.Right())].roomId == cell.roomId)
                     {
                         result.Add(CellCollection.cells[cell.Step(direction).Step(direction.Right())]);
                     }
@@ -169,7 +185,17 @@ namespace Assets.Scripts.Levels.Generation.Extensions
 
             return result;
         }
-         
+
+        public static bool IsClaimedBySuite(this Cell cell)
+        {
+            return CellCollection.cells[cell.position].claimedBySuite;
+        }
+
+        public static bool AnyAreClaimedBySuite(this List<Cell> cells)
+        {
+            return cells.Any(cell => cell.IsClaimedBySuite());
+        }
+
         #endregion
     }
 }

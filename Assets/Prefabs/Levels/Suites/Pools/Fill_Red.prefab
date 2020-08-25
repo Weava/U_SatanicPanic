@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8417735516500991439
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8417735516500991433}
+  - component: {fileID: 8417735516500991432}
+  m_Layer: 0
+  m_Name: Fill_Red
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8417735516500991433
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8417735516500991439}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.4743671, y: 6.986801, z: 19.951445}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8417735516500991432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8417735516500991439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a86ad0bb0089cd04e8699617c568873d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floor_main: {fileID: 2195154799995973442, guid: 096c42c4236ca6442ba9f077df2d9ea1,
+    type: 3}
+  floor_connector: {fileID: 5641596547462906344, guid: 99d6708189651004b9d8f82358d170ed,
+    type: 3}
+  floor_column: {fileID: 1027615584229507772, guid: deb8f60ee36f5494bafddd3fcc936291,
+    type: 3}
+  wall_main: {fileID: 2597463335806490902, guid: 8f2618fff01640945b7a4101f43d9d34,
+    type: 3}
+  wall_connector: {fileID: 8751221819790632158, guid: 2886588b057035b4884bee54eb3781f6,
+    type: 3}
+  ceiling_main: {fileID: 5948932473255154649, guid: 56d58530d9662ff44b08c97b09912cc4,
+    type: 3}
+  ceiling_connector: {fileID: 5177229413463032092, guid: ad87c39294fa30f4593828afa41f511f,
+    type: 3}
+  ceiling_column: {fileID: 2080195393489919907, guid: 6b832d77539ca5c4291f36e924bc1567,
+    type: 3}
