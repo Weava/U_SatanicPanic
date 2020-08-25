@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Levels.Generation.Base;
 using Assets.Scripts.Levels.Generation.Extensions;
+using Assets.Scripts.Levels.Generation.RoomBuilder;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base;
 using Assets.Scripts.Misc.Extensions;

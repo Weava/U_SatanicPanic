@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Levels.Generation.Base;
 using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
+using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Suites
 {
@@ -14,6 +15,8 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Suites
     public class Suite_Basic : Suite
     {
         public List<EntityPool> entityPools = new List<EntityPool>();
+
+        //[HideInInspector]
 
         public override bool ValidateRoom(LevelRoom room)
         {
@@ -31,7 +34,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Suites
             {
                 var success = false;
 
-                foreach (var entity in entityPool.entities)
+                foreach (var entity in entityPool.entities.OrderByDescending(o => o.roomType))
                 {
                     success = RenderEntity(room, entity);
                     if (success && entityPool.singleton)

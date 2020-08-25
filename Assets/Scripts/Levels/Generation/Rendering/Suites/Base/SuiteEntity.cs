@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Levels.Generation.Extensions;
+using Assets.Scripts.Levels.Generation.RoomBuilder;
+using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Parsing.Base;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 using Vector4 = UnityEngine.Vector4;
@@ -19,6 +21,8 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
         public float chanceToRenderAgain;
 
         public bool partial;
+
+        public RoomTypeEnum roomType;
 
         public List<Vector4> spaces = new List<Vector4>();
 

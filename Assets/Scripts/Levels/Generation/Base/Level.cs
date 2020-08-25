@@ -6,6 +6,7 @@ using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
+using Assets.Scripts.Levels.Generation.RoomBuilder;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base
@@ -88,6 +89,8 @@ namespace Assets.Scripts.Levels.Generation.Base
     {
         public string roomId;
         public string regionId;
+
+        public RoomTypeEnum roomType;
 
         //Physical container for rendering room in scene
         public GameObject renderContainer;

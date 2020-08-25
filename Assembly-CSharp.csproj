@@ -112,6 +112,7 @@
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\ProjectionStrategies\Projection_LimitedStep.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\ProjectionStrategies\Projection_PartialBloom.cs" />
     <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\RoomParser.cs" />
+    <Compile Include="Assets\Scripts\Levels\Generation\RoomBuilder\RoomTypeEnum.cs" />
     <Compile Include="Assets\Scripts\Misc\Billboard_Sprite.cs" />
     <Compile Include="Assets\Scripts\Misc\Direction.cs" />
     <Compile Include="Assets\Scripts\Misc\Extensions\CollectionExtensions.cs" />

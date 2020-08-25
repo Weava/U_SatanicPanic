@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PopcornStucco
-  m_Shader: {fileID: -6465566751694194690, guid: f3220e8c9ba0b384aa38fab1f3019bfb,
+  m_Shader: {fileID: -6465566751694194690, guid: 89b9c89f3cb80c3429ca30addc1a96e0,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -34,6 +34,10 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_7E46579:
+        m_Texture: {fileID: 2800000, guid: bc4de83ed7e173542bd6c1c77e24f69a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_E036B45F:
         m_Texture: {fileID: 2800000, guid: bc4de83ed7e173542bd6c1c77e24f69a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -66,6 +70,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_6551B720: 0.25
+    - Vector1_96914976: 0.25
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1

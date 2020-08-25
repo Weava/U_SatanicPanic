@@ -136,7 +136,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites
                 foreach (var room in Level.Rooms.Select(s => s.Value).Where(x => x.regionId == regionId).ToList())
                 {
                     //TODO: Order suites by bias preference per room
-                    regionSuites = regionSuites.Shuffle();
+                    //regionSuites = regionSuites.Shuffle();
                     foreach (var suite in regionSuites)
                     {
                         if (RenderRoom(room, suite)) //Successful suite render, remove from pools
