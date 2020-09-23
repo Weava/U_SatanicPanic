@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Assets.Scripts.Levels.Generation.Parts.ScaffoldNodes;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Scripts.Levels.Generation.Parts.ScaffoldNodes;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -81,9 +77,9 @@ namespace Assets.Scripts.Levels.Generation.Parts
             var zFloat = position.z - Math.Truncate(position.z);
 
             if (xFloat >= 0.5)
-                result.x = (float) Math.Ceiling(position.x);
+                result.x = (float)Math.Ceiling(position.x);
             else
-                result.x = (float) Math.Floor(position.x);
+                result.x = (float)Math.Floor(position.x);
 
             if (yFloat >= 0.5)
                 result.y = (float)Math.Ceiling(position.y);
@@ -98,11 +94,11 @@ namespace Assets.Scripts.Levels.Generation.Parts
             return result;
         }
 
-        #endregion
+        #endregion Spatial Methods
 
         #region Gizmo Render
 
-        void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             if (renderDebug)
             {
@@ -111,7 +107,7 @@ namespace Assets.Scripts.Levels.Generation.Parts
             }
         }
 
-        void RenderSpace()
+        private void RenderSpace()
         {
             var worldSpace = GetWorldSpace();
             foreach (var space in worldSpace)
@@ -120,7 +116,7 @@ namespace Assets.Scripts.Levels.Generation.Parts
             }
         }
 
-        void RenderDoors()
+        private void RenderDoors()
         {
             foreach (var doorNode in doorNodes)
             {
@@ -129,12 +125,12 @@ namespace Assets.Scripts.Levels.Generation.Parts
             }
         }
 
-        void DrawCell(Vector3 root)
+        private void DrawCell(Vector3 root)
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireCube(root, new Vector3(CellF.CellOffset, CellF.CellHeightOffset, CellF.CellOffset));
         }
 
-        #endregion
+        #endregion Gizmo Render
     }
 }

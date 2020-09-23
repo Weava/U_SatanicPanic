@@ -2,7 +2,6 @@
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Levels.Generation.Extensions;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base
@@ -10,6 +9,7 @@ namespace Assets.Scripts.Levels.Generation.Base
     public class Cell
     {
         #region Meta
+
         public CellType type = CellType.Cell;
 
         public bool important => (type == CellType.Pathway || type == CellType.Elevation || type == CellType.Spawn);
@@ -30,11 +30,15 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public List<Node_Door> doors { get { return Level.doors.Where(x => x.Contains(this)).ToList(); } }
 
-        public bool claimedByRoom { get {
-                if(roomId != "")
+        public bool claimedByRoom
+        {
+            get
+            {
+                if (roomId != "")
                 { return true; }
                 return false;
-            } }
+            }
+        }
 
         public bool elevationOverride_Upper = false;
         public bool elevationOverride_Lower = false;
@@ -44,20 +48,23 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         //public Room room;
 
-        public Cell() { }
+        public Cell()
+        {
+        }
 
         public Cell(CellType type, Vector3 position)
         {
             this.type = type;
             this.position = position;
         }
-        #endregion
+
+        #endregion Meta
 
         #region Parsing
 
         public bool hasDoor { get { return Level.doors.Any(x => x.cell_1 == this || x.cell_2 == this); } }
 
-        #endregion
+        #endregion Parsing
     }
 
     public static class CellCollection
@@ -74,7 +81,7 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public static bool Add(this Cell cell)
         {
-            if(!cells.ContainsKey(cell.position))
+            if (!cells.ContainsKey(cell.position))
             {
                 cells.Add(cell.position, cell);
                 return true;
@@ -87,15 +94,15 @@ namespace Assets.Scripts.Levels.Generation.Base
         {
             cellsToAdd.Where(x => cells.ContainsKey(x.position)).ToList().ForEach(x => cellsToAdd.Remove(x));
 
-            foreach(var cell in cellsToAdd)
+            foreach (var cell in cellsToAdd)
             {
-                if(!HasCellAt(cell.position)) cells.Add(cell.position, cell);
+                if (!HasCellAt(cell.position)) cells.Add(cell.position, cell);
             }
 
             return true;
         }
 
-        #endregion
+        #endregion Add
 
         #region Update
 
@@ -105,7 +112,7 @@ namespace Assets.Scripts.Levels.Generation.Base
             return true;
         }
 
-        #endregion
+        #endregion Update
 
         #region Remove
 
@@ -116,7 +123,7 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public static bool Remove(Vector3 positon)
         {
-            if(HasCellAt(positon))
+            if (HasCellAt(positon))
             {
                 var cell = cells[positon];
                 cell.children = new List<Cell>();
@@ -130,7 +137,7 @@ namespace Assets.Scripts.Levels.Generation.Base
             return false;
         }
 
-        #endregion
+        #endregion Remove
 
         #region Get
 
@@ -151,7 +158,7 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public static Room GetRoom(this Cell cell)
         {
-            if(cell.roomId != "")
+            if (cell.roomId != "")
             {
                 return RoomCollection.rooms[cell.roomId];
             }
@@ -167,7 +174,7 @@ namespace Assets.Scripts.Levels.Generation.Base
             return null;
         }
 
-        #endregion
+        #endregion Get
     }
 
     public enum CellType

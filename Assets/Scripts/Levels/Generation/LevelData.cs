@@ -1,9 +1,6 @@
-﻿using System;
+﻿using Assets.Scripts.Levels.Generation.Parts;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Scripts.Levels.Generation.Parts;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation
@@ -27,6 +24,6 @@ namespace Assets.Scripts.Levels.Generation
             return null;
         }
 
-        #endregion
+        #endregion Helper Methods
     }
 }

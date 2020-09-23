@@ -39,17 +39,17 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             }
 
             //Until all cells are claimed by a room
-            while(region.GetCells().Any(x => ! x.claimedByRoom))
+            while (region.GetCells().Any(x => !x.claimedByRoom))
             {
                 var cellsLeftToClaim = region.GetCells().Where(x => !x.claimedByRoom).ToList();
                 var rootCell = cellsLeftToClaim[Random.Range(0, cellsLeftToClaim.Count)];
                 var claimSize = region.greedyClaiming ? region.maximumRoomSize : Random.Range(1, region.maximumRoomSize + 1);
 
-                var projection = ProjectRoom(rootCell, ref cellsLeftToClaim, Random.Range(1, region.maximumRoomSize+1), region.claimChance, region.roomClaimingStrategy);
-                if(projection.Any())
+                var projection = ProjectRoom(rootCell, ref cellsLeftToClaim, Random.Range(1, region.maximumRoomSize + 1), region.claimChance, region.roomClaimingStrategy);
+                if (projection.Any())
                 {
                     var room = new Room();
-                    if(!ClaimRoom(projection, ref room))
+                    if (!ClaimRoom(projection, ref room))
                     { continue; }
                     room.regionId = region.id;
                     RoomCollection.Add(room);
@@ -61,16 +61,20 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         private static List<Cell> ProjectRoom(Cell root, ref List<Cell> cellsLeftToClaim, int claimAmount, float claimChance, RoomClaimingStrategy strategy)
         {
-            switch(strategy)
+            switch (strategy)
             {
                 case RoomClaimingStrategy.Bloom:
                     return ProjectionStrategies.Projection_Bloom.Project(root, ref cellsLeftToClaim, claimAmount);
+
                 case RoomClaimingStrategy.PartialBloom:
                     return ProjectionStrategies.Projection_PartialBloom.Project(root, ref cellsLeftToClaim, claimAmount, claimChance);
+
                 case RoomClaimingStrategy.LimitedStep:
                     return ProjectionStrategies.Projection_LimitedStep.Project(root, ref cellsLeftToClaim, claimAmount, claimChance);
+
                 case RoomClaimingStrategy.Deterministic:
                     return ProjectionStrategies.Projection_Deterministic.Project(root, ref cellsLeftToClaim);
+
                 default:
                     throw new Exception("A strategy must be assigned to a region.");
             }
@@ -84,7 +88,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
             var currentRoots = new List<Cell> { root };
 
-            while(claimedAmount < claimAmount)
+            while (claimedAmount < claimAmount)
             {
                 var nextRoots = new List<Cell>();
                 foreach (var currentRoot in currentRoots.ToList())
@@ -100,8 +104,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                             result.Add(CellCollection.cells[target]);
                         }
                     }
-                    if(!nextRoots.Any()) //Ran out of cells to claim, just take what we got
-                    {  return result; }
+                    if (!nextRoots.Any()) //Ran out of cells to claim, just take what we got
+                    { return result; }
                 }
                 currentRoots = nextRoots;
             }
@@ -130,7 +134,6 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                             var chanceRoll = Random.Range(0.0f, 1.0f);
                             if (chanceRoll <= claimChance)
                             {
-
                                 nextRoots.Add(CellCollection.cells[target]);
                                 cellsLeftToClaim.Remove(CellCollection.cells[target]);
                                 claimedAmount++;
@@ -151,7 +154,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             return result;
         }
 
-        #endregion
+        #endregion Room Projection Strategies
 
         #region Helper Methods
 
@@ -180,9 +183,9 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             return true;
         }
 
-        #endregion
+        #endregion Helper Methods
 
-        #endregion
+        #endregion Room Claiming
 
         #region Door Parsing
 
@@ -191,20 +194,23 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         public static void ParseDoors(Region region)
         {
             //Pathway door pass - Connect each important pathway room when they meetup
+
             #region Pathway Pass
+
             foreach (var importantRoom in region.GetRooms().Where(x => x.containsPath).ToArray())
             {
                 importantRoom.pathConfirmedOverride = true;
                 var importantNeighbors = importantRoom.neighborRooms.Where(x => x.containsPath);
-                foreach(var neighbor in importantNeighbors)
+                foreach (var neighbor in importantNeighbors)
                 {
                     if (neighbor.connectedRooms.Count > 0 && neighbor.GetCells().Any(x => x.type == CellType.Elevation)) continue;
                     if (neighbor.connectedRooms.Any(x => x == importantRoom)) continue;
 
                     var potentialDoors = importantRoom.GetCells().Where(x => x.NeighborCellsOutOfRoom(true).Any(a => a.roomId == neighbor.id)).ToList();
 
-                    if(importantRoom.connectedRooms.Count > 1 && potentialDoors.Any(x => x.type == CellType.Elevation)
-                        || potentialDoors.Any(x => x.NeighborCellsOutOfRoom(true).Any(y => y.type == CellType.Elevation && y.roomId == neighbor.id && neighbor.connectedRooms.Count > 1))){
+                    if (importantRoom.connectedRooms.Count > 1 && potentialDoors.Any(x => x.type == CellType.Elevation)
+                        || potentialDoors.Any(x => x.NeighborCellsOutOfRoom(true).Any(y => y.type == CellType.Elevation && y.roomId == neighbor.id && neighbor.connectedRooms.Count > 1)))
+                    {
                         potentialDoors.Where(x => x.type == CellType.Elevation).ToList().ForEach(x => potentialDoors.Remove(x));
                     }
 
@@ -217,11 +223,13 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                     neighbor.pathConfirmedOverride = true;
                 }
             }
-            #endregion
 
+            #endregion Pathway Pass
 
             //Other room pass
+
             #region Other Room Pass
+
             var roomsLeft = region.GetRooms().Where(x => x.connectedRooms.Count == 0).ToList();
             var retries = 10;
             while (roomsLeft.Any() && retries > 0)
@@ -249,7 +257,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
                 roomsLeft = region.GetRooms().Where(x => x.connectedRooms.Count == 0).ToList();
             }
-            #endregion
+
+            #endregion Other Room Pass
         }
 
         private static Node_Door CreateDoor(Cell cell_1, Cell cell_2)
@@ -274,14 +283,15 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             return door;
         }
 
-        #endregion
+        #endregion Door Parsing
 
         #region Room Scaffolding
+
         public static void ScaffoldRoomNodes()
         {
-            foreach(var room in RoomCollection.GetAll())
+            foreach (var room in RoomCollection.GetAll())
             {
-                var scaffold = new Scaffold {roomId = room.id};
+                var scaffold = new Scaffold { roomId = room.id };
 
                 Elevation_Parse(room, ref scaffold);
 
@@ -328,7 +338,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         //Floor Parse
         private static void Floor_ParseMain(Room room, ref Scaffold scaffold)
         {
-            foreach(var cell in room.GetCells())
+            foreach (var cell in room.GetCells())
             {
                 var node = new Node_FloorMain();
                 node.position = cell.position;
@@ -341,12 +351,12 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         //Connector Parse
         private static void Floor_ParseConnectors(Room room, ref Scaffold scaffold)
         {
-            foreach(var cell in room.GetCells())
+            foreach (var cell in room.GetCells())
             {
                 var neighborsInRoom = cell.NeighborCellsInRoom();
-                foreach(var neighbor in neighborsInRoom)
+                foreach (var neighbor in neighborsInRoom)
                 {
-                    if( ! scaffold.floor.connectors.Any(x => x.position == cell.PositionBetween(neighbor)))
+                    if (!scaffold.floor.connectors.Any(x => x.position == cell.PositionBetween(neighbor)))
                     {
                         var node = new Node_FloorConnector();
                         node.position = cell.PositionBetween(neighbor);
@@ -366,13 +376,13 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             var cells = room.GetCells();
             if (cells.Count < 4) return; //Columns cannot show up in rooms with less than 4 cells
 
-            foreach(var cell in cells)
+            foreach (var cell in cells)
             {
-                foreach(var direction in Directionf.Directions())
+                foreach (var direction in Directionf.Directions())
                 {
                     var cellGrouping = new List<Cell>();
 
-                    if(ColumnScan(cell, ref cellGrouping, direction))
+                    if (ColumnScan(cell, ref cellGrouping, direction))
                     {
                         var node = new Node_FloorColumn();
                         node.position = Cellf.PositionBetween(cellGrouping);
@@ -390,20 +400,22 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             var result = new List<Cell>();
 
             //A circle has 4 steps of scanning
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
-                if(CellCollection.HasCellAt(currentCell.Step(currentDirection)))
+                if (CellCollection.HasCellAt(currentCell.Step(currentDirection)))
                 {
                     var nextCell = CellCollection.cells[currentCell.Step(currentDirection)];
                     if (!nextCell.HasSameRoom(root)) break;
                     currentDirection = currentDirection.Right();
                     result.Add(currentCell);
                     currentCell = nextCell;
-                } else
+                }
+                else
                 { break; }
             }
 
-            if (result.Count == 4) {
+            if (result.Count == 4)
+            {
                 cellGrouping = result;
                 return true;
             }
@@ -411,31 +423,32 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             return false;
         }
 
-        #endregion
+        #endregion Floor
 
         #region Wall
 
         private static void Wall_ParseMain(Room room, ref Scaffold scaffold)
         {
-            foreach(var cell in room.GetCells())
+            foreach (var cell in room.GetCells())
             {
-                foreach(var direction in Directionf.Directions())
+                foreach (var direction in Directionf.Directions())
                 {
-                    if(CellCollection.HasCellAt(cell.Step(direction)))
+                    if (CellCollection.HasCellAt(cell.Step(direction)))
                     {
                         var neighbor = CellCollection.cells[cell.Step(direction)];
-                        if(neighbor.roomId != cell.roomId)
+                        if (neighbor.roomId != cell.roomId)
                         {
                             RenderWallNode(cell, direction, ref scaffold);
                         }
-                    } else
+                    }
+                    else
                     {
                         RenderWallNode(cell, direction, ref scaffold);
                     }
                 }
             }
         }
-  
+
         private static void RenderWallNode(Cell cell, Direction direction, ref Scaffold scaffold)
         {
             if (Level.doors.Any(x => x.cell_1 == cell || x.cell_2 == cell))
@@ -458,14 +471,14 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         private static void Wall_ParseConnector(Room room, ref Scaffold scaffold)
         {
-            foreach(var connector in scaffold.floor.connectors)
+            foreach (var connector in scaffold.floor.connectors)
             {
                 var rootNormal = connector.rootCells.First().DirectionToNeighbor(connector.rootCells.Last());
                 var directionsToTry = Directionf.Directions();
                 directionsToTry.Remove(rootNormal);
                 directionsToTry.Remove(rootNormal.Opposite());
 
-                foreach(var direction in directionsToTry)
+                foreach (var direction in directionsToTry)
                 {
                     RenderWallConnectorNode(connector, direction, ref scaffold);
                 }
@@ -475,11 +488,11 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         private static void RenderWallConnectorNode(Node_FloorConnector node, Direction direction, ref Scaffold scaffold)
         {
             var knownDoorsForRoots = Level.doors.Where(x => node.rootCells.Contains(x.cell_1) || node.rootCells.Contains(x.cell_2));
-            knownDoorsForRoots = knownDoorsForRoots.Where(x => x.ProjectDirection(node.rootCells.First()) == direction 
+            knownDoorsForRoots = knownDoorsForRoots.Where(x => x.ProjectDirection(node.rootCells.First()) == direction
             || x.ProjectDirection(node.rootCells.Last()) == direction);
             var knownWallsForRoots = scaffold.wall.main.Where(x => node.rootCells.Contains(x.root) && x.direction == direction);
 
-            if(knownDoorsForRoots.Any() || knownWallsForRoots.Any())
+            if (knownDoorsForRoots.Any() || knownWallsForRoots.Any())
             {
                 var connectorNode = new Node_WallConnector();
                 connectorNode.position = node.position + (direction.ToVector() * CELL_PARTIAL_OFFSET);
@@ -491,14 +504,14 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             }
         }
 
-        #endregion
+        #endregion Wall
 
         #region Ceiling
 
         //Ceiling Parse
         private static void Ceiling_Parse(Room room, ref Scaffold scaffold)
         {
-            foreach(var main in scaffold.floor.main)
+            foreach (var main in scaffold.floor.main)
             {
                 var node = new Node_CeilingMain();
                 node.position = main.position + (Direction.Up.ToVector());
@@ -527,14 +540,13 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             }
         }
 
-        #endregion
+        #endregion Ceiling
 
         private static void CleanScaffolding()
         {
-            
         }
 
-        #endregion
+        #endregion Room Scaffolding
 
         #region Room Parsing
 
@@ -557,12 +569,13 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         {
             var cells = room.GetCells();
 
-            if(doors.Count() == 1)
+            if (doors.Count() == 1)
             {
-                if(cells.Count == 1)
+                if (cells.Count == 1)
                 {
                     return RoomType.EndRoom;
-                } else if(doors.Count <= 3)
+                }
+                else if (doors.Count <= 3)
                 {
                     return RoomType.SideRoom;
                 }
@@ -570,15 +583,17 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                 {
                     return RoomType.Arena;
                 }
-            } else if(doors.Count() == 2)
+            }
+            else if (doors.Count() == 2)
             {
-                if(cells.Count() == 1)
+                if (cells.Count() == 1)
                 {
                     return RoomType.Connector;
-                } else if(cells.Count() == 2)
+                }
+                else if (cells.Count() == 2)
                 {
                     //All doors are on one cell
-                    if(cells.Any(x => doors.All(y => y.Contains(x))))
+                    if (cells.Any(x => doors.All(y => y.Contains(x))))
                     {
                         return RoomType.SideRoom;
                     }
@@ -586,25 +601,28 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
                     {
                         return RoomType.Connector;
                     }
-                } else if(cells.Count() <= 3)
+                }
+                else if (cells.Count() <= 3)
                 {
                     if (cells.Any(x => doors.All(y => y.Contains(x))))
                     {
                         return RoomType.SideRoom;
-                    } else
+                    }
+                    else
                     {
                         RoomType temp = RoomType.Unknown;
 
-                        foreach(var cell in cells)
+                        foreach (var cell in cells)
                         {
                             var neighbors = cell.NeighborCellsInRoom();
                             var door_1 = doors.FirstOrDefault(x => x.Contains(cell));
                             var door_2 = doors.FirstOrDefault(x => neighbors.Any(y => x.Contains(y)));
 
-                            if(door_1 == null || door_2 == null)
+                            if (door_1 == null || door_2 == null)
                             {
                                 continue;
-                            } else if(door_1 != null && door_2 != null)
+                            }
+                            else if (door_1 != null && door_2 != null)
                             {
                                 temp = RoomType.SideRoom;
                             }
@@ -614,19 +632,23 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
                         return RoomType.Connector;
                     }
-                } else if(cells.Count() <= 8)
+                }
+                else if (cells.Count() <= 8)
                 {
                     return RoomType.LargeRoom;
-                } else
+                }
+                else
                 {
                     return RoomType.Arena;
                 }
-            } else if (doors.Count() > 2)
+            }
+            else if (doors.Count() > 2)
             {
-                if(cells.Count() <= 5)
+                if (cells.Count() <= 5)
                 {
                     return RoomType.Connector;
-                } else
+                }
+                else
                 {
                     return RoomType.Courtyard;
                 }
@@ -641,7 +663,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
             var scaffold = Level.roomScaffolds[room.id];
 
-            foreach(var cell in room.GetCells())
+            foreach (var cell in room.GetCells())
             {
                 result.Add(cell.EvaluateCell(scaffold));
             }
@@ -659,17 +681,20 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             result.cells.Add(cell.position);
 
             var walls = roomScaffold.wall.main.Where(x => x.root.position == cell.position).ToList();
-            switch(walls.Count())
+            switch (walls.Count())
             {
                 case 3:
                     result.interestType = PointOfInterestType.Endroom;
                     break;
+
                 case 2:
                     result.interestType = cell.CellWallsAreAdjacent(walls) ? PointOfInterestType.Corner : PointOfInterestType.Hall;
                     break;
+
                 case 1:
                     result.interestType = PointOfInterestType.Side;
                     break;
+
                 default:
                     result.interestType = PointOfInterestType.Open_Area;
                     break;
@@ -683,9 +708,9 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
         private static bool CellWallsAreAdjacent(this Cell cell, List<Node_WallMain> wallsForCell)
         {
             var directions = wallsForCell.Select(s => s.direction).ToList();
-            foreach(var direction in directions)
+            foreach (var direction in directions)
             {
-                if(directions.Any(x => x.Left() == direction || x.Right() == direction))
+                if (directions.Any(x => x.Left() == direction || x.Right() == direction))
                 {
                     return true;
                 }
@@ -705,41 +730,39 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
 
         #region Hallways
 
-        //Hallway                
+        //Hallway
         private static List<PointOfInterest> EvaluateCompound_Hallway(this Room room, List<PointOfInterest> simplePOI)
         {
             var result = new List<PointOfInterest>();
             var halls = simplePOI.Where(x => x.interestType == PointOfInterestType.Hall).ToList();
 
-
-
             return result;
         }
 
-        //Long_Hallway                 
-        //T_Hallway                 
-        //Cross_Hallway    
+        //Long_Hallway
+        //T_Hallway
+        //Cross_Hallway
 
-        #endregion
+        #endregion Hallways
 
         #region Side Partitions
 
-        //Side_Partition              
-        //Side_Partition_Long          
-        //Side_Partition_Elbow         
+        //Side_Partition
+        //Side_Partition_Long
+        //Side_Partition_Elbow
         //Side_Partition_Elbow_Enclosed
 
-        #endregion
+        #endregion Side Partitions
 
         #region Center Pieces
 
-        //Small_Center_Piece         
-        //Medium_Center_Piece          
+        //Small_Center_Piece
+        //Medium_Center_Piece
         //Large_Center_Piece
 
-        #endregion
+        #endregion Center Pieces
 
-        #endregion
+        #endregion Compound Evaluations
 
         //Using this as a placeholder to enforce the improved cell referencing,
         //uses the dirty cell parameter to fetch the consistent cell reference.
@@ -748,6 +771,6 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder
             return CellCollection.cells[cell.position];
         }
 
-        #endregion
+        #endregion Room Parsing
     }
 }

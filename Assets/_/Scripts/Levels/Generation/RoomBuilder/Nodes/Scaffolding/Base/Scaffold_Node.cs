@@ -44,7 +44,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base
 
         public bool SetNodeClaimed(string nodeId)
         {
-            if(floor.columns.Any(x => x.id == nodeId))
+            if (floor.columns.Any(x => x.id == nodeId))
             {
                 floor.columns.First(x => x.id == nodeId).claimed = true;
                 SaveChanges();
@@ -130,7 +130,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base
         public List<Node_CeilingColumn> columns = new List<Node_CeilingColumn>();
     }
 
-    #endregion
+    #endregion Scaffold Containers
 
     public enum ScaffoldNodeType
     {
@@ -139,15 +139,18 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base
 
         //Floor Types
         Floor_Main,
+
         Floor_Connector,
         Floor_Column,
 
         //Wall Types
         Wall_Main,
+
         Wall_Connector,
 
         //Ceiling Types
         Ceiling_Main,
+
         Ceiling_Connector,
         Ceiling_Column,
     }

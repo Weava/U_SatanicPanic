@@ -6,11 +6,9 @@
 
     public class Placement
     {
-
     }
 
     public enum PlacementNodeType
     {
-
     }
 }

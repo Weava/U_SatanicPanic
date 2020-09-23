@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 {
@@ -14,15 +9,18 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
     {
         [Header("Floor")]
         public SuiteEntity_Scaffold floor_main;
+
         public SuiteEntity_Scaffold floor_connector;
         public SuiteEntity_Scaffold floor_column;
 
         [Header("Wall")]
         public SuiteEntity_Scaffold wall_main;
+
         public SuiteEntity_Scaffold wall_connector;
 
         [Header("Ceiling")]
         public SuiteEntity_Scaffold ceiling_main;
+
         public SuiteEntity_Scaffold ceiling_connector;
         public SuiteEntity_Scaffold ceiling_column;
     }

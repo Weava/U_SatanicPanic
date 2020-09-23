@@ -18,12 +18,15 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
                 case CellType.Spawn:
                     instance = Instantiate(SpawnCellMarker, position, new Quaternion());
                     break;
+
                 case CellType.Pathway:
                     instance = Instantiate(PathwayCellMarker, position, new Quaternion());
                     break;
+
                 case CellType.Elevation:
                     instance = Instantiate(ElevationCellMarker, position, new Quaternion());
                     break;
+
                 default:
                     instance = Instantiate(CellMarker, position, new Quaternion());
                     break;
@@ -31,7 +34,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
             var cell = CellCollection.cells[position];
             instance.gameObject.name = RegionCollection.regions[cell.regionId].regionName + " - " + cell.type;
-            if(cell.type != CellType.Cell)
+            if (cell.type != CellType.Cell)
             {
                 instance.name += " [" + cell.sequence.ToString() + "]";
             }

@@ -38,7 +38,6 @@ namespace Assets.Scripts.Projectiles
         /// </summary>
         public void SetParentActorCollidor(Collider collider)
         {
-
         }
 
         public void SetTarget(Vector3 targetPoint)
@@ -47,9 +46,9 @@ namespace Assets.Scripts.Projectiles
         }
 
         private void UpdateRaycast()
-        {       
+        {
             RaycastHit hit;
-             var hasHit = Physics.Raycast(transform.position, transform.forward, out hit, range);
+            var hasHit = Physics.Raycast(transform.position, transform.forward, out hit, range);
 
             if (hasHit)
             {

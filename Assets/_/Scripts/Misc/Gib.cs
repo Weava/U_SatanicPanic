@@ -15,7 +15,6 @@ namespace Assets.Scripts.Misc
 
         private void Start()
         {
-
         }
     }
 }

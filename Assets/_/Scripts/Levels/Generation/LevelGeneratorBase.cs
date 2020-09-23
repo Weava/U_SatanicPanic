@@ -3,11 +3,10 @@ using Assets.Scripts.Levels.Generation.Base.Mono;
 using Assets.Scripts.Levels.Generation.Base.Mono.Debug;
 using Assets.Scripts.Levels.Generation.CellBuilder;
 using Assets.Scripts.Levels.Generation.Rendering.Suites;
+using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
 using Assets.Scripts.Levels.Generation.RoomBuilder;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
-using Assets.Scripts.Misc;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation
@@ -21,6 +20,7 @@ namespace Assets.Scripts.Levels.Generation
         public List<Suite> globalSuites = new List<Suite>();
 
         #region Debug
+
         public CellDebug cellDebug;
 
         public RoomDebug roomDebug;
@@ -32,7 +32,8 @@ namespace Assets.Scripts.Levels.Generation
         public bool debugShowRoomScaffolds = false;
         public bool debugShowDoors = false;
         public bool debugShowPOI = false;
-        #endregion
+
+        #endregion Debug
 
         protected void Start()
         {
@@ -90,7 +91,8 @@ namespace Assets.Scripts.Levels.Generation
             var test = CellCollection.cells;
 
             //Expand / Decay Cells
-            regions.ForEach(x => {
+            regions.ForEach(x =>
+            {
                 PathExpander.Expand(ref x);
                 PathExpander.Proliferate(ref x);
                 PathExpander.DecayCells(ref x);
@@ -108,7 +110,7 @@ namespace Assets.Scripts.Levels.Generation
 
         protected virtual void HandleRoomParsing()
         {
-            foreach(var room in RoomCollection.rooms.Select(s => s.Value).ToArray())
+            foreach (var room in RoomCollection.rooms.Select(s => s.Value).ToArray())
             {
                 room.ParseRoom();
             }
@@ -116,9 +118,9 @@ namespace Assets.Scripts.Levels.Generation
 
         protected virtual void InstantiateRoomInstances()
         {
-            foreach(var room in Level.roomData.Select(s => s.room))
+            foreach (var room in Level.roomData.Select(s => s.room))
             {
-                Level.Rooms.Add(room.id, 
+                Level.Rooms.Add(room.id,
                     new LevelRoom
                     {
                         roomId = room.id,
@@ -138,11 +140,12 @@ namespace Assets.Scripts.Levels.Generation
 
         //Decoration Rendering
 
-        #endregion
+        #endregion Rendering Steps
 
         private void HandleDebug()
         {
-            if (debugShowCells) {
+            if (debugShowCells)
+            {
                 foreach (var cell in CellCollection.cells.Values)
                 {
                     cellDebug.RenderCellDebug(cell.position, cell.type);

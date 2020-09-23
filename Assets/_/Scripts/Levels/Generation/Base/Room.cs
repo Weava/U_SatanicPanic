@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Assets.Scripts.Levels.Generation.Extensions;
-using System.Linq;
-using System;
+﻿using Assets.Scripts.Levels.Generation.Extensions;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Assets.Scripts.Levels.Generation.Base
 {
@@ -34,7 +34,7 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public List<Node_Door> doors = new List<Node_Door>();
 
-        #endregion
+        #endregion Parsing Properties
     }
 
     public static class RoomCollection

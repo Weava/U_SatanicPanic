@@ -9,7 +9,8 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes
 
         public bool claimed;
 
-        public Node() {
+        public Node()
+        {
             id = Guid.NewGuid().ToString();
         }
 

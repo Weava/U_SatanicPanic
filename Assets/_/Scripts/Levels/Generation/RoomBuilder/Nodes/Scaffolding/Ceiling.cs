@@ -34,5 +34,4 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding
             type = ScaffoldNodeType.Ceiling_Column;
         }
     }
-
 }

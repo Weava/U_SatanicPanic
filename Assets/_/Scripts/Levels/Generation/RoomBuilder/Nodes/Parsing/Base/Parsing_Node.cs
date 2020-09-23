@@ -46,6 +46,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Parsing.Base
 
         //Compound points of interest - N is any number
         Hallway,                        //2 Caps with at least 1 door in each cell
+
         Long_Hallway,                   //2 Caps with at least 1 door in each, and 1 Hall
         T_Hallway,                      //3 Caps with at least 1 door in each, and 1 Side
         Cross_Hallway,                  //1 open area + 4 Caps with 1 door in each
