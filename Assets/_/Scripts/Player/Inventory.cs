@@ -118,7 +118,7 @@ public class Inventory : MonoBehaviour
 
     protected void FireInfinite()
     {
-        currentEquip.Fire(player.GetComponent<FPS_Controller.FPS_Controller>().GetPointOfFocus());
+        currentEquip.Fire(player.GetComponent<FPSController.FPSController>().GetPointOfFocus());
     }
 
     #endregion Fire

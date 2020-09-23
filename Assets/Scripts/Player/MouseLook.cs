@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Mouse_Look : MonoBehaviour
+public class MouseLook : MonoBehaviour
 {
     public float mouseSens;
     public bool invertMouse;
@@ -13,17 +13,12 @@ public class Mouse_Look : MonoBehaviour
     private float mouseXDelta = 0.0f;
     private float mouseYDelta = 0.0f;
 
-    private float mouseLookClamp = 90.0f;
+    private readonly float mouseLookClamp = 90.0f;
 
     // Use this for initialization
     private void Start()
     {
         player = this.transform.parent;
-    }
-
-    // Update is called once per frame
-    private void Update()
-    {
     }
 
     private void FixedUpdate()

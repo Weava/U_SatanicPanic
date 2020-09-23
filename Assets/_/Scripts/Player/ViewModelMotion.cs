@@ -9,7 +9,7 @@ public class ViewModelMotion : MonoBehaviour
     protected float maxPunch; //Z
 
     [SerializeField]
-    protected FPS_Controller.FPS_Controller player;
+    protected FPSController.FPSController player;
 
     //The motion always wants to settle back to root position on each axis.
     protected Vector3 motion;

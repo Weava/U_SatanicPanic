@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
-public class Mouse_Lock : MonoBehaviour
+public class MouseLock : MonoBehaviour
+
 {
     private CursorLockMode wantedMode;
 
