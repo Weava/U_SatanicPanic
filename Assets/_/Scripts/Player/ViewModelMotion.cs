@@ -17,14 +17,14 @@ public class ViewModelMotion : MonoBehaviour
     protected Vector3 rootPostition;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        motion = new Vector3(0,0,0);
+        motion = new Vector3(0, 0, 0);
         rootPostition = transform.localPosition;
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         UpdatePunch();
         UpdatePosition();

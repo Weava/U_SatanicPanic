@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Parts
@@ -17,7 +13,7 @@ namespace Assets.Scripts.Levels.Generation.Parts
 
         public RoomScaffold scaffold;
 
-        void Awake()
+        private void Awake()
         {
             scaffold.roomId = id;
             scaffold.doorNodes.ForEach(x => x.roomId = id);

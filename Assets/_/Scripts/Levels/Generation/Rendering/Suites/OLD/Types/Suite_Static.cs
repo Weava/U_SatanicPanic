@@ -80,7 +80,6 @@
 //            //Not enough cells to claim
 //            if (unClaimedCellCount < cellSpaceCount) return false;
 
-
 //            var success = false;
 //            foreach (var direction in Directionf.Directions())
 //            {

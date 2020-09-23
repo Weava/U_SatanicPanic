@@ -24,7 +24,7 @@ public abstract class Actor : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        if(currentHealth <= 0)
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -44,7 +44,7 @@ public abstract class Actor : MonoBehaviour
     protected virtual void OnTriggerEnter(Collider collider)
     {
         var damageSource = collider.gameObject.GetComponent<DamageSource>();
-        if(damageSource != null)
+        if (damageSource != null)
         {
             AddHealth(damageSource.GetImpactDamage());
         }

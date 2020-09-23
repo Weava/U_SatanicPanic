@@ -11,6 +11,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding
         public Cell cell_2;
 
         public new ScaffoldNodeType type = ScaffoldNodeType.Door;
+
         public new Vector3 position
         {
             get { return cell_1.PositionBetween(cell_2); }

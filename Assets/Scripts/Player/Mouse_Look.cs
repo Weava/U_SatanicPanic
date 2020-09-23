@@ -1,35 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Mouse_Look : MonoBehaviour {
-
+public class Mouse_Look : MonoBehaviour
+{
     public float mouseSens;
     public bool invertMouse;
 
-    Transform player;
+    private Transform player;
 
     [SerializeField]
-    GameObject viewModel;
+    private GameObject viewModel;
 
-    float mouseXDelta = 0.0f;
-    float mouseYDelta = 0.0f;
+    private float mouseXDelta = 0.0f;
+    private float mouseYDelta = 0.0f;
 
-    float mouseLookClamp = 90.0f;
+    private float mouseLookClamp = 90.0f;
 
-	// Use this for initialization
-	void Start () {
-        player = this.transform.parent;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        
-	}
-
-    void FixedUpdate()
+    // Use this for initialization
+    private void Start()
     {
-        if(invertMouse)
+        player = this.transform.parent;
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+    }
+
+    private void FixedUpdate()
+    {
+        if (invertMouse)
             mouseXDelta -= Input.GetAxis("Mouse Y") * mouseSens;
         else
             mouseXDelta += Input.GetAxis("Mouse Y") * mouseSens;

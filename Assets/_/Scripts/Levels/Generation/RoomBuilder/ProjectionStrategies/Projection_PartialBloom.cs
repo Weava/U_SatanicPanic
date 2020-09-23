@@ -29,7 +29,6 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
                             var chanceRoll = Random.Range(0.0f, 1.0f);
                             if (chanceRoll <= claimChance)
                             {
-
                                 nextRoots.Add(CellCollection.cells[target]);
                                 cellsLeftToClaim.Remove(CellCollection.cells[target]);
                                 claimedAmount++;

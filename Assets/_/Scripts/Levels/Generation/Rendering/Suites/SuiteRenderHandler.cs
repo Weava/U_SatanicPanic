@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Scripts.Levels.Generation.Base;
+﻿using Assets.Scripts.Levels.Generation.Base;
 using Assets.Scripts.Levels.Generation.Base.Mono;
 using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
-using UnityEngine;
 using Assets.Scripts.Misc.Extensions;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Rendering.Suites
 {
@@ -25,7 +23,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites
         /// </summary>
         public static Dictionary<string, List<Suite>> RenderPool = new Dictionary<string, List<Suite>>();
 
-        #endregion
+        #endregion Rendering Metadata Properties
 
         public static bool RenderLevelSuites()
         {
@@ -66,7 +64,6 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites
                 }
                 else
                 {
-
                     var timesToRender = Random.Range(globalSuite.required ? 1 : 0, globalSuite.renderAmountCap + 1);
                     for (int i = 0; i < timesToRender; i++)
                     {
@@ -77,7 +74,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites
                         }
                         else
                         {
-                            RenderPool.Add(randomRegion.id, new List<Suite> {globalSuite});
+                            RenderPool.Add(randomRegion.id, new List<Suite> { globalSuite });
                         }
                     }
                 }
@@ -110,7 +107,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites
                             }
                             else
                             {
-                                RenderPool.Add(region, new List<Suite> {suite});
+                                RenderPool.Add(region, new List<Suite> { suite });
                             }
                         }
                     }
@@ -176,6 +173,6 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites
             return success;
         }
 
-        #endregion
+        #endregion Rendering Process
     }
 }

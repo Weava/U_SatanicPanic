@@ -17,9 +17,9 @@ namespace FPS_Controller
         public AudioSource footStep2;
         public AudioSource footLand;
 
-        CharacterController player;
-        Inventory inventory;
-        GameObject camera;
+        private CharacterController player;
+        private Inventory inventory;
+        private GameObject camera;
 
         private float playerBaseHeight;
         private float playerCrouchHeight;
@@ -52,7 +52,7 @@ namespace FPS_Controller
 
         private float terminalVelocity = Physics.gravity.y * 2;
 
-        void Start()
+        private void Start()
         {
             player = transform.parent.GetComponent<CharacterController>();
             inventory = transform.GetComponentInChildren<Inventory>();
@@ -63,7 +63,7 @@ namespace FPS_Controller
             playerCrouchHeight = playerBaseHeight * 0.5f;
         }
 
-        void Update()
+        private void Update()
         {
             jump_input = Input.GetKey(KeyCode.Space);
             crouch_input = Input.GetKey(KeyCode.LeftControl);
@@ -73,7 +73,7 @@ namespace FPS_Controller
             playerSwapWeapon_input = Input.GetKeyDown(KeyCode.Q);
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             //Movement
             UpdatePlayerPosition();
@@ -84,7 +84,7 @@ namespace FPS_Controller
 
             //Weapons / Interaction
             //UpdateWeapon();
-            if(playerInteraction_input) UpdateInteraction();
+            if (playerInteraction_input) UpdateInteraction();
         }
 
         #region Updates
@@ -100,7 +100,7 @@ namespace FPS_Controller
         //    if (playerShooting_input) { inventory.FireCurrentWeapon(); }
         //}
 
-        void UpdateInteraction()
+        private void UpdateInteraction()
         {
             RaycastHit hit;
             Ray ray = new Ray(camera.transform.position, camera.transform.forward);
@@ -114,7 +114,6 @@ namespace FPS_Controller
                 //{
                 //    interactionInstance.Evoke();
                 //}
-
             } //else if(Physics.Raycast(ray, out hit, interactionRange, (1 << 9))/*9 = Weapon layer*/)
             //{
             //    var weaponInstance = hit.transform.gameObject.GetComponent<Weapon_Base>();
@@ -126,7 +125,7 @@ namespace FPS_Controller
             //}
         }
 
-        void UpdatePlayerPosition()
+        private void UpdatePlayerPosition()
         {
             //Get Input
             xAxis_input = Input.GetAxisRaw("Horizontal");
@@ -149,11 +148,11 @@ namespace FPS_Controller
             player.Move(velocity * Time.deltaTime);
         }
 
-        void UpdateVelocity()
+        private void UpdateVelocity()
         {
             Vector3 cmd_Velocity;
 
-            if(crouchHold)
+            if (crouchHold)
                 cmd_Velocity = cmd_Move * movementForceCrouch;
             else
                 cmd_Velocity = cmd_Move * movementForce;
@@ -161,7 +160,7 @@ namespace FPS_Controller
             if (cmd_Velocity.magnitude > movementMaxSpeed)
                 cmd_Velocity = cmd_Velocity.normalized * movementMaxSpeed;
 
-            if(player.isGrounded)
+            if (player.isGrounded)
             {
                 velocity.x = Mathf.Lerp(velocity.x, cmd_Velocity.x, Time.deltaTime * accelerationSpeed * GameSettings.PHYSICS_ACCELERATION_FACTOR);
                 velocity.z = Mathf.Lerp(velocity.z, cmd_Velocity.z, Time.deltaTime * accelerationSpeed * GameSettings.PHYSICS_ACCELERATION_FACTOR);
@@ -172,38 +171,41 @@ namespace FPS_Controller
                 velocity.z = Mathf.Lerp(velocity.z, (velocity.z * (1 - airControl)) + (cmd_Velocity.z * airControl), Time.deltaTime * accelerationSpeed * GameSettings.PHYSICS_ACCELERATION_FACTOR);
             }
 
-            if(jump_input && player.isGrounded && !crouch_input)
+            if (jump_input && player.isGrounded && !crouch_input)
             {
                 velocity.y = jumpForce;
-            } else if(!player.isGrounded)
+            }
+            else if (!player.isGrounded)
             {
                 velocity.y = Mathf.SmoothDamp(velocity.y, terminalVelocity, ref velocity.y, -Physics.gravity.y * Time.deltaTime * GameSettings.PHYSICS_TICK_RATE);
             }
         }
 
-        void UpdateFootstep()
+        private void UpdateFootstep()
         {
             Collider surface;
 
-            if(player.isGrounded)
+            if (player.isGrounded)
             {
                 RaycastHit hit;
                 Ray ray = new Ray(player.transform.position, -player.transform.up);
 
                 //Surface Check
-                if(Physics.Raycast(ray, out hit, player.height/2))
+                if (Physics.Raycast(ray, out hit, player.height / 2))
                 {
-                    if(hit.transform.GetComponent<Collider>() != null)
+                    if (hit.transform.GetComponent<Collider>() != null)
                     {
                         surface = hit.transform.GetComponent<Collider>();
 
-                        if(surface.material.name.Contains("Wood"))
+                        if (surface.material.name.Contains("Wood"))
                         {
                             UpdateFootstepSounds("Surface_Wood");
-                        } else if(surface.material.name.Contains("Metal"))
+                        }
+                        else if (surface.material.name.Contains("Metal"))
                         {
                             UpdateFootstepSounds("Surface_Metal");
-                        } else 
+                        }
+                        else
                         {
                             UpdateFootstepSounds("Surface_Generic");
                         }
@@ -244,7 +246,8 @@ namespace FPS_Controller
                             footstepAlternation *= -1;
                         }
                     }
-                } else
+                }
+                else
                 {
                     footstepAlternation = 1;
                     footstepAlternationStep = 0;
@@ -252,7 +255,7 @@ namespace FPS_Controller
             }
         }
 
-        void UpdateCrouch()
+        private void UpdateCrouch()
         {
             if (crouch_input)
             { crouchHold = true; }
@@ -262,7 +265,7 @@ namespace FPS_Controller
             var raycastHit = new RaycastHit();
             var ray = new Ray(player.transform.position + new Vector3(0, playerCrouchHeight, 0), player.transform.up);
 
-            if(crouch_input || (crouchHold && Physics.Raycast(ray, out raycastHit, playerBaseHeight)))
+            if (crouch_input || (crouchHold && Physics.Raycast(ray, out raycastHit, playerBaseHeight)))
             {
                 player.height = playerCrouchHeight;
             }
@@ -273,22 +276,22 @@ namespace FPS_Controller
             }
         }
 
-        void UpdateFootstepSounds(string Name)
+        private void UpdateFootstepSounds(string Name)
         {
             //footStep1 = GameObject.Find(Name).GetComponent<Surface>().surfaceSound[0];
             //footStep2 = GameObject.Find(Name).GetComponent<Surface>().surfaceSound[1];
             //footLand = GameObject.Find(Name).GetComponent<Surface>().surfaceSound[2];
         }
 
-        void UpdateCooldown()
+        private void UpdateCooldown()
         {
-            if(swapWeaponCooldown < swapWeaponCooldownTime)
+            if (swapWeaponCooldown < swapWeaponCooldownTime)
             {
                 swapWeaponCooldown += Time.deltaTime;
             }
         }
 
-        #endregion
+        #endregion Updates
 
         #region Meta
 
@@ -313,6 +316,6 @@ namespace FPS_Controller
             return velocity;
         }
 
-        #endregion
+        #endregion Meta
     }
 }
