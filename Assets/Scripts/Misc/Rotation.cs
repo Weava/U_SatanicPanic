@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.Misc
 {
@@ -11,7 +6,7 @@ namespace Assets.Scripts.Misc
     {
         public float rotationRate;
 
-        void Update()
+        private void Update()
         {
             var rate = Time.deltaTime * rotationRate;
             gameObject.transform.Rotate(Vector3.up, rate);

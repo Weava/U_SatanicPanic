@@ -1,8 +1,7 @@
-﻿using Assets.Scripts.Levels.Generation.Rendering.Suites;
+﻿using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base.Mono
@@ -36,6 +35,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
 
         [HideInInspector]
         public Vector3 startPosition { get { return startNode.transform.position; } }
+
         [HideInInspector]
         public Vector3 endPosition { get { return endNode.transform.position; } }
 
@@ -64,11 +64,11 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono
             //}
         }
 
-        void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
-             Gizmos.color = Color.yellow;
-             if (startNode != null && endNode != null)
-                 Gizmos.DrawLine(startNode.transform.position, endNode.transform.position);
+            Gizmos.color = Color.yellow;
+            if (startNode != null && endNode != null)
+                Gizmos.DrawLine(startNode.transform.position, endNode.transform.position);
         }
     }
 

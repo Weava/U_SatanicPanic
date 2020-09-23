@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Assets.Scripts.Levels.Generation.Base;
+using Assets.Scripts.Levels.Generation.Extensions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Scripts.Levels.Generation.Base;
-using Assets.Scripts.Levels.Generation.Extensions;
 
 namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
 {
@@ -33,7 +30,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
 
         private static List<Cell> ProjectCascade(Cell root, List<Cell> cellsLeftToClaim, Direction direction)
         {
-            var result = new List<Cell>{root};
+            var result = new List<Cell> { root };
 
             if (!Project_1_2(root, cellsLeftToClaim, direction, ref result)) return result;
 
@@ -48,13 +45,14 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
             if (type == RoomProjectionBranchType.Cross)
             {
                 if (!Project_Cross(root, cellsLeftToClaim, direction, secondaryDirection, ref result)) return result;
-            } else if (type == RoomProjectionBranchType.Box)
+            }
+            else if (type == RoomProjectionBranchType.Box)
             {
                 if (!Project_Rect(root, cellsLeftToClaim, direction, secondaryDirection, ref result)) return result;
 
                 Direction tertiaryDirection
                     ;
-                if(!Project_MediumBox(root, cellsLeftToClaim, direction, secondaryDirection, ref result, out tertiaryDirection)) return result;
+                if (!Project_MediumBox(root, cellsLeftToClaim, direction, secondaryDirection, ref result, out tertiaryDirection)) return result;
 
                 if (!Project_MediumRect(root, cellsLeftToClaim, direction, secondaryDirection, tertiaryDirection, ref result)) return result;
 
@@ -79,7 +77,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
         private static bool Project_L(Cell root, List<Cell> cellsLeftToClaim, Direction direction, ref List<Cell> result, out Direction secondaryDirection)
         {
             //Right
-            var attempt = cellsLeftToClaim.FirstOrDefault(x => 
+            var attempt = cellsLeftToClaim.FirstOrDefault(x =>
                 root.Step(direction)
                 .Step(direction.Right()) == x.position);
 
@@ -201,7 +199,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
             return false;
         }
 
-        private static bool Project_MediumRect(Cell root, List<Cell> cellsLeftToClaim, Direction direction, 
+        private static bool Project_MediumRect(Cell root, List<Cell> cellsLeftToClaim, Direction direction,
             Direction secondaryDirection, Direction tertiaryDirection, ref List<Cell> result)
         {
             if (tertiaryDirection == secondaryDirection)
@@ -309,7 +307,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
             return false;
         }
 
-        #endregion
+        #endregion Projection Methods
     }
 
     public enum RoomProjectionBranchType

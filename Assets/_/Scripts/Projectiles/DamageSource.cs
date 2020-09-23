@@ -18,12 +18,10 @@ namespace Assets.Scripts.Projectiles
         // Update is called once per frame
         protected virtual void Update()
         {
-
         }
 
         protected virtual void OnTriggerEnter(Collider _collider)
         {
-
         }
 
         public Collider GetCollider()

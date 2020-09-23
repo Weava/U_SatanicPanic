@@ -12,7 +12,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
         {
             var successfulProjection = new List<Cell>();
 
-            foreach(var direction in Directionf.Directions())
+            foreach (var direction in Directionf.Directions())
             {
                 var secondaryDirections = new List<Direction>() { direction.Left(), direction.Right() };
 
@@ -20,7 +20,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
                 {
                     var cellsLefttoClaimCopy = cellsLeftToClaim.ToList();
                     var attemptedProjection = ProjectionAttempt(root, ref cellsLefttoClaimCopy, claimAmount, claimChance, direction, subDirection);
-                    if(attemptedProjection.Count > successfulProjection.Count)
+                    if (attemptedProjection.Count > successfulProjection.Count)
                     {
                         successfulProjection = attemptedProjection;
                     }
@@ -30,7 +30,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
             }
 
             //Fetched cells, now claim them
-            foreach(var cell in successfulProjection)
+            foreach (var cell in successfulProjection)
             {
                 cellsLeftToClaim.Remove(cell);
             }
@@ -44,12 +44,14 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
             bool terminate = false;
 
             #region Step 1
+
             var result = new List<Cell>() { root };
             var claimedAmount = result.Count;
             cellsLeftToClaim.Remove(root);
 
             if (claimedAmount >= claimAmount) return result;
-            #endregion
+
+            #endregion Step 1
 
             #region Step 2
 
@@ -59,20 +61,21 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
                 root.Step(secondaryDirection)   //2_2
             };
 
-            foreach(var step in steps)
+            foreach (var step in steps)
             {
-                if(CellCollection.HasCellAt(step) && cellsLeftToClaim.Contains(CellCollection.cells[step]))
+                if (CellCollection.HasCellAt(step) && cellsLeftToClaim.Contains(CellCollection.cells[step]))
                 {
                     var cell = CellCollection.cells[step];
                     result.Add(cell);
                     cellsLeftToClaim.Remove(cell);
                     claimedAmount = result.Count;
-                } else { terminate = true; }
+                }
+                else { terminate = true; }
             }
 
             if (terminate || result.Count >= claimAmount) return result;
 
-            #endregion
+            #endregion Step 2
 
             #region Step 3
 
@@ -97,7 +100,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
 
             if (terminate || result.Count >= claimAmount) return result;
 
-            #endregion
+            #endregion Step 3
 
             #region Step 4
 
@@ -121,7 +124,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
 
             if (terminate || result.Count >= claimAmount) return result;
 
-            #endregion
+            #endregion Step 4
 
             #region Step 5
 
@@ -144,7 +147,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
 
             if (terminate || result.Count >= claimAmount) return result;
 
-            #endregion
+            #endregion Step 5
 
             #region Step 6
 
@@ -172,7 +175,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
 
             if (terminate || result.Count >= claimAmount) return result;
 
-            #endregion
+            #endregion Step 6
 
             #region Step 7
 
@@ -195,7 +198,7 @@ namespace Assets.Scripts.Levels.Generation.RoomBuilder.ProjectionStrategies
 
             if (terminate || result.Count >= claimAmount) return result;
 
-            #endregion
+            #endregion Step 7
 
             return result;
         }

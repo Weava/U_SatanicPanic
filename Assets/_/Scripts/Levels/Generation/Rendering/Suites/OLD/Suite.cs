@@ -17,7 +17,6 @@
 //        [HideInInspector] public GameObject roomInstanceContainer;
 //        [HideInInspector] public List<Region> regionsAllowed = new List<Region>();
 
-
 //        [HideInInspector] public SuiteType type;
 
 //        #region Options

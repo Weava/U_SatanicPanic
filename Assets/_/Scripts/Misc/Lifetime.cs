@@ -4,10 +4,10 @@ public class Lifetime : MonoBehaviour
 {
     public float lifeTime;
 
-    float currentLife = 0;
+    private float currentLife = 0;
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (currentLife < lifeTime)
         {

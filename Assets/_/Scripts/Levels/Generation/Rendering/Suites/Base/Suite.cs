@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Scripts.Levels.Generation.Base;
+﻿using Assets.Scripts.Levels.Generation.Base;
 using Assets.Scripts.Levels.Generation.Extensions;
-using Assets.Scripts.Levels.Generation.RoomBuilder;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base;
 using Assets.Scripts.Misc.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
@@ -48,21 +44,21 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 
         //public SuiteLocationBias locationBias;
 
-        #endregion
+        #endregion Rendering Bias - Nudges and Weights to were a suite would prefer to render
 
-        #endregion
+        #endregion Rendering Rules
 
         #region Rendering Properties
 
         [HideInInspector] public SuiteRenderingContainer renderContainer;
         [HideInInspector] public SuiteRenderingContainer nextContainerInstance;
 
-        #endregion
+        #endregion Rendering Properties
 
         #region Virtual Rendering Methods
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="room"></param>
         /// <returns></returns>
@@ -93,7 +89,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             return 0;
         }
 
-        #endregion
+        #endregion Virtual Rendering Methods
 
         #region Suite Default Rendering Methods
 
@@ -141,7 +137,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 
                     //Project cannot intersect with existing scaffold claims
                     if (!VerifyProjectionScaffoldDoesntIntersect(projection, entity, room, cell.position, direction, out projectionScaffolds))
-                    { continue;}
+                    { continue; }
 
                     //Projection cannot block navigation through room
                     if (!VerifyProjectionDoesNotBlockRoomPathways(projection))
@@ -178,7 +174,8 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                     renderContainer.fillEntities.Add(new Tuple<ScaffoldNodeType, List<Vector3>, Direction>
                             (ScaffoldNodeType.Floor_Main, scaffold.rootCells.Select(s => s.position).ToList(), Direction.Up)
                             , FillEntityPool.floor_main);
-                } else if (scaffold.type == ScaffoldNodeType.Floor_Connector)
+                }
+                else if (scaffold.type == ScaffoldNodeType.Floor_Connector)
                 {
                     renderContainer.fillEntities.Add(new Tuple<ScaffoldNodeType, List<Vector3>, Direction>
                             (ScaffoldNodeType.Floor_Connector, scaffold.rootCells.Select(s => s.position).ToList(), (scaffold as Node_FloorConnector).normal)
@@ -239,7 +236,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                 var direction = entity.Key.Item2;
 
                 var instance = Instantiate(entity.Value, position, new Quaternion());
-                instance.transform.Rotate(new Vector3(0,1,0), (int) direction.ToAngle());
+                instance.transform.Rotate(new Vector3(0, 1, 0), (int)direction.ToAngle());
                 instance.transform.parent = suiteGameobject.transform;
             }
 
@@ -254,27 +251,32 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                         instance = Instantiate(entity.Value, entity.Key.Item2.PositionBetween(), new Quaternion());
                         instance.transform.parent = suiteGameobject.transform;
                         break;
+
                     case ScaffoldNodeType.Floor_Connector:
                         instance = Instantiate(entity.Value, entity.Key.Item2.PositionBetween(), new Quaternion());
                         instance.transform.Rotate(new Vector3(0, 1, 0), entity.Key.Item3.Opposite().ToAngle());
                         instance.transform.parent = suiteGameobject.transform;
                         break;
+
                     case ScaffoldNodeType.Wall_Main:
                     case ScaffoldNodeType.Wall_Connector:
                         instance = Instantiate(entity.Value, OffsetWall(entity.Key.Item2.PositionBetween(), entity.Key.Item3), new Quaternion());
-                        instance.transform.Rotate(new Vector3(0,1,0), entity.Key.Item3.Opposite().ToAngle());
+                        instance.transform.Rotate(new Vector3(0, 1, 0), entity.Key.Item3.Opposite().ToAngle());
                         instance.transform.parent = suiteGameobject.transform;
                         break;
+
                     case ScaffoldNodeType.Ceiling_Main:
                     case ScaffoldNodeType.Ceiling_Column:
                         instance = Instantiate(entity.Value, entity.Key.Item2.PositionBetween(), new Quaternion());
                         instance.transform.parent = suiteGameobject.transform;
                         break;
+
                     case ScaffoldNodeType.Ceiling_Connector:
                         instance = Instantiate(entity.Value, entity.Key.Item2.PositionBetween(), new Quaternion());
                         instance.transform.Rotate(new Vector3(0, 1, 0), entity.Key.Item3.Opposite().ToAngle());
                         instance.transform.parent = suiteGameobject.transform;
                         break;
+
                     default:
                         break;
                 }
@@ -336,7 +338,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 
             //Floor + Ceiling, both are handled in the same move when not a partial
             var floor_main = roomScaffold.floor.main.Where(x => x.rootCells.All(a => projectionCells.Contains(a)));
-            if (nextContainerInstance.claimedScaffolds.Any(a => floor_main.Select(s => s.id).Contains(a.id))) { return false;}
+            if (nextContainerInstance.claimedScaffolds.Any(a => floor_main.Select(s => s.id).Contains(a.id))) { return false; }
             projectionNodes.AddRange(floor_main);
             var floor_connectors = roomScaffold.floor.connectors.Where(x => x.rootCells.All(a => projectionCells.Contains(a)));
             if (nextContainerInstance.claimedScaffolds.Any(a => floor_connectors.Select(s => s.id).Contains(a.id))) { return false; }
@@ -397,7 +399,6 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
         //            wallScaffolds.Select(s => s.root.position).Contains(x));
         //        if (root != null)
         //        {
-
         //        }
         //    }
         //}
@@ -418,14 +419,14 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 
         private Vector3 OffsetWall(Vector3 root, Direction normal)
         {
-            var offset = new Vector3(0,0,Cellf.CELL_MAIN_OFFSET/2.0f);
+            var offset = new Vector3(0, 0, Cellf.CELL_MAIN_OFFSET / 2.0f);
             offset = offset.ProjectOffsetToNormal(normal);
             return new Vector3(root.x + offset.x, root.y + offset.y, root.z + offset.z);
         }
 
-        #endregion
+        #endregion Rendering Helpers
 
-        #endregion
+        #endregion Suite Default Rendering Methods
     }
 
     /// <summary>

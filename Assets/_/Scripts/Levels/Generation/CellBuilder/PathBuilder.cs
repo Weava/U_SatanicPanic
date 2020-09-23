@@ -1,11 +1,9 @@
-﻿using Assets.Scripts.Levels.Generation.Extensions;
-using Assets.Scripts.Levels.Generation.Base;
+﻿using Assets.Scripts.Levels.Generation.Base;
+using Assets.Scripts.Levels.Generation.Base.Mono;
+using Assets.Scripts.Levels.Generation.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using System;
-using Assets.Scripts.Levels.Generation.Base.Mono;
-
 using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Levels.Generation.CellBuilder
@@ -38,11 +36,12 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
             var retries = RETRIES;
             var success = false;
 
-            while(retries > 0)
+            while (retries > 0)
             {
                 retries--;
 
                 #region Reset Values
+
                 var finishEndCellMetadata = false;
                 var cellsToAdd = new List<Cell>();
                 var xTemp = xDistance;
@@ -52,9 +51,11 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                 Cell currentCell = null;
                 Cell lastCell = null;
                 Cell secondLastCell = null; //Used to prevent the end of a path from being an elevation cell
-                #endregion
+
+                #endregion Reset Values
 
                 #region Init
+
                 //Start cell
                 if (CellCollection.HasCellAt(region.startPosition)) //If starting from an existing path
                 {
@@ -71,7 +72,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                 }
 
                 //Force horizontal start
-                if(xTemp > 0 || zTemp > 0)
+                if (xTemp > 0 || zTemp > 0)
                 {
                     var directionsToTry = new List<Direction>();
                     if (xTemp > 0) directionsToTry.Add(directions.xDirection);
@@ -79,10 +80,11 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
                     var directionToGo = directionsToTry[Random.Range(0, directionsToTry.Count)];
 
-                    if(directionToGo == directions.xDirection)
+                    if (directionToGo == directions.xDirection)
                     {
                         xTemp--;
-                    } else
+                    }
+                    else
                     {
                         zTemp--;
                     }
@@ -118,10 +120,11 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                 if (xTemp > 0) directionsForEnd.Add(directions.xDirection);
                 if (zTemp > 0) directionsForEnd.Add(directions.zDirection);
                 var directionToRemoveFrom = directionsForEnd[Random.Range(0, directionsForEnd.Count)];
-                if(directionToRemoveFrom == directions.xDirection)
+                if (directionToRemoveFrom == directions.xDirection)
                 {
                     xTemp--;
-                } else
+                }
+                else
                 {
                     zTemp--;
                 }
@@ -155,7 +158,8 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                     lastCell.parent = cell; //End cell parent finalized
                     secondLastCell = cell; //Save this for metadata finalization at the end
                 }
-                #endregion
+
+                #endregion Init
 
                 #region Generate
 
@@ -176,7 +180,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                         }
                     }
                     else
-                    {  directionsLeft = GetDirectionsLeft(xTemp, yTemp, zTemp, directions); }
+                    { directionsLeft = GetDirectionsLeft(xTemp, yTemp, zTemp, directions); }
 
                     var currentDirection = directionsLeft[Random.Range(0, directionsLeft.Count)];
 
@@ -184,10 +188,10 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                     { elevationMode = true; }
 
                     var type = (currentDirection == Direction.Up || currentDirection == Direction.Down) ? CellType.Elevation : CellType.Pathway;
-                    if(type == CellType.Elevation) //Retroactivly change the previous generated cell to be an elevation cell as well
-                    {  cellsToAdd.First(x => x == currentCell).type = type; }
+                    if (type == CellType.Elevation) //Retroactivly change the previous generated cell to be an elevation cell as well
+                    { cellsToAdd.First(x => x == currentCell).type = type; }
 
-                    if(CellCollection.HasCellAt(currentCell.position.Step(currentDirection)))
+                    if (CellCollection.HasCellAt(currentCell.position.Step(currentDirection)))
                     {
                         success = false; retries--; continue;
                     }
@@ -200,20 +204,23 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                     cellsToAdd.Add(cell);
                     currentCell = cell;
 
-                    switch(currentDirection)
+                    switch (currentDirection)
                     {
                         case Direction.North:
                         case Direction.South:
                             zTemp--;
                             break;
+
                         case Direction.East:
                         case Direction.West:
                             xTemp--;
                             break;
+
                         case Direction.Up:
                         case Direction.Down:
                             yTemp--;
                             break;
+
                         default:
                             success = false;
                             break;
@@ -221,10 +228,11 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
                     if (xTemp + yTemp + zTemp == 0) success = true;
                 }
-                #endregion
+
+                #endregion Generate
 
                 //The last cell generated in the above loop should be the one right before the forced horizontal cell, if that exists
-                if(secondLastCell != null)
+                if (secondLastCell != null)
                 {
                     cellsToAdd.First(x => x == secondLastCell).sequence = sequence++;
                     cellsToAdd.First(x => x == secondLastCell).parent = currentCell;
@@ -233,7 +241,8 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
                 cellsToAdd.First(x => x == lastCell).sequence = sequence++;
 
-                if (success) {
+                if (success)
+                {
                     CellCollection.Add(cellsToAdd.OrderBy(o => o.sequence).ToList());
                     break;
                 }
@@ -248,13 +257,13 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
         {
             var result = new List<Direction>();
 
-            if(x > 0)
+            if (x > 0)
             { result.Add(directions.xDirection); }
 
-            if(y > 0)
+            if (y > 0)
             { result.Add(directions.yDirection); }
 
-            if(z > 0)
+            if (z > 0)
             { result.Add(directions.zDirection); }
 
             return result;
@@ -274,7 +283,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
             result.yDirection = endPosition.y >= startPosition.y ? Direction.Up : Direction.Down;
 
-            if(positive_x)
+            if (positive_x)
             { result.xDirection = Direction.East; }
             else
             { result.xDirection = Direction.West; }
@@ -287,7 +296,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
             return result;
         }
 
-        private static int GetDistance(float postition_1, float position_2 , int offsetAmount)
+        private static int GetDistance(float postition_1, float position_2, int offsetAmount)
         {
             return (int)(Mathf.Sqrt(Mathf.Pow(position_2 - postition_1, 2)) / offsetAmount);
         }
@@ -303,6 +312,6 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
             }
         }
 
-        #endregion
+        #endregion Helper methods
     }
 }

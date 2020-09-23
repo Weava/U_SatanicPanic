@@ -32,16 +32,16 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
             container.name += " [" + room.Data().parsing.roomType.ToString() + "]";
             foreach (var cell in cells)
             {
-                if(cell.type != CellType.Cell)
+                if (cell.type != CellType.Cell)
                 {
                     var floorInstance = Instantiate(floor_important, container.transform);
                     floorInstance.transform.position = cell.position;
-                } else
+                }
+                else
                 {
                     var floorInstance = Instantiate(floor, container.transform);
                     floorInstance.transform.position = cell.position;
                 }
-                
             }
         }
 
@@ -53,6 +53,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
             roomContainer.name += " [" + room.Data().parsing.roomType.ToString() + "]";
 
             #region Floor
+
             foreach (var main in scaffolding.floor.main)
             {
                 if (main.root.elevationOverride_Upper) continue;
@@ -61,7 +62,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
                 instance.transform.position = main.position;
             }
 
-            foreach(var connector in scaffolding.floor.connectors)
+            foreach (var connector in scaffolding.floor.connectors)
             {
                 if (connector.claimed) continue;
                 var instance = Instantiate(floor_connector, roomContainer.transform);
@@ -75,10 +76,12 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
                 var instance = Instantiate(floor_column, roomContainer.transform);
                 instance.transform.position = column.position;
             }
-            #endregion
+
+            #endregion Floor
 
             #region Wall
-            foreach(var main in scaffolding.wall.main)
+
+            foreach (var main in scaffolding.wall.main)
             {
                 if (main.claimed) continue;
                 var instance = Instantiate(wall_main, roomContainer.transform);
@@ -86,14 +89,15 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
                 instance.transform.LookAt(main.root.position);
             }
 
-            foreach(var connector in scaffolding.wall.connectors)
+            foreach (var connector in scaffolding.wall.connectors)
             {
                 if (connector.claimed) continue;
                 var instance = Instantiate(wall_connector, roomContainer.transform);
                 instance.transform.position = connector.position;
                 instance.transform.LookAt(connector.root.position);
             }
-            #endregion
+
+            #endregion Wall
 
             #region Ceiling
 
@@ -121,11 +125,11 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
                 instance.transform.position = column.position;
             }
 
-            #endregion
+            #endregion Ceiling
 
             var test = Level.roomScaffolds.Select(s => s.Value.elevation).ToList();
 
-            foreach(var elevation in scaffolding.elevation)
+            foreach (var elevation in scaffolding.elevation)
             {
                 var instance = Instantiate(stairwell, roomContainer.transform);
                 instance.transform.position = elevation.position;
@@ -134,7 +138,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
 
         public void RenderRoomScaffoldingDoorDebug()
         {
-            foreach(var doorNode in Level.doors)
+            foreach (var doorNode in Level.doors)
             {
                 var instance = Instantiate(door);
                 instance.transform.position = doorNode.position;

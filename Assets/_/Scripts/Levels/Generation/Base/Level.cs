@@ -1,12 +1,10 @@
-﻿using Assets.Scripts.Levels.Generation.Rendering.Suites;
+﻿using Assets.Scripts.Levels.Generation.RoomBuilder;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Parsing.Base;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
-using Assets.Scripts.Levels.Generation.RoomBuilder;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Base
@@ -21,6 +19,7 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         //Scaffolding
         public static List<Node_Door> doors = new List<Node_Door>();
+
         public static Dictionary<string, Scaffold> roomScaffolds = new Dictionary<string, Scaffold>();
         //public static Dictionary<string, Suite> suiteCollection = new Dictionary<string, Suite>();
 
@@ -30,7 +29,7 @@ namespace Assets.Scripts.Levels.Generation.Base
         //Generated Level Data
         public static Dictionary<string, LevelRoom> Rooms = new Dictionary<string, LevelRoom>();
 
-        #endregion
+        #endregion Metadata
 
         #region Getters
 
@@ -44,7 +43,7 @@ namespace Assets.Scripts.Levels.Generation.Base
             return roomData.First(x => x.roomId == roomId);
         }
 
-        #endregion
+        #endregion Getters
     }
 
     public class RoomData
@@ -68,7 +67,7 @@ namespace Assets.Scripts.Levels.Generation.Base
 
         public void SetNodesClaimed(List<Node> nodes)
         {
-            foreach(var node in nodes)
+            foreach (var node in nodes)
             {
                 SetNodeClaimed(node);
             }

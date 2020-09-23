@@ -1,19 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Mouse_Lock : MonoBehaviour
 {
+    private CursorLockMode wantedMode;
 
-    CursorLockMode wantedMode;
-
-    void SetCursorState()
+    private void SetCursorState()
     {
         Cursor.lockState = wantedMode;
         Cursor.visible = (CursorLockMode.Locked != wantedMode);
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
         GUILayout.BeginVertical();
         // Release cursor on escape keypress
@@ -29,6 +26,7 @@ public class Mouse_Lock : MonoBehaviour
                 if (GUILayout.Button("Confine cursor"))
                     wantedMode = CursorLockMode.Confined;
                 break;
+
             case CursorLockMode.Confined:
                 GUILayout.Label("Cursor is confined");
                 if (GUILayout.Button("Lock cursor"))
@@ -36,6 +34,7 @@ public class Mouse_Lock : MonoBehaviour
                 if (GUILayout.Button("Release cursor"))
                     wantedMode = CursorLockMode.None;
                 break;
+
             case CursorLockMode.Locked:
                 GUILayout.Label("Cursor is locked");
                 if (GUILayout.Button("Unlock cursor"))

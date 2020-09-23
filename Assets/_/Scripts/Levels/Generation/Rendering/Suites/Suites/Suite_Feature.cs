@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Assets.Scripts.Levels.Generation.Base;
+using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Scripts.Levels.Generation.Base;
-using Assets.Scripts.Levels.Generation.Rendering.Suites.Base;
 
 namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Suites
 {

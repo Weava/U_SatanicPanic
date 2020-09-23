@@ -40,7 +40,7 @@ namespace Assets.Scripts.Levels.Generation.Base.Mono.Debug
             var compoundCollection = new GameObject("Compound");
             compoundCollection.transform.parent = collection.transform;
 
-            foreach(var poi_node in POI.Where(x => x.cells.Count == 1 && ! x.hasDoors))
+            foreach (var poi_node in POI.Where(x => x.cells.Count == 1 && !x.hasDoors))
             {
                 var position = poi_node.cells.PositionBetween();
 

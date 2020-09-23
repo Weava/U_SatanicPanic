@@ -8,18 +8,22 @@ public class Weapon : MonoBehaviour
 {
     [SerializeField]
     protected AmmoType ammoType;
+
     [SerializeField]
     protected WeaponType weaponType;
 
     [SerializeField]
     protected Projectile projectile;
+
     [SerializeField]
     protected bool automatic;
+
     /// <summary>
     /// Rounds per minute
     /// </summary>
     [SerializeField]
     protected float fireRate;
+
     protected float fireRateCooldown;
     protected bool weaponReady;
 
@@ -48,11 +52,11 @@ public class Weapon : MonoBehaviour
         return weaponType;
     }
 
-    #endregion
+    #endregion Property Getters
 
     public void Fire(Vector3 aimPoint)
     {
-        if(weaponReady)
+        if (weaponReady)
         {
             weaponReady = false;
             fireRateCooldown = 1;
@@ -70,7 +74,7 @@ public class Weapon : MonoBehaviour
 
     public Weapon Equip(GameObject target)
     {
-        var instance = Instantiate(this, target.transform.position, target.transform.rotation);   
+        var instance = Instantiate(this, target.transform.position, target.transform.rotation);
         return instance;
     }
 
@@ -88,7 +92,7 @@ public class Weapon : MonoBehaviour
         animator.Play("Cycle");
     }
 
-    #endregion
+    #endregion Animations
 
     #region Meta
 
@@ -130,7 +134,7 @@ public class Weapon : MonoBehaviour
             fireRateCooldown -= (Time.deltaTime * fireRate / 60.0f);
         }
 
-        if(!weaponReady && fireRateCooldown <= 0)
+        if (!weaponReady && fireRateCooldown <= 0)
         {
             //PlayCycleAnimation();
             if (automatic || Input.GetMouseButtonUp(0))
@@ -140,7 +144,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    #endregion
+    #endregion Meta
 }
 
 public enum WeaponType

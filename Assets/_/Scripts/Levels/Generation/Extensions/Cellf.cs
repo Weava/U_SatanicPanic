@@ -1,10 +1,6 @@
 ﻿using Assets.Scripts.Levels.Generation.Base;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Levels.Generation.Extensions
@@ -30,14 +26,19 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             {
                 case Direction.East:
                     return position + new Vector3(CELL_STEP_OFFSET * offset, 0, 0);
+
                 case Direction.South:
                     return position + new Vector3(0, 0, -CELL_STEP_OFFSET * offset);
+
                 case Direction.West:
                     return position + new Vector3(-CELL_STEP_OFFSET * offset, 0, 0);
+
                 case Direction.Up:
                     return position + new Vector3(0, (CELL_STEP_OFFSET / 2.0f) * offset, 0);
+
                 case Direction.Down:
                     return position + new Vector3(0, -(CELL_STEP_OFFSET / 2.0f) * offset, 0);
+
                 case Direction.North:
                 default:
                     return position + new Vector3(0, 0, CELL_STEP_OFFSET * offset);
@@ -97,7 +98,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             return cell.roomId == target.roomId;
         }
 
-        #endregion
+        #endregion Directional Positioning
 
         #region Searching
 
@@ -115,9 +116,9 @@ namespace Assets.Scripts.Levels.Generation.Extensions
 
             if (cell.regionId == "") return result;
 
-            foreach(var direction in Directionf.Directions())
+            foreach (var direction in Directionf.Directions())
             {
-                if(CellCollection.HasCellAt(cell.Step(direction))
+                if (CellCollection.HasCellAt(cell.Step(direction))
                     && CellCollection.cells[cell.Step(direction)].regionId == cell.regionId)
                 {
                     result.Add(CellCollection.cells[cell.Step(direction)]);
@@ -139,7 +140,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
                     if (!includeElevation && CellCollection.cells[cell.Step(direction)].type == CellType.Elevation)
                         continue;
                     else
-                    result.Add(CellCollection.cells[cell.Step(direction)]);
+                        result.Add(CellCollection.cells[cell.Step(direction)]);
                 }
             }
 
@@ -158,7 +159,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
                     result.Add(CellCollection.cells[cell.Step(direction)]);
                 }
 
-                if(includeDiagonal)
+                if (includeDiagonal)
                 {
                     if (CellCollection.HasCellAt(cell.Step(direction).Step(direction.Right()))
                     && CellCollection.cells[cell.Step(direction).Step(direction.Right())].roomId == cell.roomId)
@@ -175,9 +176,9 @@ namespace Assets.Scripts.Levels.Generation.Extensions
         {
             var result = new List<Direction>();
 
-            foreach(var direction in Directionf.Directions())
+            foreach (var direction in Directionf.Directions())
             {
-                if(!CellCollection.cells.Any(x => x.Key == cell.Step(direction)))
+                if (!CellCollection.cells.Any(x => x.Key == cell.Step(direction)))
                 {
                     result.Add(direction);
                 }
@@ -196,6 +197,6 @@ namespace Assets.Scripts.Levels.Generation.Extensions
             return cells.Any(cell => cell.IsClaimedBySuite());
         }
 
-        #endregion
+        #endregion Searching
     }
 }

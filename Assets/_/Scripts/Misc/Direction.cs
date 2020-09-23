@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -8,6 +7,7 @@ namespace Assets.Scripts
     public static class Directionf
     {
         #region Shorthand
+
         public static Direction Opposite(this Direction direction)
         {
             return GetOppositeDirection(direction);
@@ -49,10 +49,13 @@ namespace Assets.Scripts
             {
                 case Direction.East:
                     return 90f;
+
                 case Direction.South:
                     return 180f;
+
                 case Direction.West:
                     return 270f;
+
                 default:
                     return 0f;
             }
@@ -73,7 +76,8 @@ namespace Assets.Scripts
                     if (normal.z + normal.x > 0) return Direction.East;
                     return Direction.South;
                 }
-            } else if (normal.x < 0)
+            }
+            else if (normal.x < 0)
             {
                 if (normal.z > 0)
                 {
@@ -104,11 +108,14 @@ namespace Assets.Scripts
             {
                 case Direction.East:
                     return 1;
+
                 case Direction.South:
                     return 2;
+
                 case Direction.West:
                     return 3;
-                    default: return 0;
+
+                default: return 0;
             }
         }
 
@@ -124,7 +131,7 @@ namespace Assets.Scripts
             return result;
         }
 
-        #endregion
+        #endregion Shorthand
 
         /// <summary>
         /// Assumes that 0,0,0 is the pivot of this projection and North is the default normal
@@ -137,10 +144,13 @@ namespace Assets.Scripts
             {
                 case Direction.West:
                     return new Vector3(-offset.z, offset.y, offset.x);
+
                 case Direction.East:
                     return new Vector3(offset.z, offset.y, -offset.x);
+
                 case Direction.South:
                     return new Vector3(-offset.x, offset.y, -offset.z);
+
                 default:
                     return offset;
             }
@@ -152,10 +162,13 @@ namespace Assets.Scripts
             {
                 case Direction.West:
                     return new Vector4(-offset.z, offset.y, offset.x, ((int)offset.w).ToDirection().Left().ToByteValue());
+
                 case Direction.East:
                     return new Vector4(offset.z, offset.y, -offset.x, ((int)offset.w).ToDirection().Right().ToByteValue());
+
                 case Direction.South:
                     return new Vector4(-offset.x, offset.y, -offset.z, ((int)offset.w).ToDirection().Opposite().ToByteValue());
+
                 default:
                     return offset;
             }
@@ -166,54 +179,68 @@ namespace Assets.Scripts
         [Obsolete]
         public static Direction GetOppositeDirection(this Direction direction)
         {
-            switch(direction)
+            switch (direction)
             {
                 case Direction.North:
                     return Direction.South;
+
                 case Direction.East:
                     return Direction.West;
+
                 case Direction.South:
                     return Direction.North;
+
                 case Direction.West:
                     return Direction.East;
+
                 case Direction.Up:
                     return Direction.Down;
+
                 case Direction.Down:
                     return Direction.Up;
+
                 default:
                     return direction;
             }
         }
+
         [Obsolete]
         public static List<Direction> GetNeighborDirections(Direction direction)
         {
-            switch(direction)
+            switch (direction)
             {
                 case Direction.North:
                 case Direction.South:
                     return new List<Direction>() { Direction.East, Direction.West };
+
                 case Direction.West:
                 case Direction.East:
                     return new List<Direction>() { Direction.North, Direction.South };
+
                 default:
                     return new List<Direction>();
             }
         }
+
         [Obsolete]
         public static Direction GetLeftDirection(this Direction direction)
         {
-            switch(direction)
+            switch (direction)
             {
                 case Direction.North:
                     return Direction.West;
+
                 case Direction.East:
                     return Direction.North;
+
                 case Direction.South:
                     return Direction.East;
+
                 default:
                     return Direction.South;
             }
         }
+
         [Obsolete]
         public static Direction GetRightDirection(this Direction direction)
         {
@@ -221,18 +248,22 @@ namespace Assets.Scripts
             {
                 case Direction.North:
                     return Direction.East;
+
                 case Direction.East:
                     return Direction.South;
+
                 case Direction.South:
                     return Direction.West;
+
                 default:
                     return Direction.North;
             }
         }
+
         [Obsolete]
         public static List<Direction> GetDirectionList(bool includeUpAndDown = false)
         {
-            if(includeUpAndDown)
+            if (includeUpAndDown)
             {
                 return new List<Direction>()
                 {
@@ -253,49 +284,60 @@ namespace Assets.Scripts
                 Direction.East
             };
         }
+
         [Obsolete]
         public static Direction RandomDirection(List<Direction> directions)
         {
-            return directions[UnityEngine.Random.Range(0, directions.Count-2 /*Don't include Up and Down*/)];
+            return directions[UnityEngine.Random.Range(0, directions.Count - 2 /*Don't include Up and Down*/)];
         }
+
         [Obsolete]
         public static int RotationAngle(this Direction direction)
         {
-            switch(direction)
+            switch (direction)
             {
                 case Direction.East:
                     return 90;
+
                 case Direction.South:
                     return 180;
+
                 case Direction.West:
                     return 270;
+
                 case Direction.North:
                 default:
                     return 0;
             }
         }
+
         [Obsolete]
         public static Vector3 DirectionToVector(this Direction direction)
         {
-            switch(direction)
+            switch (direction)
             {
                 case Direction.Down:
                     return new Vector3(0, -0.5f, 0);
+
                 case Direction.Up:
                     return new Vector3(0, 0.5f, 0);
+
                 case Direction.West:
                     return new Vector3(-1, 0, 0);
+
                 case Direction.East:
                     return new Vector3(1, 0, 0);
+
                 case Direction.South:
                     return new Vector3(0, 0, -1);
+
                 case Direction.North:
                 default:
                     return new Vector3(0, 0, 1);
             }
         }
 
-        #endregion
+        #endregion Obsolete
     }
 
     public enum Direction

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
     #region Ammo Properties
+
     [SerializeField]
     protected bool infiniteAmmo;
 
@@ -22,7 +21,8 @@ public class Inventory : MonoBehaviour
     protected int maxCrossbowAmmo;
 
     protected int currentCrossbowAmmo;
-    #endregion
+
+    #endregion Ammo Properties
 
     #region Weapon Slots
 
@@ -46,7 +46,7 @@ public class Inventory : MonoBehaviour
 
     protected Weapon currentEquip;
 
-    #endregion
+    #endregion Weapon Slots
 
     #region Player Properties
 
@@ -56,23 +56,23 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     protected GameObject playerViewModel;
 
-    #endregion
+    #endregion Player Properties
 
     #region Meta
 
-    void Start()
+    private void Start()
     {
         currentMachineGunAmmo = maxMachineGunAmmo;
         currentShotgunAmmo = maxShotgunAmmo;
         currentCrossbowAmmo = maxCrossbowAmmo;
     }
 
-    void Update()
+    private void Update()
     {
         UpdateInput();
     }
 
-    void UpdateInput()
+    private void UpdateInput()
     {
         if (Input.GetMouseButton(0) && currentEquip != null)
             Fire();
@@ -82,13 +82,13 @@ public class Inventory : MonoBehaviour
             EquipPistolOrMelee();
     }
 
-    #endregion
+    #endregion Meta
 
     #region Fire
 
     public void Fire()
     {
-        if(currentEquip.WeaponReady())
+        if (currentEquip.WeaponReady())
         {
             playerViewModel.GetComponent<ViewModelMotion>().Punch(-10);
 
@@ -96,15 +96,20 @@ public class Inventory : MonoBehaviour
             {
                 case AmmoType.SingleUse:
                     break;
+
                 case AmmoType.Infinite:
                     FireInfinite();
                     break;
+
                 case AmmoType.MachineGun:
                     break;
+
                 case AmmoType.Shotgun:
                     break;
+
                 case AmmoType.Crossbow:
                     break;
+
                 default:
                     break;
             }
@@ -116,7 +121,7 @@ public class Inventory : MonoBehaviour
         currentEquip.Fire(player.GetComponent<FPS_Controller.FPS_Controller>().GetPointOfFocus());
     }
 
-    #endregion
+    #endregion Fire
 
     #region Equip
 
@@ -130,9 +135,9 @@ public class Inventory : MonoBehaviour
         //}
         //else
         //{
-            var newEquip = pistol.Equip(playerViewModel);
+        var newEquip = pistol.Equip(playerViewModel);
 
-        if(currentEquip != null)
+        if (currentEquip != null)
             currentEquip.Unequip();
 
         currentEquip = newEquip;
@@ -146,5 +151,5 @@ public class Inventory : MonoBehaviour
         currentEquip.transform.parent = playerViewModel.transform;
     }
 
-    #endregion
+    #endregion Equip
 }

@@ -26,7 +26,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
             {
                 cellsToAdd = new List<Cell>();
                 var expansionAmount = 0;
-                foreach(var direction in Directionf.Directions())
+                foreach (var direction in Directionf.Directions())
                 {
                     if (region.cellExpansionConstant)
                     {
@@ -34,7 +34,7 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                         var currentCell = pathwayCell;
                         for (int i = 0; i < expansionAmount; i++)
                         {
-                            if(CellCollection.HasCellAt(currentCell.position.Step(direction)))
+                            if (CellCollection.HasCellAt(currentCell.position.Step(direction)))
                             {
                                 break;
                             }
@@ -47,20 +47,22 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                                 currentCell = cell;
                             }
                         }
-                    } else
+                    }
+                    else
                     {
-                        if(pathwayCell.sequence <= sequenceMiddle)
+                        if (pathwayCell.sequence <= sequenceMiddle)
                         {
                             expansionAmount = Mathf.FloorToInt(
-                                Mathf.Lerp(region.cellExpansionStart, 
-                                region.cellExpansionMiddle, 
+                                Mathf.Lerp(region.cellExpansionStart,
+                                region.cellExpansionMiddle,
                                 pathwayCell.sequence / (sequenceLength - sequenceMiddle)));
-                        } else
+                        }
+                        else
                         {
                             expansionAmount = Mathf.FloorToInt(
                                 Mathf.Lerp(region.cellExpansionMiddle,
                                 region.cellExpansionEnd,
-                                (pathwayCell.sequence - sequenceMiddle)  / (sequenceLength - sequenceMiddle)));
+                                (pathwayCell.sequence - sequenceMiddle) / (sequenceLength - sequenceMiddle)));
                         }
                         var currentCell = pathwayCell;
                         for (int i = 0; i < expansionAmount; i++)
@@ -84,8 +86,10 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
                 {
                     CellCollection.Add(cellsToAdd);
                 }
-                catch (Exception e) {
-                    continue; }
+                catch (Exception e)
+                {
+                    continue;
+                }
             }
         }
 
@@ -94,20 +98,21 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
             var cellsWithOpenings = region.GetCells().Where(x => x.NeighborOpenings().Any() && x.type == CellType.Cell).ToList();
             var cellsToAdd = new List<Cell>();
 
-            foreach(var cell in cellsWithOpenings)
+            foreach (var cell in cellsWithOpenings)
             {
                 //Recheck for openings
                 var openings = cell.NeighborOpenings();
                 if (!openings.Any()) continue;
-                foreach(var opening in openings)
+                foreach (var opening in openings)
                 {
                     var currentCell = cell;
-                    for(int i = 0; i < region.proliferationAmount; i++)
+                    for (int i = 0; i < region.proliferationAmount; i++)
                     {
                         if (CellCollection.HasCellAt(currentCell.Step(opening)))
                         {
                             break;
-                        } else
+                        }
+                        else
                         {
                             var nextCell = new Cell(CellType.Cell, currentCell.Step(opening));
                             nextCell.parent = currentCell;
@@ -124,10 +129,10 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
         public static void DecayCells(ref Region region)
         {
-            foreach(var cell in region.GetCells().Where(x => x.type == CellType.Cell).ToArray())
+            foreach (var cell in region.GetCells().Where(x => x.type == CellType.Cell).ToArray())
             {
                 var decayHit = Random.Range(0.0f, 1.0f);
-                if(region.cellDecayAmount >= decayHit)
+                if (region.cellDecayAmount >= decayHit)
                 {
                     cell.children = new List<Cell>();
                     CellCollection.Remove(cell);
@@ -157,10 +162,9 @@ namespace Assets.Scripts.Levels.Generation.CellBuilder
 
             foreach (var cell in cellsToCheck)
             {
-                if(cell.FindClosestPathway() == null)
+                if (cell.FindClosestPathway() == null)
                 {
                     CellCollection.Remove(cell);
-                    
                 }
             }
         }

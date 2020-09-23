@@ -60,7 +60,6 @@
 //            #region Floor pass
 //            if (scaffoldNodes.Any(x => x.type == ScaffoldNodeType.Floor_Main))
 //            {
-
 //                var floorMain = Floor_Mains.Random();
 
 //                foreach (var node in scaffoldNodes.Where(x => x.type == ScaffoldNodeType.Floor_Main))

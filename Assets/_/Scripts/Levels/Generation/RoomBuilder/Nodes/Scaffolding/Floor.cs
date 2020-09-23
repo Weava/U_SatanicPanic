@@ -1,6 +1,5 @@
 ﻿using Assets.Scripts.Levels.Generation.Base;
 using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding.Base;
-using System.Collections.Generic;
 
 namespace Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Scaffolding
 {

@@ -1,5 +1,5 @@
-﻿using System;
-using Assets.Scripts.Levels.Generation.Base;
+﻿using Assets.Scripts.Levels.Generation.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,12 +11,12 @@ namespace Assets.Scripts.Levels.Generation.Extensions
         {
             var result = new List<Room>();
 
-            foreach(var cell in room.GetCells())
+            foreach (var cell in room.GetCells())
             {
                 var neighbors = cell.NeighborCellsOutOfRoom();
-                foreach(var neighborRoom in neighbors.Select(s => s.GetRoom()))
+                foreach (var neighborRoom in neighbors.Select(s => s.GetRoom()))
                 {
-                    if(!result.Contains(neighborRoom))
+                    if (!result.Contains(neighborRoom))
                     {
                         result.Add(neighborRoom);
                     }
@@ -30,7 +30,7 @@ namespace Assets.Scripts.Levels.Generation.Extensions
         {
             var result = new List<Room>();
 
-            foreach(var door in room.doors.ToArray())
+            foreach (var door in room.doors.ToArray())
             {
                 var otherRoom = door.cell_1.roomId == room.id ? door.cell_2.roomId : door.cell_1.roomId;
                 result.Add(RoomCollection.rooms[otherRoom]);

@@ -1,13 +1,7 @@
-﻿using System;
+﻿using Assets.Scripts.Levels.Generation.Extensions;
+using Assets.Scripts.Levels.Generation.RoomBuilder;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Scripts.Levels.Generation.Extensions;
-using Assets.Scripts.Levels.Generation.RoomBuilder;
-using Assets.Scripts.Levels.Generation.RoomBuilder.Nodes.Parsing.Base;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 using Vector4 = UnityEngine.Vector4;
@@ -35,11 +29,12 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
 
         public bool renderDebug = false;
 
-        #endregion
+        #endregion Rendering Rules
 
         #region Meta Properties
 
-        [HideInInspector] public int entitySize
+        [HideInInspector]
+        public int entitySize
         {
             get
             {
@@ -48,9 +43,9 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             }
         }
 
-        #endregion
+        #endregion Meta Properties
 
-        void Start()
+        private void Start()
         {
             renderDebug = false;
         }
@@ -93,11 +88,11 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
             return result;
         }
 
-        #endregion
+        #endregion Helper Methods
 
         #region DrawGizmos
 
-        void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             RenderDebug();
         }
@@ -204,6 +199,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                         new Vector3(root.x + floorOffset, root.y + heightOffset, root.z + floorOffset)
                     };
                     break;
+
                 case Direction.South:
                     wireFrame = new List<Vector3>()
                     {
@@ -213,6 +209,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                         new Vector3(root.x + floorOffset, root.y + heightOffset, root.z - floorOffset)
                     };
                     break;
+
                 case Direction.West:
                     wireFrame = new List<Vector3>()
                     {
@@ -222,6 +219,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                         new Vector3(root.x - floorOffset, root.y + heightOffset, root.z - floorOffset)
                     };
                     break;
+
                 default: //North
                     wireFrame = new List<Vector3>()
                     {
@@ -247,7 +245,7 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
         private static void DrawCell(Vector4 position)
         {
             position = ProjectToCellSpace(position);
-            var normals = ((int) position.w).GetDirectionsFromByte();
+            var normals = ((int)position.w).GetDirectionsFromByte();
 
             foreach (var direction in Directionf.Directions())
             {
@@ -265,14 +263,13 @@ namespace Assets.Scripts.Levels.Generation.Rendering.Suites.Base
                 );
         }
 
-
-        #endregion
+        #endregion DrawGizmos
     }
 
     public class SuiteProjection
     {
         public List<Vector4> spaces = new List<Vector4>();
 
-        public List<Vector3> spacesAsVec3 => spaces.Select(s => (Vector3) s).ToList();
+        public List<Vector3> spacesAsVec3 => spaces.Select(s => (Vector3)s).ToList();
     }
 }
